@@ -9,7 +9,7 @@ let lastFrameTime = performance.now();
 function draw() {
   lastFrameTime = performance.now();
   renderContext.clearRect(0, 0, canvas.width, canvas.height);
-  renderContext.drawText("FPS: " + game.fps, 10, 10);
+  renderContext.fillText("FPS: " + game.fps, 10, 10);
 }
 
 function update() {
