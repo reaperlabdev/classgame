@@ -26,10 +26,13 @@ export class uiHandler {
   }
 
   genID(): string {
-    return (
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-    );
+    let id: string;
+    do {
+      id =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+    } while (this.uiClasses.has(id));
+    return id;
   }
 
   update() {
