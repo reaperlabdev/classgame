@@ -14,3 +14,5 @@ function loop() {
 }
 
 loop();
+
+console.log("kys");
