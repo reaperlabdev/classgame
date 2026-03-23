@@ -1,9 +1,21 @@
 const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const renderContext = canvas.getContext("2d");
 
-function draw() {}
+let game = {
+  fps: 0,
+};
 
-function update() {}
+let lastFrameTime = performance.now();
+function draw() {
+  lastFrameTime = performance.now();
+  renderContext.clearRect(0, 0, canvas.width, canvas.height);
+  renderContext.drawText("FPS: " + game.fps, 10, 10);
+}
+
+function update() {
+  game.fps = Math.round(1000 / (performance.now() - lastFrameTime));
+  lastFrameTime = performance.now();
+}
 
 function loop() {
   update();
