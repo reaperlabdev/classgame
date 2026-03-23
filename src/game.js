@@ -17,7 +17,3 @@ function loop() {
 loop();
 
 console.log("colby");
-
-function balls() {
-  "die";
-}
