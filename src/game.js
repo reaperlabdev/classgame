@@ -15,4 +15,4 @@ function loop() {
 
 loop();
 
-console.log("kys");
+console.log("colby");
