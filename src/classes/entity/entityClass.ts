@@ -1,4 +1,4 @@
-export type EntityType = "robot" | "turret" | "generic";
+import { EntityType } from "./entityType";
 
 export class Entity {
   id: string;
