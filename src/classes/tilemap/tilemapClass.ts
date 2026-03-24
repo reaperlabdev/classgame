@@ -1,5 +1,6 @@
 import { Game } from "../../game";
 import { TileManager } from "../../handlers/tileManager";
+import { Tile } from "../../classes/tile/tileClass";
 
 export class TileMap {
   game: Game;
@@ -7,6 +8,10 @@ export class TileMap {
 
   constructor(game: Game) {
     this.game = game;
-    this.tileManager = game.globals.tileManager;
+    this.tileManager = new TileManager(game);
+  }
+
+  addTile(tile: Tile) {
+    this.tileManager.addTile(tile);
   }
 }
