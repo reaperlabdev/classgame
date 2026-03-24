@@ -6,7 +6,7 @@ export class uiDebug extends uiClass {
     super(game);
   }
 
-  update() {}
+  update(dt: number) {}
 
   render() {
     this.renderContext.fillStyle = "white";

@@ -11,7 +11,7 @@ export class uiClass {
     this.renderContext = game.globals.renderContext;
   }
 
-  update() {}
+  update(dt: number) {}
 
   render() {}
 }

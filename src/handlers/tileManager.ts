@@ -24,9 +24,9 @@ export class TileManager {
     return id;
   }
 
-  update() {
+  update(dt: number) {
     for (const tile of this.tiles.values()) {
-      tile.update();
+      tile.update(dt);
     }
   }
 

@@ -14,13 +14,13 @@ export class Tile {
   constructor(game: Game, x: number, y: number, color: string) {
     this.game = game;
     this.ctx = game.globals.renderContext;
-    this.id = game.globals.tileManager.genID();
+    this.id = game.globals.tileMapManager.tileManager.genID();
     this.x = x;
     this.y = y;
     this.width = 16;
     this.height = 16;
     this.color = color;
-    game.globals.tileManager.addTile(this);
+    game.globals.tileMapManager.tileManager.addTile(this);
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -28,5 +28,5 @@ export class Tile {
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
-  update() {}
+  update(dt: number) {}
 }

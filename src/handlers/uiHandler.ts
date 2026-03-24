@@ -35,9 +35,9 @@ export class uiHandler {
     return id;
   }
 
-  update() {
+  update(dt: number) {
     for (const [, uiClass] of this.uiClasses) {
-      uiClass.update();
+      uiClass.update(dt);
     }
   }
 

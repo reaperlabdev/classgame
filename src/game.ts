@@ -2,6 +2,7 @@ import { Updater } from "./handlers/updater";
 import { Renderer } from "./handlers/renderer";
 import { uiHandler } from "./handlers/uiHandler";
 import { TileManager } from "./handlers/tileManager";
+import { TileMapManager } from "./handlers/tilemapManager";
 
 interface Globals {
   fps: number;
@@ -13,8 +14,9 @@ interface Globals {
   updater: Updater;
   renderer: Renderer;
   uiHandler: uiHandler;
-  tileManager: TileManager;
+  tileMapManager: TileMapManager;
   gameThread: ReturnType<typeof setInterval>;
+  renderThread: ReturnType<typeof setInterval>;
 }
 
 const _targetFPS = 60;
@@ -30,8 +32,9 @@ export class Game {
     updater: new Updater(this),
     renderer: new Renderer(this),
     uiHandler: new uiHandler(this),
-    tileManager: new TileManager(this),
+    tileMapManager: new TileMapManager(this),
     gameThread: setInterval(() => {}, 1000 / _targetFPS),
+    renderThread: setInterval(() => {}, 1000 / _targetFPS),
   };
 
   constructor(

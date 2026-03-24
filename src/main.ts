@@ -11,6 +11,9 @@ function main(): void {
 
   game.globals.gameThread = setInterval(() => {
     game.globals.updater.update();
+  }, 1000 / game.globals.targetFPS);
+
+  game.globals.renderThread = setInterval(() => {
     game.globals.renderer.render();
   }, 1000 / game.globals.targetFPS);
 }
