@@ -1,7 +1,9 @@
+import { Game } from "../../game";
 import { EntityType } from "./entityType";
 
 export class Entity {
   id: string;
+  game: Game;
   type: EntityType;
   x: number;
   y: number;
@@ -11,7 +13,7 @@ export class Entity {
   isAlive: boolean;
 
   constructor(
-    id: string,
+    game: Game,
     type: EntityType,
     x: number,
     y: number,
@@ -19,7 +21,8 @@ export class Entity {
     height: number,
     health: number,
   ) {
-    this.id = id;
+    this.id = game.globals.entityManager.genID();
+    this.game = game;
     this.type = type;
     this.x = x;
     this.y = y;
@@ -27,15 +30,12 @@ export class Entity {
     this.height = height;
     this.health = health;
     this.isAlive = true;
+    game.globals.entityManager.addEntity(this);
   }
 
-  update(deltaTime: number): void {
-    // Override in subclasses for custom update logic
-  }
+  update(dt: number): void {}
 
-  render(ctx: CanvasRenderingContext2D): void {
-    // Override in subclasses for custom rendering
-  }
+  render(ctx: CanvasRenderingContext2D): void {}
 
   takeDamage(amount: number): void {
     this.health -= amount;
@@ -46,6 +46,6 @@ export class Entity {
 
   destroy(): void {
     this.isAlive = false;
-    // Additional cleanup logic can go here
+    this.game.globals.entityManager.removeEntity(this.id);
   }
 }

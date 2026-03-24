@@ -1,4 +1,5 @@
 export enum EntityType {
-  "Turret",
-  "Hostile",
+  "TURRET",
+  "HOSTILE",
+  "BASE",
 }

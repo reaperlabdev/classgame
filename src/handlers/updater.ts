@@ -8,12 +8,15 @@ export class Updater {
   }
 
   update(): void {
-    let deltaTime = performance.now() - this.game.globals.frameTime;
-    this.game.globals.fps = Math.round(1000 / deltaTime);
+    const now = performance.now();
+    const dt = Math.min((now - this.game.globals.frameTime) / 1000, 0.1);
 
-    this.game.globals.uiHandler.update(deltaTime);
-    this.game.globals.tileMapManager.update(deltaTime);
+    this.game.globals.fps = Math.round(1 / dt);
 
-    this.game.globals.frameTime = performance.now();
+    this.game.globals.tileMapManager.update(dt);
+    this.game.globals.entityManager.update(dt);
+    this.game.globals.uiHandler.update(dt);
+
+    this.game.globals.frameTime = now;
   }
 }
