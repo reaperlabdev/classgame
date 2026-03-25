@@ -36,7 +36,9 @@ export class uiHandler {
   }
 
   update(dt: number) {
+    const { x, y } = this.game.globals.mouseHandler.getPosition();
     for (const [, uiClass] of this.uiClasses) {
+      uiClass.hovered = uiClass.isHovered(x, y);
       uiClass.update(dt);
     }
   }

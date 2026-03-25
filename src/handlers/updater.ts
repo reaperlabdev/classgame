@@ -20,11 +20,15 @@ export class Updater {
     this.game.globals.waveManager?.update(dt);
     this.game.globals.uiHandler.update(dt);
 
+    const uiHovered: boolean = Array.from(
+      this.game.globals.uiHandler.uiClassesMap.values(),
+    ).some((uiClass) => uiClass.hovered);
+
     let tiles: Tile[] =
       this.game.globals.tileMapManager.tileManager.getTileArray();
     // get mouse Event
     const tile: Tile | null = getTileMousePos(this.game, tiles);
-    if (!(tile instanceof TilePath)) {
+    if (!(tile instanceof TilePath) && !uiHovered) {
       this.game.globals.targetTile = tile;
       this.game.globals.tileMapManager.tileManager.setHoveredTile(tile);
     } else {

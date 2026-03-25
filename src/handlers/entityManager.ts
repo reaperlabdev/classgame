@@ -12,9 +12,11 @@ export class EntityManager {
 
   addEntity(entity: Entity): void {
     this.entities.set(entity.id, entity);
+    console.log("added", entity.id, "total:", this.entities.size);
   }
 
   removeEntity(id: string): void {
+    console.log("removing", id);
     this.entities.delete(id);
   }
 
@@ -43,6 +45,7 @@ export class EntityManager {
   }
 
   render(): void {
+    console.log("rendering entities", this.entities.size); // add this
     for (const entity of this.entities.values()) {
       entity.render(this.game.renderContext);
     }

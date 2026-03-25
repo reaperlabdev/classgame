@@ -1,4 +1,6 @@
-import { uiDebug } from "./classes/ui/debug/uiDebug";
+import { uiDebug } from "./classes/ui/debug/debugUi";
+import { SpawnUi } from "./classes/ui/spawn/spawnUi";
+
 import { Game } from "./game";
 import { Robot } from "./classes/entity/hostile/robot/robotEntity";
 import defaultMap from "./assets/map/default.json";
@@ -24,7 +26,7 @@ async function main(): Promise<void> {
 
   game.globals.mouseHandler.init();
 
-  game.globals.uiHandler.addUIClass(new uiDebug(game));
+  new uiDebug(game);
 
   game.globals.tileMapManager.loadTileMapFromJson(defaultMap);
 
@@ -37,6 +39,9 @@ async function main(): Promise<void> {
 
   //  setup wave manager
   game.globals.waveManager = new WaveManager(game);
+
+  // setup spawn UI
+  new SpawnUi(game);
 
   game.globals.gameThread = setInterval(() => {
     game.globals.updater.update();

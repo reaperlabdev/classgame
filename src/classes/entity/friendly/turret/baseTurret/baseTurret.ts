@@ -4,13 +4,11 @@ import { EntityType } from "../../../entityType";
 import { TurretEntity } from "../turretEntity";
 
 export class BaseTurret extends TurretEntity {
-  damage: number = 1;
-  range: number = 100;
-  attackSpeed: number = 0.6;
-  lastAttackTime: number = Date.now();
-
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 1, 100, 0.6);
+    super(game, x, y);
+    this.damage = 1;
+    this.range = 100;
+    this.attackSpeed = 0.6;
   }
 
   update(dt: number): void {
@@ -49,6 +47,8 @@ export class BaseTurret extends TurretEntity {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    console.log(this.id);
     ctx.fillStyle = "blue";
     ctx.fillRect(this.x, this.y, this.width, this.height);
 
@@ -63,5 +63,6 @@ export class BaseTurret extends TurretEntity {
       2 * Math.PI,
     );
     ctx.stroke();
+    ctx.restore();
   }
 }
