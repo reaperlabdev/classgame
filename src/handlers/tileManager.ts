@@ -7,8 +7,37 @@ export class TileManager {
   private staticCache: OffscreenCanvas | null = null;
   private hoveredTile: Tile | null = null;
 
+  // Global sprite cache: key is "spriteKey:angle:hovered"
+  private spriteCache = new Map<string, OffscreenCanvas>();
+
   constructor(game: Game) {
     this.game = game;
+  }
+
+  /**
+   * Returns a cached OffscreenCanvas for the given sprite, angle, and hover state.
+   * Bakes it on first request, then reuses it for every tile that shares those params.
+   */
+  getBakedSprite(
+    spriteKey: string,
+    angle: number,
+    hovered: boolean,
+    width: number,
+    height: number,
+  ): OffscreenCanvas {
+    const key = `${spriteKey}:${angle}:${hovered}`;
+    if (this.spriteCache.has(key)) return this.spriteCache.get(key)!;
+
+    const image = this.game.globals.spriteManager.getSprite(spriteKey);
+    const oc = new OffscreenCanvas(width, height);
+    const ctx = oc.getContext("2d")!;
+    ctx.filter = hovered ? "brightness(0.8)" : "brightness(1)";
+    ctx.translate(width / 2, height / 2);
+    ctx.rotate(angle);
+    ctx.drawImage(image, -width / 2, -height / 2, width, height);
+
+    this.spriteCache.set(key, oc);
+    return oc;
   }
 
   getTileArray(): Tile[] {
