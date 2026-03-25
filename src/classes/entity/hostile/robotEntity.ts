@@ -4,11 +4,14 @@ import { EntityType } from "../entityType";
 import { findNextTile } from "../../../utility/entityPathing";
 
 export class Robot extends Entity {
-  speed: number = 400;
+  lastHealth: number = 0;
+  hurtTime: number = 0;
+  speed: number = 100;
   currentOrder: number = -1;
 
   constructor(game: Game) {
-    super(game, EntityType.HOSTILE, 0, 0, 12, 12, 100);
+    super(game, EntityType.HOSTILE, 0, 0, 12, 12, 5);
+    this.lastHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);
@@ -20,6 +23,11 @@ export class Robot extends Entity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
+
+    if (this.health < this.lastHealth) {
+      this.hurtTime = Date.now() + 5000;
+    }
+    this.lastHealth = this.health;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);
@@ -40,11 +48,19 @@ export class Robot extends Entity {
       this.x += (dx / dist) * move;
       this.y += (dy / dist) * move;
     }
+
+    if (this.hurtTime > 0) {
+      this.hurtTime -= Date.now();
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.isAlive) return;
+
     ctx.fillStyle = "#e84040";
+    if (this.hurtTime > 0) {
+      ctx.fillStyle = "#ffffff";
+    }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }

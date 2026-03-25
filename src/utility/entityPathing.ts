@@ -1,20 +1,37 @@
 import { TilePath } from "../classes/tile/path/tilePath";
 import { Tile } from "../classes/tile/tileClass";
 
+let cachedPath: TilePath[] | null = null;
+
+export function invalidatePathCache(): void {
+  cachedPath = null;
+}
+
 export function getOrderedPath(tiles: Map<string, Tile>): TilePath[] {
-  return Array.from(tiles.values())
+  if (cachedPath) return cachedPath;
+  cachedPath = Array.from(tiles.values())
     .filter((t): t is TilePath => t instanceof TilePath)
     .sort((a, b) => a.order - b.order);
+  return cachedPath;
 }
 
 export function findNextTile(
   tiles: Map<string, Tile>,
   currentOrder: number,
 ): TilePath | null {
-  return getOrderedPath(tiles).find((t) => t.order > currentOrder) ?? null;
+  const path = getOrderedPath(tiles);
+  // Binary search instead of linear find since path is sorted
+  let lo = 0,
+    hi = path.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >>> 1;
+    if (path[mid].order <= currentOrder) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return path[lo] ?? null;
 }
 
 export function findPath(tiles: Map<string, Tile>): TilePath | null {
   const path = getOrderedPath(tiles);
-  return path.length > 0 ? path[0] : null;
+  return path[0] ?? null;
 }

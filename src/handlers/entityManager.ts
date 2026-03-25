@@ -1,5 +1,6 @@
 import { Game } from "../game";
 import { Entity } from "../classes/entity/entityClass";
+import { EntityType } from "../classes/entity/entityType";
 
 export class EntityManager {
   game: Game;
@@ -25,6 +26,14 @@ export class EntityManager {
         Math.random().toString(36).substring(2, 15);
     } while (this.entities.has(id));
     return id;
+  }
+
+  getEntityArray(): Entity[] {
+    return Array.from(this.entities.values());
+  }
+
+  getEntityByType(type: EntityType): Entity[] {
+    return this.getEntityArray().filter((entity) => entity.type === type);
   }
 
   update(dt: number): void {

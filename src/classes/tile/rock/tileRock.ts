@@ -3,6 +3,6 @@ import { Tile } from "../tileClass";
 
 export class TileRock extends Tile {
   constructor(game: Game, x: number, y: number, color: string) {
-    super(game, x, y, "gray");
+    super(game, x, y, "#808080");
   }
 }

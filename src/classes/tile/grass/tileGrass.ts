@@ -1,20 +1,19 @@
 import { Game } from "../../../game";
 import { Tile } from "../tileClass";
 
-export class TilePath extends Tile {
-  order: number = 0;
+export class TileGrass extends Tile {
   private cachedCanvas: OffscreenCanvas | null = null;
   private cachedHoveredCanvas: OffscreenCanvas | null = null;
   private imageAngle: number;
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, "#c2963a");
+    super(game, x, y, "#008000");
     this.imageAngle = Math.floor(Math.random() * 4) * (Math.PI / 2);
   }
 
   private ensureCached(): void {
     if (this.cachedCanvas) return;
-    const image = this.game.globals.spriteManager.getSprite("path");
+    const image = this.game.globals.spriteManager.getSprite("grass");
     this.cachedCanvas = this.bakeCanvas(image, this.imageAngle, false);
     this.cachedHoveredCanvas = this.bakeCanvas(image, this.imageAngle, true);
   }

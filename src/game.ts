@@ -3,10 +3,16 @@ import { Renderer } from "./handlers/renderer";
 import { uiHandler } from "./handlers/uiHandler";
 import { TileMapManager } from "./handlers/tilemapManager";
 import { EntityManager } from "./handlers/entityManager";
+import { WaveManager } from "./handlers/waveManager";
+import { MouseHandler } from "./handlers/mouseHandler";
+import { SpriteManager } from "./handlers/spriteManager";
+import { Spawning } from "./spawning/spawning";
+import { Tile } from "./classes/tile/tileClass";
 
 interface Globals {
   fps: number;
   targetFPS: number;
+  targetTile: any;
   frameTime: number;
   running: boolean;
   canvas: HTMLCanvasElement;
@@ -16,8 +22,13 @@ interface Globals {
   uiHandler: uiHandler;
   tileMapManager: TileMapManager;
   entityManager: EntityManager;
+  waveManager: any;
   gameThread: ReturnType<typeof setInterval>;
-  renderThread: ReturnType<typeof setInterval>;
+  renderThread: any;
+  waveThread: ReturnType<typeof setInterval>;
+  mouseHandler: MouseHandler;
+  spriteManager: SpriteManager;
+  spawning: Spawning;
 }
 
 const _targetFPS = 60;
@@ -26,6 +37,7 @@ export class Game {
   globals: Globals = {
     fps: 0,
     targetFPS: _targetFPS,
+    targetTile: null,
     frameTime: performance.now(),
     running: false,
     canvas: this.canvas,
@@ -35,8 +47,13 @@ export class Game {
     uiHandler: new uiHandler(this),
     tileMapManager: new TileMapManager(this),
     entityManager: new EntityManager(this),
+    mouseHandler: new MouseHandler(this),
+    spriteManager: new SpriteManager(this),
+    spawning: new Spawning(this),
+    waveManager: null,
     gameThread: setInterval(() => {}, 1000 / _targetFPS),
     renderThread: setInterval(() => {}, 1000 / _targetFPS),
+    waveThread: setInterval(() => {}, 1000 / _targetFPS),
   };
 
   constructor(

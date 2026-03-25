@@ -3,6 +3,7 @@ import { TileManager } from "./tileManager";
 import { Tile } from "../classes/tile/tileClass";
 import { TileRock } from "../classes/tile/rock/tileRock";
 import { TilePath } from "../classes/tile/path/tilePath";
+import { TileGrass } from "../classes/tile/grass/tileGrass";
 
 export interface TileMapJson {
   tileSize: number;
@@ -27,8 +28,13 @@ export class TileMapManager {
   constructor(game: Game) {
     this.game = game;
     this.tileManager = new TileManager(game);
+    this.registerTileType("grass", (g, x, y) => new TileGrass(g, x, y));
     this.registerTileType("rock", (g, x, y) => new TileRock(g, x, y, "gray"));
     this.registerTileType("path", (g, x, y) => new TilePath(g, x, y));
+  }
+
+  getTileArray(): Tile[] {
+    return this.tileManager.getTileArray();
   }
 
   registerTileType(name: string, factory: TileFactory): void {

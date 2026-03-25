@@ -3,7 +3,7 @@
   "width": 50,
   "height": 32,
   "tileTypes": {
-    "0": "empty",
+    "0": "grass",
     "1": "rock",
     "2": "path"
   },
