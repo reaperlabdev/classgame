@@ -11,6 +11,7 @@ import { Tile } from "./classes/tile/tileClass";
 
 interface Globals {
   fps: number;
+  cash: number;
   targetFPS: number;
   targetTile: any;
   frameTime: number;
@@ -36,6 +37,7 @@ const _targetFPS = 60;
 export class Game {
   globals: Globals = {
     fps: 0,
+    cash: 100,
     targetFPS: _targetFPS,
     targetTile: null,
     frameTime: performance.now(),

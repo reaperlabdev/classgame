@@ -17,6 +17,13 @@ export class uiDebug extends uiClass {
       5,
       30,
     );
-    this.renderContext.fillText("Health: " + this.game.globals.entityManager.getEntityByType(EntityType.BASE)[0].health, 5, 45);
+    this.renderContext.fillText(
+      "Health: " +
+        this.game.globals.entityManager.getEntityByType(EntityType.BASE)[0]
+          .health,
+      5,
+      45,
+    );
+    this.renderContext.fillText("Cash: " + this.game.globals.cash, 5, 60);
   }
 }

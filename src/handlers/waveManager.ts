@@ -25,7 +25,7 @@ export class WaveManager {
 
   update(dt: number): void {
     if (this.waveType === WaveType.START) {
-      this.toSpawn = this.currentWave * 1;
+      this.toSpawn = this.currentWave * 5;
       this.waveType = WaveType.SPAWNING;
     }
     if (this.waveType === WaveType.SPAWNING) {
