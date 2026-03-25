@@ -9,6 +9,7 @@ export class Entity {
   y: number;
   width: number;
   height: number;
+  maxHealth: number;
   health: number;
   isAlive: boolean;
 
@@ -28,6 +29,7 @@ export class Entity {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.maxHealth = health;
     this.health = health;
     this.isAlive = true;
     game.globals.entityManager.addEntity(this);

@@ -1,15 +1,16 @@
-import { Game } from "../../../game";
-import { Entity } from "../entityClass";
-import { EntityType } from "../entityType";
+import { Game } from "../../../../../game";
+import { Entity } from "../../../entityClass";
+import { EntityType } from "../../../entityType";
+import { TurretEntity } from "../turretEntity";
 
-export class PlayerTurret extends Entity {
+export class BaseTurret extends TurretEntity {
   damage: number = 1;
   range: number = 100;
   attackSpeed: number = 0.6;
   lastAttackTime: number = Date.now();
 
   constructor(game: Game, x: number, y: number) {
-    super(game, EntityType.TURRET, x, y, 16, 16, 1);
+    super(game, x, y, 1, 100, 0.6);
   }
 
   update(dt: number): void {

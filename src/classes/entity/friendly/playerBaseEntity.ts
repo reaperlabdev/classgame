@@ -16,11 +16,15 @@ export class PlayerBase extends Entity {
           this.y < entity.y + entity.height &&
           this.y + this.height > entity.y
         ) {
-          this.takeDamage(1);
+          this.takeDamage(entity.health);
           entity.destroy();
         }
       }
     });
+  }
+
+  destroy(): void {
+    return;
   }
 
   render(ctx: CanvasRenderingContext2D): void {

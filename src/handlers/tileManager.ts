@@ -81,7 +81,6 @@ export class TileManager {
   }
 
   setHoveredTile(tile: Tile | null) {
-    console.log("setHoveredTile", tile?.id ?? "null");
     this.hoveredTile = tile;
   }
 

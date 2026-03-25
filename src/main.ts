@@ -1,11 +1,10 @@
 import { uiDebug } from "./classes/ui/debug/uiDebug";
 import { Game } from "./game";
-import { Robot } from "./classes/entity/hostile/robotEntity";
+import { Robot } from "./classes/entity/hostile/robot/robotEntity";
 import defaultMap from "./assets/map/default.json";
 import { PlayerBase } from "./classes/entity/friendly/playerBaseEntity";
 import { getOrderedPath } from "./utility/entityPathing";
 import { WaveManager } from "./handlers/waveManager";
-import { PlayerTurret } from "./classes/entity/friendly/playerTurret";
 import { loadImage } from "./utility/imageUtil";
 
 import pathImageSrc from "./assets/tiles/path.png";
@@ -33,7 +32,7 @@ async function main(): Promise<void> {
     game.globals.tileMapManager.tileManager.tiles,
   );
   const lastTile = pathOrder[pathOrder.length - 1];
-  const playerBase = new PlayerBase(game, lastTile.x, lastTile.y, 100);
+  const playerBase = new PlayerBase(game, lastTile.x, lastTile.y, 5);
   game.globals.entityManager.addEntity(playerBase);
 
   //  setup wave manager

@@ -1,5 +1,5 @@
 export const entityValues = {
   baseTurret: {
-    cost: 100,
+    cost: 25,
   },
 };

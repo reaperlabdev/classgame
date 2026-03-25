@@ -37,7 +37,7 @@ const _targetFPS = 60;
 export class Game {
   globals: Globals = {
     fps: 0,
-    cash: 100,
+    cash: 25,
     targetFPS: _targetFPS,
     targetTile: null,
     frameTime: performance.now(),
