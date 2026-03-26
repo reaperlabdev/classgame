@@ -81,6 +81,10 @@ export class TileManager {
     this.hoveredTile = tile;
   }
 
+  getHoveredTile(): Tile | null {
+    return this.hoveredTile;
+  }
+
   update(dt: number) {
     for (const tile of this.tiles.values()) {
       tile.update(dt);

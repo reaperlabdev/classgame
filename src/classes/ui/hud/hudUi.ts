@@ -18,6 +18,7 @@ export class HudUi extends uiClass {
       EntityType.BASE,
     )[0].health;
 
+    // left
     renderStrokedText(
       this.ctx,
       `Lives: ${lives}`,
@@ -28,6 +29,19 @@ export class HudUi extends uiClass {
       "#000",
       2,
     );
+
+    renderStrokedText(
+      this.ctx,
+      `Wave: ${this.game.globals.waveManager?.currentWave.toString()}`,
+      16,
+      70,
+      24,
+      "#ABC1b3",
+      "#000",
+      2,
+    );
+
+    // right
     renderStrokedText(
       this.ctx,
       `Cash: ${this.game.globals.cash.toString()}`,

@@ -3,6 +3,9 @@ import { PlayerBase } from "../classes/entity/friendly/playerBaseEntity";
 import { Game } from "../game";
 import { Robot } from "../classes/entity/hostile/robot/robotEntity";
 import { WaveType } from "../classes/wave/waveType";
+import { waveSpawns } from "../classes/wave/waveSpawns";
+import { HostileEntity } from "../classes/entity/hostile/hostileEntity";
+import { baseEntityCosts, entityValues } from "../classes/entity/entityValues";
 
 export class WaveManager {
   game: Game;
@@ -14,7 +17,7 @@ export class WaveManager {
   lastSpawned: number = Date.now();
   spawned: number = 0;
 
-  pauseStart: number = 0; // <-- changed
+  pauseStart: number = 0;
   currentWave: number = 1;
 
   constructor(game: Game) {
@@ -30,9 +33,14 @@ export class WaveManager {
     this.toSpawn = 5;
     this.lastSpawned = Date.now();
     this.spawned = 0;
-    this.pauseStart = 0; // <-- reset
+    this.pauseStart = 0;
     this.currentWave = 1;
     this.game.globals.cash = this.game.globals.startingCash;
+
+    for (const [key, value] of Object.entries(entityValues)) {
+      entityValues[key as keyof typeof entityValues].cost =
+        baseEntityCosts[key as keyof typeof baseEntityCosts];
+    }
 
     this.game.globals.entityManager.getEntityArray().forEach((ent) => {
       if (ent !== this.base) {
@@ -50,6 +58,18 @@ export class WaveManager {
   }
 
   update(dt: number): void {
+    let spawnTypes: (typeof HostileEntity)[] = [];
+
+    for (let i = 0; i < waveSpawns.length; i++) {
+      if (this.currentWave >= waveSpawns[i][0]) {
+        spawnTypes.push(waveSpawns[i][1]);
+      }
+    }
+
+    if (this.currentWave === 1) {
+      this.toSpawn = 3;
+    }
+
     if (this.base.health <= 0) {
       this.reset();
       return;
@@ -61,10 +81,15 @@ export class WaveManager {
     }
 
     if (this.waveType === WaveType.SPAWNING) {
-      if (Date.now() - this.lastSpawned < 1000) return;
+      const baseInterval = 800;
+      const waveFactor = 1 + (this.currentWave - 1) * 0.1;
+      const spawnSpeed = Math.max(50, baseInterval / waveFactor);
+      if (Date.now() - this.lastSpawned < spawnSpeed) return;
 
       if (this.spawned < this.toSpawn) {
-        new Robot(this.game);
+        new spawnTypes[Math.floor(Math.random() * spawnTypes.length)](
+          this.game,
+        );
         this.lastSpawned = Date.now();
         this.spawned++;
       } else {
@@ -81,7 +106,7 @@ export class WaveManager {
         this.currentWave++;
         this.spawned = 0;
         this.waveType = WaveType.END;
-        this.pauseStart = Date.now(); // <-- start pause timer
+        this.pauseStart = Date.now();
       }
     }
 

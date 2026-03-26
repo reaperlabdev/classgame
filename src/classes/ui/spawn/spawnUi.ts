@@ -13,11 +13,7 @@ export class SpawnUi extends uiClass {
   private pressedKeys: Set<string> = new Set();
   mouseX: number;
   mouseY: number;
-  turrets: string[] = ["Turret", "Sniper"];
-  turretSubLabels: string[] = [
-    "$" + entityValues.Turret.cost.toString(),
-    "$" + entityValues.Sniper.cost.toString(),
-  ];
+  turrets: string[] = ["Turret", "Sniper", "Machine", "Spike"];
   selectedTurret: string | null = null;
 
   private readonly boxSize = 42;
@@ -61,6 +57,7 @@ export class SpawnUi extends uiClass {
             this.game.globals.spawning.select(this.turrets[i]);
           } else {
             this.selectedTurret = null;
+            this.game.globals.spawning.select(null);
           }
         }
       } else {
@@ -106,10 +103,17 @@ export class SpawnUi extends uiClass {
   }
 
   render() {
+    const turretSubLabels: string[] = [
+      "$" + entityValues.Turret.cost.toString(),
+      "$" + entityValues.Sniper.cost.toString(),
+      "$" + entityValues.Machine.cost.toString(),
+      "$" + entityValues.Spike.cost.toString(),
+    ];
+
     renderDoubleLabeledBoxRow(
       this.renderContext,
       this.turrets,
-      this.turretSubLabels,
+      turretSubLabels,
       this.getPositions(),
       this.boxSize,
       this.boxBorder,

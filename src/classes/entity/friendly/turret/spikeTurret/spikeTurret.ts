@@ -1,20 +1,23 @@
 import { Game } from "../../../../../game";
+import { TileGrass } from "../../../../tile/grass/tileGrass";
+import { TilePath } from "../../../../tile/path/tilePath";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
-import { TileGrass } from "../../../../tile/grass/tileGrass";
 
-export class SniperTurret extends TurretEntity {
+export class SpikeTurret extends TurretEntity {
   tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 200;
-  static accepts = [TileGrass];
+  tracerDuration = 50;
+  static accepts = [TilePath];
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 32);
-    this.damage = entityValues.Sniper.damage;
-    this.range = entityValues.Sniper.range;
-    this.attackSpeed = entityValues.Sniper.attackSpeed;
+    this.maxHealth = 10;
+    this.health = this.maxHealth;
+    this.damage = entityValues.Spike.damage;
+    this.range = entityValues.Spike.range;
+    this.attackSpeed = entityValues.Spike.attackSpeed;
     this.lastAttackTime = Date.now();
   }
 
@@ -42,6 +45,7 @@ export class SniperTurret extends TurretEntity {
       if (distance < this.range) {
         this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
         closest.takeDamage(this.damage);
+        this.takeDamage(1);
         this.lastAttackTime = now;
       }
     }
@@ -49,7 +53,7 @@ export class SniperTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    const sprite = this.game.globals.spriteManager.getSprite("sniper");
+    const sprite = this.game.globals.spriteManager.getSprite("spike");
     ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
 
     const now = Date.now();

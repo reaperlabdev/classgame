@@ -3,7 +3,7 @@
     <head>
         <title>Robot Defense</title>
     </head>
-    <body style="background-color: #121212">
+    <body style="background-color: #121212; overflow: hidden">
         <div
             style="
                 display: flex;
@@ -14,7 +14,7 @@
         >
             <canvas width="800" height="512" id="gameCanvas"></canvas>
         </div>
-        <audio id="audiohandler" controls>
+        <audio id="audiohandler" style="display: none" autoplay>
             Your browser does not support the audio element.
         </audio>
         <script src="/bundle.js"></script>

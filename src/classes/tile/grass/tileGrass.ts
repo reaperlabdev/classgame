@@ -5,7 +5,7 @@ export class TileGrass extends Tile {
   private imageAngle: number;
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, "#008000");
+    super(game, x, y, "#008000", true);
     this.imageAngle = Math.floor(Math.random() * 4) * (Math.PI / 2);
   }
 

@@ -2,16 +2,16 @@ import { Game } from "../../../../game";
 import { findNextTile } from "../../../../utility/entityPathing";
 import { HostileEntity } from "../hostileEntity";
 
-export class Robot extends HostileEntity {
+export class SpeedyRobot extends HostileEntity {
   lastHealth: number = 0;
   hurtTime: number = 0;
-  speed: number = 150;
+  speed: number = 400;
   currentOrder: number = -1;
 
   constructor(game: Game) {
     super(game);
     this.health = Math.round(
-      4 * Math.pow(1.15, this.game.globals.waveManager.currentWave),
+      2 * Math.pow(1.1, this.game.globals.waveManager.currentWave),
     );
     this.lastHealth = this.health;
 
@@ -60,6 +60,7 @@ export class Robot extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
+    ctx.filter = "brightness(0.4)";
     if (this.hurtTime > 0) {
       ctx.filter = "invert(1)";
     }

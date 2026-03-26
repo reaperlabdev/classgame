@@ -1,16 +1,19 @@
 import { Game } from "../../../../../game";
 import { getOrderedPath } from "../../../../../utility/entityPathing";
+import { TileGrass } from "../../../../tile/grass/tileGrass";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class BaseTurret extends TurretEntity {
+  closest: Entity | null = null;
   tracers: { x: number; y: number; createdAt: number }[] = [];
   tracerDuration = 50;
+  static accepts = [TileGrass];
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y);
+    super(game, x, y, 32);
     this.damage = entityValues.Turret.damage;
     this.range = entityValues.Turret.range;
     this.attackSpeed = entityValues.Turret.attackSpeed;
@@ -27,15 +30,19 @@ export class BaseTurret extends TurretEntity {
       return;
     }
 
-    const closest: Entity | null = this.getTarget();
+    this.closest = this.getTarget();
 
-    if (closest) {
-      const dx = closest.x - this.x;
-      const dy = closest.y - this.y;
+    if (this.closest) {
+      const dx = this.closest.x - this.x;
+      const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < this.range) {
-        this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
-        closest.takeDamage(this.damage);
+        this.tracers.push({
+          x: this.closest.x,
+          y: this.closest.y,
+          createdAt: now,
+        });
+        this.closest.takeDamage(this.damage);
         this.lastAttackTime = now;
       }
     }
@@ -43,8 +50,21 @@ export class BaseTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    const sprite = this.game.globals.spriteManager.getSprite("turret");
-    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
+    ctx.translate(this.x + this.width / 4, this.y + this.height / 4);
+    if (this.closest) {
+      if (this.closest.x > this.x) {
+        ctx.scale(-1, 1);
+      }
+    }
+    ctx.drawImage(
+      this.game.globals.spriteManager.getSprite("turret"),
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height,
+    );
+    ctx.restore();
+    ctx.save();
 
     const now = Date.now();
     for (const tracer of this.tracers) {
