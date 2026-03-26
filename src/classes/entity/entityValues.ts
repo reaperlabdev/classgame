@@ -1,7 +1,7 @@
 export const upgradeLimits = {
   Turret: { damage: 20, range: 125, attackSpeed: 0.4 },
   Sniper: { damage: 50, range: 200, attackSpeed: 0.7 },
-  Machine: { damage: 10, range: 100, attackSpeed: 0.2 },
+  Machine: { damage: 10, range: 100, attackSpeed: 0.15 },
   Spike: { damage: 50, range: 15, attackSpeed: 0.5 },
 };
 
@@ -28,7 +28,7 @@ export let entityValues = {
   Machine: {
     cost: 50,
     damage: 1,
-    attackSpeed: 0.15,
+    attackSpeed: 0.3,
     range: 75,
   },
   Spike: {
