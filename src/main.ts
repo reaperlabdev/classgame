@@ -60,9 +60,6 @@ async function main(): Promise<void> {
   );
   game.globals.entityManager.addEntity(playerBase);
 
-  //  setup wave manager
-  game.globals.waveManager = new WaveManager(game);
-
   // setup spawn UI
   new SpawnUi(game);
 
@@ -71,6 +68,11 @@ async function main(): Promise<void> {
   game.globals.gameThread = setInterval(() => {
     game.globals.updater.update();
   }, 1000 / game.globals.targetFPS);
+
+  game.globals.waveManager = new WaveManager(game);
+  game.globals.waveThread = setInterval(() => {
+    game.globals.waveManager?.update();
+  }, 1000 / 30);
 
   game.globals.renderThread = () => {
     game.globals.renderer.render();

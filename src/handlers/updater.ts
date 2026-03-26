@@ -17,7 +17,6 @@ export class Updater {
     this.game.globals.spawning.update(dt);
 
     this.game.globals.entityManager.update(dt);
-    this.game.globals.waveManager?.update(dt);
     this.game.globals.uiHandler.update(dt);
 
     const uiHovered: boolean = Array.from(
