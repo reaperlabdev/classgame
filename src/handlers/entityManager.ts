@@ -45,7 +45,6 @@ export class EntityManager {
   }
 
   render(): void {
-    console.log("rendering entities", this.entities.size); // add this
     for (const entity of this.entities.values()) {
       entity.render(this.game.renderContext);
     }

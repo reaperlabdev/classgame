@@ -7,17 +7,12 @@ export class TileManager {
   private staticCache: OffscreenCanvas | null = null;
   private hoveredTile: Tile | null = null;
 
-  // Global sprite cache: key is "spriteKey:angle:hovered"
   private spriteCache = new Map<string, OffscreenCanvas>();
 
   constructor(game: Game) {
     this.game = game;
   }
 
-  /**
-   * Returns a cached OffscreenCanvas for the given sprite, angle, and hover state.
-   * Bakes it on first request, then reuses it for every tile that shares those params.
-   */
   getBakedSprite(
     spriteKey: string,
     angle: number,
@@ -69,7 +64,8 @@ export class TileManager {
   }
 
   private buildStaticCache() {
-    console.log("building cache, tile count:", this.tiles.size);
+    console.log("baking cache, tile count:", this.tiles.size);
+    const time = Date.now();
     const { width, height } = this.game.canvas;
     this.staticCache = new OffscreenCanvas(width, height);
     const ctx = this.staticCache.getContext(
@@ -78,6 +74,7 @@ export class TileManager {
     for (const tile of this.tiles.values()) {
       tile.renderToContext(ctx, false);
     }
+    console.log(`bakeTime: ${(Date.now() - time) / 1000}ms`);
   }
 
   setHoveredTile(tile: Tile | null) {

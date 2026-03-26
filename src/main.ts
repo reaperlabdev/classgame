@@ -16,6 +16,7 @@ import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
 
 import { HudUi } from "./classes/ui/hud/hudUi";
+import { play, setVolume } from "./utility/audioUtil";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -51,7 +52,12 @@ async function main(): Promise<void> {
     game.globals.tileMapManager.tileManager.tiles,
   );
   const lastTile = pathOrder[pathOrder.length - 1];
-  const playerBase = new PlayerBase(game, lastTile.x, lastTile.y, 5);
+  const playerBase = new PlayerBase(
+    game,
+    lastTile.x,
+    lastTile.y,
+    game.globals.startingHealth,
+  );
   game.globals.entityManager.addEntity(playerBase);
 
   //  setup wave manager
@@ -71,6 +77,14 @@ async function main(): Promise<void> {
     requestAnimationFrame(game.globals.renderThread);
   };
   game.globals.renderThread();
+
+  await new Promise((resolve) => {
+    document.addEventListener("click", resolve, { once: true });
+  });
+
+  setVolume("bgMusic", 0.1);
+  setVolume("hostileDeath", 1);
+  play("bgMusic");
 }
 
 main();

@@ -41,7 +41,6 @@ export class Spawning {
 
   update(dt: number) {
     if (this.game.globals.keyboardHandler.isKeyDown(" ")) {
-      // set to empty
       this.selectedTurret = null;
       this.turretName = null;
       this.cost = 0;
@@ -63,9 +62,7 @@ export class Spawning {
                 entity.y === tile.y,
             );
           if (!isOnTile) {
-            console.log("spawning", this.selectedTurret, tile.x, tile.y);
             const turret = new this.selectedTurret(this.game, tile.x, tile.y);
-            console.log(this.game.globals.entityManager.entities);
             this.game.globals.cash -= this.cost;
           }
         }
@@ -78,7 +75,6 @@ export class Spawning {
 
   render(ctx: CanvasRenderingContext2D) {
     if (this.selectedTurret) {
-      console.log("spawning preview", this.turretName);
       const previewRange =
         entityValues[this.turretName as keyof typeof entityValues].range;
       ctx.save();

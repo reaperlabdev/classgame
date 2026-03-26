@@ -11,6 +11,7 @@ import { KeyboardHandler } from "./handlers/keyboardHandler";
 
 interface Globals {
   fps: number;
+  startingHealth: number;
   startingCash: number;
   cash: number;
   targetFPS: number;
@@ -39,6 +40,7 @@ const _targetFPS = 60;
 export class Game {
   globals: Globals = {
     fps: 0,
+    startingHealth: 50,
     startingCash: 30,
     cash: 30,
     targetFPS: _targetFPS,

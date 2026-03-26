@@ -10,6 +10,7 @@ import {
 
 export class SpawnUi extends uiClass {
   debounce: boolean = false;
+  private pressedKeys: Set<string> = new Set();
   mouseX: number;
   mouseY: number;
   turrets: string[] = ["Turret", "Sniper"];
@@ -45,9 +46,28 @@ export class SpawnUi extends uiClass {
     const { x, y } = this.game.globals.mouseHandler.getPosition();
     this.mouseX = x;
     this.mouseY = y;
+
     if (this.game.globals.keyboardHandler.isKeyDown(" ")) {
       this.selectedTurret = null;
     }
+
+    for (let i = 0; i < this.turrets.length; i++) {
+      const key = String(i + 1);
+      if (this.game.globals.keyboardHandler.isKeyDown(key)) {
+        if (!this.pressedKeys.has(key)) {
+          this.pressedKeys.add(key);
+          if (this.selectedTurret !== this.turrets[i]) {
+            this.selectedTurret = this.turrets[i];
+            this.game.globals.spawning.select(this.turrets[i]);
+          } else {
+            this.selectedTurret = null;
+          }
+        }
+      } else {
+        this.pressedKeys.delete(key);
+      }
+    }
+
     if (this.game.globals.mouseHandler.getIsDown()) {
       if (this.debounce) return;
       this.debounce = true;

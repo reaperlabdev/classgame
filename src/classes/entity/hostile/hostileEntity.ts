@@ -1,4 +1,5 @@
 import { Game } from "../../../game";
+import { play } from "../../../utility/audioUtil";
 import { CashEffect } from "../effect/cash/cashEffect";
 import { Entity } from "../entityClass";
 import { EntityType } from "../entityType";
@@ -19,6 +20,7 @@ export class HostileEntity extends Entity {
     );
     this.game.globals.cash += realDamageDealt;
     if (this.health <= 0) {
+      play("hostileDeath");
       this.destroy();
     }
   }
