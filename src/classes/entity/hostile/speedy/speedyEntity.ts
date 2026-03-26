@@ -11,7 +11,7 @@ export class SpeedyRobot extends HostileEntity {
   constructor(game: Game) {
     super(game, 32);
     this.health = Math.round(
-      2 * Math.pow(1.1, this.game.globals.waveManager.currentWave),
+      2 + this.game.globals.waveManager.currentWave ** 1.1,
     );
     this.lastHealth = this.health;
 
@@ -50,6 +50,7 @@ export class SpeedyRobot extends HostileEntity {
       this.x += (dx / dist) * move;
       this.y += (dy / dist) * move;
     }
+    this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
       this.hurtTime -= Date.now();
@@ -60,8 +61,9 @@ export class SpeedyRobot extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
+    ctx.filter = "brightness(0.8)";
     if (this.hurtTime > 0) {
-      ctx.filter = "invert(1)";
+      ctx.filter += "; invert(1)";
     }
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.drawImage(

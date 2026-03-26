@@ -5,7 +5,7 @@ import { Robot } from "../classes/entity/hostile/robot/robotEntity";
 import { WaveType } from "../classes/wave/waveType";
 import { waveSpawns } from "../classes/wave/waveSpawns";
 import { HostileEntity } from "../classes/entity/hostile/hostileEntity";
-import { baseEntityCosts, entityValues } from "../classes/entity/entityValues";
+import { placementSettings } from "../classes/entity/entityValues";
 
 export class WaveManager {
   game: Game;
@@ -37,11 +37,6 @@ export class WaveManager {
     this.currentWave = 1;
     this.game.globals.cash = this.game.globals.startingCash;
 
-    for (const [key, value] of Object.entries(entityValues)) {
-      entityValues[key as keyof typeof entityValues].cost =
-        baseEntityCosts[key as keyof typeof baseEntityCosts];
-    }
-
     this.game.globals.entityManager.getEntityArray().forEach((ent) => {
       if (ent !== this.base) {
         this.game.globals.entityManager.removeEntity(ent.id);
@@ -52,7 +47,8 @@ export class WaveManager {
   }
 
   getSpawning(): number {
-    let amt: number = this.toSpawn * 1.1;
+    // increase spawn amt per wave
+    let amt: number = this.toSpawn + this.currentWave * 0.1;
     console.log(amt);
     return amt;
   }
@@ -104,6 +100,7 @@ export class WaveManager {
         .filter((ent): ent is Robot => ent.type === EntityType.HOSTILE);
 
       if (enemies.length === 0) {
+        this.game.globals.cash += this.currentWave * 10;
         this.currentWave++;
         this.spawned = 0;
         this.waveType = WaveType.END;

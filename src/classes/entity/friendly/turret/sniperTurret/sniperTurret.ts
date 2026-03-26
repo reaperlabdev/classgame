@@ -29,10 +29,6 @@ export class SniperTurret extends TurretEntity {
       EntityType.HOSTILE,
     );
 
-    if (now - this.lastAttackTime < this.attackSpeed * 1000) {
-      return;
-    }
-
     this.closest = this.getTarget();
 
     if (this.closest) {
@@ -40,13 +36,15 @@ export class SniperTurret extends TurretEntity {
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < this.range) {
-        this.tracers.push({
-          x: this.closest.x,
-          y: this.closest.y,
-          createdAt: now,
-        });
-        this.closest.takeDamage(this.damage);
-        this.lastAttackTime = now;
+        if (now - this.lastAttackTime >= this.attackSpeed * 1000) {
+          this.tracers.push({
+            x: this.closest.x,
+            y: this.closest.y,
+            createdAt: now,
+          });
+          this.closest.takeDamage(this.damage);
+          this.lastAttackTime = now;
+        }
       }
     }
   }
@@ -77,6 +75,23 @@ export class SniperTurret extends TurretEntity {
       this.drawTracer(ctx, tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
+
+    // laser from turret to target
+    if (this.closest) {
+      const dx = this.closest.x - this.x;
+      const dy = this.closest.y - this.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < this.range) {
+        ctx.save();
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);
+        ctx.lineTo(this.closest.x + 16, this.closest.y + 16);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
 
     const { x, y } = this.game.globals.mouseHandler.getPosition();
     const distanceToMouse = Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2);

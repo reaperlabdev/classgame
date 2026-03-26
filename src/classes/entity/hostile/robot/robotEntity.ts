@@ -11,7 +11,7 @@ export class Robot extends HostileEntity {
   constructor(game: Game) {
     super(game, 32);
     this.health = Math.round(
-      4 * Math.pow(1.15, this.game.globals.waveManager.currentWave),
+      4 + this.game.globals.waveManager.currentWave ** 1.1,
     );
     this.lastHealth = this.health;
 
@@ -50,6 +50,8 @@ export class Robot extends HostileEntity {
       this.x += (dx / dist) * move;
       this.y += (dy / dist) * move;
     }
+
+    this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
       this.hurtTime -= Date.now();

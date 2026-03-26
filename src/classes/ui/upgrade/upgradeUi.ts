@@ -1,6 +1,10 @@
 import { Game } from "../../../game";
 import { renderStrokedText } from "../../../utility/uiUtil";
-import { entityValues, upgradeLimits } from "../../entity/entityValues";
+import {
+  entityValues,
+  upgradeLimits,
+  upgradeSettings,
+} from "../../entity/entityValues";
 import { TurretEntity } from "../../entity/friendly/turret/turretEntity";
 import { uiClass } from "../uiClass";
 
@@ -11,7 +15,6 @@ export class UpgradeUi extends uiClass {
   selectedY: number | null = null;
 
   private hoveredButtonIndex: number | null = null;
-
   private readonly uiWidth = 248;
   private readonly uiHeight = 96;
 
@@ -19,118 +22,164 @@ export class UpgradeUi extends uiClass {
     super(game);
   }
 
+  getStatByIndex(index: number): number {
+    if (!this.selected) return 0;
+    switch (index) {
+      case 0:
+        return this.selected.damage;
+      case 1:
+        return this.selected.range;
+      case 2:
+        return this.selected.attackSpeed;
+      default:
+        return 0;
+    }
+  }
+
+  applyUpgrade(index: number) {
+    if (!this.selected) return;
+
+    const name = this.selected.name as keyof typeof upgradeSettings;
+    const settings = upgradeSettings[name];
+    const limits = upgradeLimits[name];
+
+    // 1. Identify which path we are upgrading
+    let path =
+      index === 0
+        ? settings.damage
+        : index === 1
+          ? settings.range
+          : settings.speed;
+    let limit =
+      index === 0
+        ? limits.damage
+        : index === 1
+          ? limits.range
+          : limits.attackSpeed;
+
+    const isMicroUpgrade = Math.abs(path.step) < 0.1;
+
+    if (isMicroUpgrade) {
+      while (true) {
+        const currentStat = this.getStatByIndex(index);
+        const cost = this.getUpgradeCost(index, currentStat);
+
+        if (cost === Infinity || this.game.globals.cash < cost) break;
+
+        this.game.globals.cash -= cost;
+        this.executeStatIncrease(index, path.step, limit);
+      }
+    } else {
+      const currentStat = this.getStatByIndex(index);
+      const cost = this.getUpgradeCost(index, currentStat);
+
+      if (cost !== Infinity && this.game.globals.cash >= cost) {
+        this.game.globals.cash -= cost;
+        this.executeStatIncrease(index, path.step, limit);
+      }
+    }
+
+    this.selected.attackSpeed = Math.max(0.05, this.selected.attackSpeed);
+  }
+
+  private executeStatIncrease(index: number, step: number, limit: number) {
+    if (!this.selected) return;
+    if (index === 0)
+      this.selected.damage = Math.min(this.selected.damage + step, limit);
+    if (index === 1)
+      this.selected.range = Math.min(this.selected.range + step, limit);
+    if (index === 2)
+      this.selected.attackSpeed = Math.max(
+        this.selected.attackSpeed + step,
+        limit,
+      );
+  }
+
   getUpgradeCost(index: number, currentValue: number): number {
     if (!this.selected) return 0;
 
-    const turretName = this.selected.name as keyof typeof entityValues;
-    const entityData = entityValues[turretName];
-    const basePrice = entityData?.cost || 25;
+    const name = this.selected.name as keyof typeof upgradeSettings;
+    const baseData = entityValues[name];
+    const settings = upgradeSettings[name];
+    const limits = upgradeLimits[name];
+
+    let path, baseStat, limit;
 
     if (index === 0) {
-      return Math.floor(basePrice * (1 + Math.pow(currentValue, 1.2) * 0.5));
+      path = settings.damage;
+      baseStat = baseData.damage;
+      limit = limits.damage;
+    } else if (index === 1) {
+      path = settings.range;
+      baseStat = baseData.range;
+      limit = limits.range;
+    } else {
+      path = settings.speed;
+      baseStat = baseData.attackSpeed;
+      limit = limits.attackSpeed;
     }
 
-    if (index === 1) {
-      const rangeLevel = (currentValue - entityData.range) / 10;
-      return Math.floor(basePrice * (1 + rangeLevel * 0.4));
-    }
+    if (index === 2 ? currentValue <= limit : currentValue >= limit)
+      return Infinity;
 
-    if (index === 2) {
-      const speedScale = entityData.attackSpeed / currentValue;
-      return Math.floor(basePrice * Math.pow(speedScale, 2));
-    }
-
-    return basePrice;
+    const level = Math.abs((currentValue - baseStat) / path.step);
+    return Math.floor(path.baseCost * Math.pow(path.growth, level));
   }
 
   update(dt: number) {
     const { x, y } = this.game.globals.mouseHandler.getPosition();
-    let distance: number = Infinity;
-    let closestTurret: TurretEntity | null = null;
+    const isMouseDown = this.game.globals.mouseHandler.getIsDown();
+    const isSpawning = this.game.globals.spawning.selectedTurret !== null;
+    let closest: TurretEntity | null = null;
+    let shortestDistance = Infinity;
 
-    if (this.game.globals.spawning.selectedTurret !== null) {
+    if (isSpawning) {
       this.debounce = true;
       return;
     }
 
-    this.game.globals.entityManager.getEntityArray().forEach((entity) => {
-      if (entity instanceof TurretEntity) {
-        const d = Math.hypot(x - entity.x, y - entity.y);
-        if (d < distance) {
-          closestTurret = entity;
-          distance = d;
+    if (isMouseDown) {
+      if (this.debounce) return;
+      this.debounce = true;
+
+      if (this.hovered && this.hoveredButtonIndex !== null) {
+        this.applyUpgrade(this.hoveredButtonIndex);
+      } else {
+        const entities = this.game.globals.entityManager.getEntityArray();
+
+        for (const entity of entities) {
+          if (entity instanceof TurretEntity) {
+            const d = Math.hypot(x - (entity.x + 8), y - (entity.y + 8));
+
+            if (d < 15 && d < shortestDistance) {
+              closest = entity;
+              shortestDistance = d;
+            }
+          }
+        }
+
+        if (closest) {
+          this.selected = closest;
+          this.selectedX = closest.x + 25;
+          this.selectedY = closest.y;
+        } else {
+          this.selected = null;
+          this.selectedX = null;
+          this.selectedY = null;
         }
       }
-    });
+    } else {
+      this.debounce = false;
+    }
 
+    // Hover State Logic
     this.hovered = this.isHovered(x, y);
     this.hoveredButtonIndex = null;
 
     if (this.hovered && this.selectedX && this.selectedY) {
-      const startX = this.selectedX - 16;
-      const startY = this.selectedY - 16;
-
-      const relX = x - (startX + 12);
-      const relY = y - (startY + 12);
-
-      if (relX >= 0 && relX <= 100) {
-        const index = Math.floor(relY / 26);
-        if (index >= 0 && index <= 2) {
-          this.hoveredButtonIndex = index;
-        }
-      }
-    }
-
-    if (this.game.globals.mouseHandler.getIsDown()) {
-      if (this.debounce) return;
-      this.debounce = true;
-
-      if (this.hoveredButtonIndex !== null && this.selected) {
-        const limits =
-          upgradeLimits[this.selected.name as keyof typeof upgradeLimits];
-        const cash = this.game.globals.cash;
-
-        if (this.hoveredButtonIndex === 0) {
-          const cost = this.getUpgradeCost(0, this.selected.damage);
-          if (this.selected.damage < limits.damage && cash >= cost) {
-            this.selected.damage = Math.min(
-              this.selected.damage + 1,
-              limits.damage,
-            );
-            this.game.globals.cash -= cost;
-          }
-        } else if (this.hoveredButtonIndex === 1) {
-          const cost = this.getUpgradeCost(1, this.selected.range);
-          if (this.selected.range < limits.range && cash >= cost) {
-            this.selected.range = Math.min(
-              this.selected.range + 1,
-              limits.range,
-            );
-            this.game.globals.cash -= cost;
-          }
-        } else if (this.hoveredButtonIndex === 2) {
-          const cost = this.getUpgradeCost(2, this.selected.attackSpeed);
-          if (this.selected.attackSpeed > limits.attackSpeed && cash >= cost) {
-            this.selected.attackSpeed = Math.max(
-              this.selected.attackSpeed - 0.02,
-              limits.attackSpeed,
-            );
-            this.game.globals.cash -= cost;
-          }
-        }
-        return;
-      }
-
-      if (closestTurret && distance < 20) {
-        const turret = closestTurret as TurretEntity;
-        this.selected = turret;
-        this.selectedX = turret.x + 25;
-        this.selectedY = turret.y;
-      } else {
-        this.selected = null;
-      }
-    } else {
-      this.debounce = false;
+      const relY = y - (this.selectedY - 16 + 12);
+      const index = Math.floor(relY / 26);
+      if (index >= 0 && index <= 2) this.hoveredButtonIndex = index;
     }
   }
 

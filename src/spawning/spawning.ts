@@ -3,7 +3,10 @@ import { TilePath } from "../classes/tile/path/tilePath";
 import { Tile } from "../classes/tile/tileClass";
 import { Game } from "../game";
 
-import { baseEntityCosts, entityValues } from "../classes/entity/entityValues";
+import {
+  entityValues,
+  placementSettings,
+} from "../classes/entity/entityValues";
 import { TileRock } from "../classes/tile/rock/tileRock";
 import { SniperTurret } from "../classes/entity/friendly/turret/sniperTurret/sniperTurret";
 import { getTileMousePos } from "../utility/mouseUtil";
@@ -16,6 +19,21 @@ import { Entity } from "../classes/entity/entityClass";
 export class Spawning {
   game: Game;
   debounce: boolean;
+
+  private calculateNextCost(name: string): number {
+    const settings = placementSettings[name as keyof typeof placementSettings];
+    if (!settings) return 25;
+
+    const amtPlaced = this.game.globals.entityManager
+      .getEntityByType(EntityType.TURRET)
+      .filter((entity: Entity): entity is TurretEntity => {
+        return entity instanceof TurretEntity && entity.name === name;
+      }).length;
+
+    return Math.floor(
+      settings.baseCost * Math.pow(settings.inflation, amtPlaced),
+    );
+  }
 
   selectedTurret:
     | typeof MachineTurret
@@ -35,46 +53,40 @@ export class Spawning {
   }
 
   select(turret: string | null) {
-    console.log("select", turret);
     if (turret === null) {
       this.selectedTurret = null;
       this.turretName = null;
       this.cost = 0;
       return;
     }
-    if (turret === "Turret") {
-      this.selectedTurret = BaseTurret;
-      this.cost = entityValues.Turret.cost;
-      this.turretName = "Turret";
-    }
-    if (turret === "Sniper") {
-      this.selectedTurret = SniperTurret;
-      this.cost = entityValues.Sniper.cost;
-      this.turretName = "Sniper";
-    }
-    if (turret === "Machine") {
-      this.selectedTurret = MachineTurret;
-      this.cost = entityValues.Machine.cost;
-      this.turretName = "Machine";
-    }
-    if (turret === "Spike") {
-      this.selectedTurret = SpikeTurret;
-      this.cost = entityValues.Spike.cost;
-      this.turretName = "Spike";
+
+    const turretMap: Record<string, any> = {
+      Turret: BaseTurret,
+      Sniper: SniperTurret,
+      Machine: MachineTurret,
+      Spike: SpikeTurret,
+    };
+
+    if (turretMap[turret]) {
+      this.selectedTurret = turretMap[turret];
+      this.turretName = turret;
+      this.cost = this.calculateNextCost(turret);
     }
   }
 
   update(dt: number) {
     if (this.game.globals.keyboardHandler.isKeyDown(" ")) {
-      this.selectedTurret = null;
-      this.turretName = null;
-      this.cost = 0;
+      this.select(null);
     }
+
     if (this.game.globals.mouseHandler.getIsDown() && !this.debounce) {
       this.debounce = true;
       const tile: Tile = this.game.globals.targetTile;
-      if (tile && this.game.globals.cash >= this.cost) {
-        if (this.selectedTurret) {
+
+      if (tile && this.selectedTurret && this.turretName) {
+        this.cost = this.calculateNextCost(this.turretName);
+
+        if (this.game.globals.cash >= this.cost) {
           const isOnTile = this.game.globals.entityManager
             .getEntityArray()
             .some(
@@ -83,44 +95,25 @@ export class Spawning {
                 entity.x === tile.x &&
                 entity.y === tile.y,
             );
-          console.log(
-            "isOnTile",
-            isOnTile,
-            "accepts",
-            this.selectedTurret.accepts?.some(
-              (acceptedTile) => tile instanceof acceptedTile,
-            ),
-          );
-          if (
-            !isOnTile &&
-            this.selectedTurret.accepts?.some(
-              (acceptedTile) => tile instanceof acceptedTile,
-            )
-          ) {
-            const turret = new this.selectedTurret(this.game, tile.x, tile.y);
-            const amtPlaced = this.game.globals.entityManager
-              .getEntityByType(EntityType.TURRET)
-              .filter(
-                (turretEntity: Entity) =>
-                  turretEntity.constructor.name === this.selectedTurret?.name,
-              ).length;
 
-            console.log("amtPlaced", amtPlaced);
-            const baseCost =
-              baseEntityCosts[this.turretName as keyof typeof baseEntityCosts];
-            entityValues[this.turretName as keyof typeof entityValues].cost =
-              baseCost + Math.floor(amtPlaced ** 2 * 1.25);
-            console.log(
-              "cost",
-              entityValues[this.turretName as keyof typeof entityValues].cost,
-            );
+          const canPlaceOnTile = this.selectedTurret.accepts?.some(
+            (accepted) => tile instanceof accepted,
+          );
+
+          if (!isOnTile && canPlaceOnTile) {
+            const turret = new this.selectedTurret(this.game, tile.x, tile.y);
+            this.game.globals.entityManager.addEntity(turret);
+
             this.game.globals.cash -= this.cost;
+
+            const nextCost = this.calculateNextCost(this.turretName);
+            entityValues[this.turretName as keyof typeof entityValues].cost =
+              nextCost;
+
+            this.select(null);
           }
         }
       }
-      this.selectedTurret = null;
-      this.turretName = null;
-      this.cost = 0;
     } else if (!this.game.globals.mouseHandler.getIsDown() && this.debounce) {
       this.debounce = false;
     }

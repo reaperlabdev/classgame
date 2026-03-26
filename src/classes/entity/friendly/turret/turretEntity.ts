@@ -3,6 +3,7 @@ import { getOrderedPath } from "../../../../utility/entityPathing";
 import { Tile } from "../../../tile/tileClass";
 import { Entity } from "../../entityClass";
 import { EntityType } from "../../entityType";
+import { HostileEntity } from "../../hostile/hostileEntity";
 
 export class TurretEntity extends Entity {
   closest: Entity | null = null;
@@ -19,46 +20,39 @@ export class TurretEntity extends Entity {
   }
 
   getTarget(): Entity | null {
-    const enemies: Entity[] = this.game.globals.entityManager.getEntityByType(
+    const enemies = this.game.globals.entityManager.getEntityByType(
       EntityType.HOSTILE,
     );
 
-    const path = getOrderedPath(
-      this.game.globals.tileMapManager.tileManager.tiles,
-    );
+    let furthestEnemy: Entity | null = null;
+    let maxProgress = -1;
 
-    let closest: Entity | null = null;
-    let highestOrder = -Infinity;
+    const rangeSq = this.range * this.range;
 
     for (const enemy of enemies) {
+      if (!(enemy instanceof HostileEntity)) continue;
+
       const dx = enemy.x - this.x;
       const dy = enemy.y - this.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance > this.range) continue;
+      const distSq = dx * dx + dy * dy;
 
-      let bestOrder = -Infinity;
-      for (const tile of path) {
-        const tdx = enemy.x - tile.x;
-        const tdy = enemy.y - tile.y;
-        const tileDist = Math.sqrt(tdx * tdx + tdy * tdy);
-        if (tileDist < bestOrder) continue;
-        bestOrder = tile.order;
-      }
-
-      if (bestOrder > highestOrder) {
-        highestOrder = bestOrder;
-        closest = enemy;
+      if (distSq <= rangeSq) {
+        if (enemy.pathProgress > maxProgress) {
+          maxProgress = enemy.pathProgress;
+          furthestEnemy = enemy;
+        }
       }
     }
-    return closest;
+
+    return furthestEnemy;
   }
 
   drawLOS(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = "#ffffff";
     ctx.beginPath();
     ctx.arc(
-      this.x + this.width / 2,
-      this.y + this.height / 2,
+      this.x + this.width / 4,
+      this.y + this.height / 4,
       this.range,
       0,
       2 * Math.PI,
