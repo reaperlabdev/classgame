@@ -1,5 +1,4 @@
 import { Game } from "../../../../../game";
-import { TileGrass } from "../../../../tile/grass/tileGrass";
 import { TilePath } from "../../../../tile/path/tilePath";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
@@ -8,11 +7,11 @@ import { TurretEntity } from "../turretEntity";
 
 export class SpikeTurret extends TurretEntity {
   tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 50;
+  tracerDuration = 0;
   static accepts = [TilePath];
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 32);
+    super(game, x, y, 16);
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.damage = entityValues.Spike.damage;

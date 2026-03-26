@@ -26,8 +26,8 @@ export let entityValues = {
   },
   Spike: {
     cost: 30,
-    damage: 2,
+    damage: 10,
     attackSpeed: 1,
-    range: 5,
+    range: 15,
   },
 };

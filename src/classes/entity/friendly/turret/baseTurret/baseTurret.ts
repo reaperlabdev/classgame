@@ -7,7 +7,6 @@ import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class BaseTurret extends TurretEntity {
-  closest: Entity | null = null;
   tracers: { x: number; y: number; createdAt: number }[] = [];
   tracerDuration = 50;
   static accepts = [TileGrass];
@@ -60,8 +59,8 @@ export class BaseTurret extends TurretEntity {
       this.game.globals.spriteManager.getSprite("turret"),
       -this.width / 2,
       -this.height / 2,
-      this.width,
-      this.height,
+      32,
+      32,
     );
     ctx.restore();
     ctx.save();

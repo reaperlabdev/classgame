@@ -89,6 +89,7 @@ export class WaveManager {
       if (this.spawned < this.toSpawn) {
         new spawnTypes[Math.floor(Math.random() * spawnTypes.length)](
           this.game,
+          32,
         );
         this.lastSpawned = Date.now();
         this.spawned++;

@@ -5,6 +5,7 @@ import { Entity } from "../../entityClass";
 import { EntityType } from "../../entityType";
 
 export class TurretEntity extends Entity {
+  closest: Entity | null = null;
   damage: number = 1;
   range: number = 100;
   attackSpeed: number = 0.6;
@@ -72,7 +73,7 @@ export class TurretEntity extends Entity {
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);
-    ctx.lineTo(targetX, targetY);
+    ctx.lineTo(targetX + 16, targetY + 16);
     ctx.stroke();
     ctx.restore();
   }

@@ -21,6 +21,7 @@ import spikeImageSrc from "./assets/turrets/spike.png";
 
 import { HudUi } from "./classes/ui/hud/hudUi";
 import { play, setVolume } from "./utility/audioUtil";
+import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -81,6 +82,8 @@ async function main(): Promise<void> {
   new SpawnUi(game);
 
   new HudUi(game);
+
+  new UpgradeUi(game);
 
   game.globals.gameThread = setInterval(() => {
     game.globals.updater.update();

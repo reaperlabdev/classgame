@@ -33,15 +33,19 @@ export class SniperTurret extends TurretEntity {
       return;
     }
 
-    const closest: Entity | null = this.getTarget();
+    this.closest = this.getTarget();
 
-    if (closest) {
-      const dx = closest.x - this.x;
-      const dy = closest.y - this.y;
+    if (this.closest) {
+      const dx = this.closest.x - this.x;
+      const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < this.range) {
-        this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
-        closest.takeDamage(this.damage);
+        this.tracers.push({
+          x: this.closest.x,
+          y: this.closest.y,
+          createdAt: now,
+        });
+        this.closest.takeDamage(this.damage);
         this.lastAttackTime = now;
       }
     }
@@ -49,8 +53,21 @@ export class SniperTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    const sprite = this.game.globals.spriteManager.getSprite("sniper");
-    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
+    ctx.translate(this.x + this.width / 4, this.y + this.height / 4);
+    if (this.closest) {
+      if (this.closest.x > this.x) {
+        ctx.scale(-1, 1);
+      }
+    }
+    ctx.drawImage(
+      this.game.globals.spriteManager.getSprite("sniper"),
+      -this.width / 2,
+      -this.height / 2,
+      32,
+      32,
+    );
+    ctx.restore();
+    ctx.save();
 
     const now = Date.now();
     for (const tracer of this.tracers) {

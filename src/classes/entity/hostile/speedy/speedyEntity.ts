@@ -9,7 +9,7 @@ export class SpeedyRobot extends HostileEntity {
   currentOrder: number = -1;
 
   constructor(game: Game) {
-    super(game);
+    super(game, 32);
     this.health = Math.round(
       2 * Math.pow(1.1, this.game.globals.waveManager.currentWave),
     );
@@ -60,16 +60,16 @@ export class SpeedyRobot extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
-    ctx.filter = "brightness(0.4)";
     if (this.hurtTime > 0) {
       ctx.filter = "invert(1)";
     }
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.drawImage(
-      this.game.globals.spriteManager.sprites.robot,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
+      this.game.globals.spriteManager.getSprite("robot"),
+      -this.width / 4,
+      -this.height / 4,
+      16,
+      16,
     );
     ctx.restore();
   }
