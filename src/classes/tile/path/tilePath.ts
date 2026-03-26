@@ -6,7 +6,7 @@ export class TilePath extends Tile {
   private imageAngle: number;
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, "#c2963a");
+    super(game, x, y, "#c2963a", true);
     this.imageAngle = Math.floor(Math.random() * 4) * (Math.PI / 2);
   }
 

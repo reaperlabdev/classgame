@@ -1,20 +1,20 @@
 import { Game } from "../../../../../game";
+import { TileGrass } from "../../../../tile/grass/tileGrass";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
-import { TileGrass } from "../../../../tile/grass/tileGrass";
 
-export class SniperTurret extends TurretEntity {
+export class MachineTurret extends TurretEntity {
   tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 200;
+  tracerDuration = 50;
   static accepts = [TileGrass];
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 32);
-    this.damage = entityValues.Sniper.damage;
-    this.range = entityValues.Sniper.range;
-    this.attackSpeed = entityValues.Sniper.attackSpeed;
+    this.damage = entityValues.Machine.damage;
+    this.range = entityValues.Machine.range;
+    this.attackSpeed = entityValues.Machine.attackSpeed;
     this.lastAttackTime = Date.now();
   }
 
@@ -60,7 +60,7 @@ export class SniperTurret extends TurretEntity {
       }
     }
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite("sniper"),
+      this.game.globals.spriteManager.getSprite("machine"),
       -this.width / 2,
       -this.height / 2,
       32,

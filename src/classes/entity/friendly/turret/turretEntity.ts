@@ -1,16 +1,21 @@
 import { Game } from "../../../../game";
 import { getOrderedPath } from "../../../../utility/entityPathing";
+import { Tile } from "../../../tile/tileClass";
 import { Entity } from "../../entityClass";
 import { EntityType } from "../../entityType";
 
 export class TurretEntity extends Entity {
+  closest: Entity | null = null;
   damage: number = 1;
   range: number = 100;
   attackSpeed: number = 0.6;
   lastAttackTime: number = Date.now();
+  name: string | null = null;
 
-  constructor(game: Game, x: number, y: number) {
-    super(game, EntityType.TURRET, x, y, 16, 16, 100);
+  constructor(game: Game, x: number, y: number, size: number) {
+    super(game, EntityType.TURRET, x, y, size, size, 100);
+    this.name = this.constructor.name.replace("Turret", "");
+    console.log(this.name);
   }
 
   getTarget(): Entity | null {
@@ -67,8 +72,8 @@ export class TurretEntity extends Entity {
     ctx.strokeStyle = "yellow";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(this.x + this.width / 2, this.y + this.height / 2);
-    ctx.lineTo(targetX, targetY);
+    ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);
+    ctx.lineTo(targetX + 16, targetY + 16);
     ctx.stroke();
     ctx.restore();
   }

@@ -2,7 +2,6 @@ import { uiDebug } from "./classes/ui/debug/debugUi";
 import { SpawnUi } from "./classes/ui/spawn/spawnUi";
 
 import { Game } from "./game";
-import { Robot } from "./classes/entity/hostile/robot/robotEntity";
 import defaultMap from "./assets/map/default.json";
 import { PlayerBase } from "./classes/entity/friendly/playerBaseEntity";
 import { getOrderedPath } from "./utility/entityPathing";
@@ -11,12 +10,18 @@ import { loadImage } from "./utility/imageUtil";
 
 import pathImageSrc from "./assets/tiles/path.png";
 import grassImageSrc from "./assets/tiles/grass.png";
+import rockImageSrc from "./assets/tiles/rock.png";
+
 import robotImageSrc from "./assets/robots/robot.png";
+
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
+import machineImageSrc from "./assets/turrets/machine.png";
+import spikeImageSrc from "./assets/turrets/spike.png";
 
 import { HudUi } from "./classes/ui/hud/hudUi";
 import { play, setVolume } from "./utility/audioUtil";
+import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -30,6 +35,8 @@ async function main(): Promise<void> {
   // load sprites
   await game.globals.spriteManager.addSprite("path", loadImage(pathImageSrc));
   await game.globals.spriteManager.addSprite("grass", loadImage(grassImageSrc));
+  await game.globals.spriteManager.addSprite("rock", loadImage(rockImageSrc));
+
   await game.globals.spriteManager.addSprite("robot", loadImage(robotImageSrc));
 
   await game.globals.spriteManager.addSprite(
@@ -40,6 +47,14 @@ async function main(): Promise<void> {
     "sniper",
     loadImage(sniperImageSrc),
   );
+
+  await game.globals.spriteManager.addSprite(
+    "machine",
+    loadImage(machineImageSrc),
+  );
+
+  await game.globals.spriteManager.addSprite("spike", loadImage(spikeImageSrc));
+
   console.log(game.globals.spriteManager.sprites);
 
   game.globals.mouseHandler.init();
@@ -65,6 +80,8 @@ async function main(): Promise<void> {
 
   new HudUi(game);
 
+  new UpgradeUi(game);
+
   game.globals.gameThread = setInterval(() => {
     game.globals.updater.update();
   }, 1000 / game.globals.targetFPS);
@@ -85,7 +102,7 @@ async function main(): Promise<void> {
   });
 
   setVolume("bgMusic", 0.1);
-  setVolume("hostileDeath", 1);
+  setVolume("hostileDeath", 0);
   play("bgMusic");
 }
 

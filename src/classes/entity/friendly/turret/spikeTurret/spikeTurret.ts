@@ -1,20 +1,22 @@
 import { Game } from "../../../../../game";
+import { TilePath } from "../../../../tile/path/tilePath";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
-import { TileGrass } from "../../../../tile/grass/tileGrass";
 
-export class SniperTurret extends TurretEntity {
+export class SpikeTurret extends TurretEntity {
   tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 200;
-  static accepts = [TileGrass];
+  tracerDuration = 0;
+  static accepts = [TilePath];
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 32);
-    this.damage = entityValues.Sniper.damage;
-    this.range = entityValues.Sniper.range;
-    this.attackSpeed = entityValues.Sniper.attackSpeed;
+    super(game, x, y, 16);
+    this.maxHealth = 10;
+    this.health = this.maxHealth;
+    this.damage = entityValues.Spike.damage;
+    this.range = entityValues.Spike.range;
+    this.attackSpeed = entityValues.Spike.attackSpeed;
     this.lastAttackTime = Date.now();
   }
 
@@ -33,19 +35,16 @@ export class SniperTurret extends TurretEntity {
       return;
     }
 
-    this.closest = this.getTarget();
+    const closest: Entity | null = this.getTarget();
 
-    if (this.closest) {
-      const dx = this.closest.x - this.x;
-      const dy = this.closest.y - this.y;
+    if (closest) {
+      const dx = closest.x - this.x;
+      const dy = closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < this.range) {
-        this.tracers.push({
-          x: this.closest.x,
-          y: this.closest.y,
-          createdAt: now,
-        });
-        this.closest.takeDamage(this.damage);
+        this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
+        closest.takeDamage(this.damage);
+        this.takeDamage(1);
         this.lastAttackTime = now;
       }
     }
@@ -53,21 +52,8 @@ export class SniperTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.translate(this.x + this.width / 4, this.y + this.height / 4);
-    if (this.closest) {
-      if (this.closest.x > this.x) {
-        ctx.scale(-1, 1);
-      }
-    }
-    ctx.drawImage(
-      this.game.globals.spriteManager.getSprite("sniper"),
-      -this.width / 2,
-      -this.height / 2,
-      32,
-      32,
-    );
-    ctx.restore();
-    ctx.save();
+    const sprite = this.game.globals.spriteManager.getSprite("spike");
+    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
 
     const now = Date.now();
     for (const tracer of this.tracers) {

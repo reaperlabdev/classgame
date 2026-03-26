@@ -190,7 +190,7 @@ export function renderStrokedText(
   strokeWidth: number,
 ) {
   ctx.save();
-  ctx.font = `${fontSize}px arial`;
+  ctx.font = `${fontSize}px Courier New`;
 
   // Draw the stroke
   ctx.strokeStyle = strokeColor;

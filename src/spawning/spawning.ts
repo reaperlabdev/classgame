@@ -3,17 +3,26 @@ import { TilePath } from "../classes/tile/path/tilePath";
 import { Tile } from "../classes/tile/tileClass";
 import { Game } from "../game";
 
-import { entityValues } from "../classes/entity/entityValues";
+import { baseEntityCosts, entityValues } from "../classes/entity/entityValues";
 import { TileRock } from "../classes/tile/rock/tileRock";
 import { SniperTurret } from "../classes/entity/friendly/turret/sniperTurret/sniperTurret";
 import { getTileMousePos } from "../utility/mouseUtil";
 import { TurretEntity } from "../classes/entity/friendly/turret/turretEntity";
+import { MachineTurret } from "../classes/entity/friendly/turret/machineTurret/machineTurrent";
+import { SpikeTurret } from "../classes/entity/friendly/turret/spikeTurret/spikeTurret";
+import { EntityType } from "../classes/entity/entityType";
+import { Entity } from "../classes/entity/entityClass";
 
 export class Spawning {
   game: Game;
   debounce: boolean;
 
-  selectedTurret: typeof BaseTurret | typeof SniperTurret | null;
+  selectedTurret:
+    | typeof MachineTurret
+    | typeof SniperTurret
+    | typeof BaseTurret
+    | typeof SpikeTurret
+    | null;
   turretName: string | null;
   cost: number;
 
@@ -25,8 +34,14 @@ export class Spawning {
     this.cost = 0;
   }
 
-  select(turret: string) {
+  select(turret: string | null) {
     console.log("select", turret);
+    if (turret === null) {
+      this.selectedTurret = null;
+      this.turretName = null;
+      this.cost = 0;
+      return;
+    }
     if (turret === "Turret") {
       this.selectedTurret = BaseTurret;
       this.cost = entityValues.Turret.cost;
@@ -36,6 +51,16 @@ export class Spawning {
       this.selectedTurret = SniperTurret;
       this.cost = entityValues.Sniper.cost;
       this.turretName = "Sniper";
+    }
+    if (turret === "Machine") {
+      this.selectedTurret = MachineTurret;
+      this.cost = entityValues.Machine.cost;
+      this.turretName = "Machine";
+    }
+    if (turret === "Spike") {
+      this.selectedTurret = SpikeTurret;
+      this.cost = entityValues.Spike.cost;
+      this.turretName = "Spike";
     }
   }
 
@@ -48,9 +73,6 @@ export class Spawning {
     if (this.game.globals.mouseHandler.getIsDown() && !this.debounce) {
       this.debounce = true;
       const tile: Tile = this.game.globals.targetTile;
-      if (tile instanceof TilePath || tile instanceof TileRock) {
-        return;
-      }
       if (tile && this.game.globals.cash >= this.cost) {
         if (this.selectedTurret) {
           const isOnTile = this.game.globals.entityManager
@@ -61,13 +83,44 @@ export class Spawning {
                 entity.x === tile.x &&
                 entity.y === tile.y,
             );
-          if (!isOnTile) {
+          console.log(
+            "isOnTile",
+            isOnTile,
+            "accepts",
+            this.selectedTurret.accepts?.some(
+              (acceptedTile) => tile instanceof acceptedTile,
+            ),
+          );
+          if (
+            !isOnTile &&
+            this.selectedTurret.accepts?.some(
+              (acceptedTile) => tile instanceof acceptedTile,
+            )
+          ) {
             const turret = new this.selectedTurret(this.game, tile.x, tile.y);
+            const amtPlaced = this.game.globals.entityManager
+              .getEntityByType(EntityType.TURRET)
+              .filter(
+                (turretEntity: Entity) =>
+                  turretEntity.constructor.name === this.selectedTurret?.name,
+              ).length;
+
+            console.log("amtPlaced", amtPlaced);
+            const baseCost =
+              baseEntityCosts[this.turretName as keyof typeof baseEntityCosts];
+            entityValues[this.turretName as keyof typeof entityValues].cost =
+              baseCost + Math.floor(amtPlaced ** 2 * 1.25);
+            console.log(
+              "cost",
+              entityValues[this.turretName as keyof typeof entityValues].cost,
+            );
             this.game.globals.cash -= this.cost;
           }
         }
       }
       this.selectedTurret = null;
+      this.turretName = null;
+      this.cost = 0;
     } else if (!this.game.globals.mouseHandler.getIsDown() && this.debounce) {
       this.debounce = false;
     }
@@ -84,7 +137,13 @@ export class Spawning {
         this.game.globals.tileMapManager.tileManager.getTileArray(),
       );
 
-      if (tile) {
+      if (
+        tile &&
+        this.selectedTurret &&
+        this.selectedTurret.accepts?.some(
+          (acceptedTile) => tile instanceof acceptedTile,
+        )
+      ) {
         ctx.beginPath();
         ctx.arc(tile.x + 8, tile.y + 8, previewRange, 0, 2 * Math.PI);
         ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";

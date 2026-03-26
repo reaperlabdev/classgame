@@ -12,8 +12,15 @@ export class Tile {
   height: number;
   color: string;
   hoverColor: string;
+  canHover: boolean;
 
-  constructor(game: Game, x: number, y: number, color: string) {
+  constructor(
+    game: Game,
+    x: number,
+    y: number,
+    color: string,
+    canHover: boolean,
+  ) {
     this.game = game;
     this.ctx = game.globals.renderContext;
     this.id = game.globals.tileMapManager.tileManager.genID();
@@ -24,6 +31,7 @@ export class Tile {
     this.color = color;
     this.hoverColor = hslToHex(darken(color, 4));
     this.hovered = false;
+    this.canHover = canHover;
     game.globals.tileMapManager.tileManager.addTile(this);
   }
 
