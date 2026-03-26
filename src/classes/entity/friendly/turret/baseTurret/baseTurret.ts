@@ -16,6 +16,7 @@ export class BaseTurret extends TurretEntity {
     this.damage = entityValues.Turret.damage;
     this.range = entityValues.Turret.range;
     this.attackSpeed = entityValues.Turret.attackSpeed;
+    this.name = "Turret"; 
   }
 
   update(dt: number): void {

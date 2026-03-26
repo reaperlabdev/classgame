@@ -14,7 +14,7 @@ export class TurretEntity extends Entity {
 
   constructor(game: Game, x: number, y: number, size: number) {
     super(game, EntityType.TURRET, x, y, size, size, 100);
-    this.name = this.constructor.name;
+    this.name = this.constructor.name.replace("Turret", "");
     console.log(this.name);
   }
 
