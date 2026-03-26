@@ -7,10 +7,11 @@ import { WaveManager } from "./handlers/waveManager";
 import { MouseHandler } from "./handlers/mouseHandler";
 import { SpriteManager } from "./handlers/spriteManager";
 import { Spawning } from "./spawning/spawning";
-import { Tile } from "./classes/tile/tileClass";
+import { KeyboardHandler } from "./handlers/keyboardHandler";
 
 interface Globals {
   fps: number;
+  startingCash: number;
   cash: number;
   targetFPS: number;
   targetTile: any;
@@ -28,6 +29,7 @@ interface Globals {
   renderThread: any;
   waveThread: ReturnType<typeof setInterval>;
   mouseHandler: MouseHandler;
+  keyboardHandler: KeyboardHandler;
   spriteManager: SpriteManager;
   spawning: Spawning;
 }
@@ -37,7 +39,8 @@ const _targetFPS = 60;
 export class Game {
   globals: Globals = {
     fps: 0,
-    cash: 25,
+    startingCash: 30,
+    cash: 30,
     targetFPS: _targetFPS,
     targetTile: null,
     frameTime: performance.now(),
@@ -47,6 +50,7 @@ export class Game {
     updater: new Updater(this),
     renderer: new Renderer(this),
     uiHandler: new uiHandler(this),
+    keyboardHandler: new KeyboardHandler(this),
     tileMapManager: new TileMapManager(this),
     entityManager: new EntityManager(this),
     mouseHandler: new MouseHandler(this),

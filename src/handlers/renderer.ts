@@ -31,6 +31,8 @@ export class Renderer {
     this.game.globals.entityManager.render();
     this.game.globals.uiHandler.render();
 
+    this.game.globals.spawning.render(this.game.renderContext);
+
     this.game.globals.frameTime = now;
   }
 }

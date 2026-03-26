@@ -1,4 +1,5 @@
 import { Game } from "../../../game";
+import { CashEffect } from "../effect/cash/cashEffect";
 import { Entity } from "../entityClass";
 import { EntityType } from "../entityType";
 
@@ -8,8 +9,15 @@ export class HostileEntity extends Entity {
   }
 
   takeDamage(amount: number): void {
-    this.health -= amount;
-    this.game.globals.cash += amount;
+    const realDamageDealt = Math.min(amount, this.health);
+    this.health -= realDamageDealt;
+    let cashEffect: CashEffect = new CashEffect(
+      this.game,
+      this.x,
+      this.y,
+      realDamageDealt,
+    );
+    this.game.globals.cash += realDamageDealt;
     if (this.health <= 0) {
       this.destroy();
     }

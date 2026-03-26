@@ -1,8 +1,14 @@
 export const entityValues = {
-  baseTurret: {
+  Turret: {
     cost: 25,
+    damage: 1,
+    attackSpeed: 0.6,
+    range: 100,
   },
-  sniperTurret: {
+  Sniper: {
     cost: 50,
+    damage: 5,
+    attackSpeed: 2,
+    range: 150,
   },
 };

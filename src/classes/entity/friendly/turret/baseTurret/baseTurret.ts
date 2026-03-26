@@ -1,45 +1,40 @@
 import { Game } from "../../../../../game";
+import { getOrderedPath } from "../../../../../utility/entityPathing";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
+import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class BaseTurret extends TurretEntity {
+  tracers: { x: number; y: number; createdAt: number }[] = [];
+  tracerDuration = 50;
+
   constructor(game: Game, x: number, y: number) {
     super(game, x, y);
-    this.damage = 1;
-    this.range = 100;
-    this.attackSpeed = 0.6;
+    this.damage = entityValues.Turret.damage;
+    this.range = entityValues.Turret.range;
+    this.attackSpeed = entityValues.Turret.attackSpeed;
   }
 
   update(dt: number): void {
-    const enemies: Entity[] = this.game.globals.entityManager.getEntityByType(
-      EntityType.HOSTILE,
+    const now = Date.now();
+
+    this.tracers = this.tracers.filter(
+      (t) => now - t.createdAt < this.tracerDuration,
     );
 
-    const now = Date.now();
     if (now - this.lastAttackTime < this.attackSpeed * 1000) {
       return;
     }
 
-    let closest: Entity | null = null;
-    let closestDistance = Infinity;
-
-    for (const enemy of enemies) {
-      const dx = enemy.x - this.x;
-      const dy = enemy.y - this.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < closestDistance) {
-        closest = enemy;
-        closestDistance = distance;
-      }
-    }
+    const closest: Entity | null = this.getTarget();
 
     if (closest) {
       const dx = closest.x - this.x;
       const dy = closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < this.range) {
+        this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
         closest.takeDamage(this.damage);
         this.lastAttackTime = now;
       }
@@ -48,21 +43,23 @@ export class BaseTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    console.log(this.id);
-    ctx.fillStyle = "blue";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    const sprite = this.game.globals.spriteManager.getSprite("turret");
+    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
 
-    // draw LOS
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-    ctx.arc(
-      this.x + this.width / 2,
-      this.y + this.height / 2,
-      this.range,
-      0,
-      2 * Math.PI,
-    );
-    ctx.stroke();
+    const now = Date.now();
+    for (const tracer of this.tracers) {
+      const age = now - tracer.createdAt;
+      const alpha = 1 - age / this.tracerDuration;
+      ctx.globalAlpha = alpha;
+      this.drawTracer(ctx, tracer.x, tracer.y);
+    }
+    ctx.globalAlpha = 1;
+
+    const { x, y } = this.game.globals.mouseHandler.getPosition();
+    const distanceToMouse = Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2);
+    if (distanceToMouse < 25) {
+      this.drawLOS(ctx);
+    }
     ctx.restore();
   }
 }

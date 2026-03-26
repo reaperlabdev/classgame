@@ -10,7 +10,10 @@ export class Robot extends HostileEntity {
 
   constructor(game: Game) {
     super(game, 0, 0);
-    this.health = 2;
+    let extraHealth: number = Math.round(
+      this.game.globals.waveManager?.currentWave * 0.25,
+    );
+    this.health = 2 + extraHealth;
     this.lastHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
@@ -57,10 +60,17 @@ export class Robot extends HostileEntity {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.isAlive) return;
 
-    ctx.fillStyle = "#e84040";
+    ctx.save();
     if (this.hurtTime > 0) {
-      ctx.fillStyle = "#ffffff";
+      ctx.filter = "invert(1)";
     }
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.drawImage(
+      this.game.globals.spriteManager.sprites.robot,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+    ctx.restore();
   }
 }

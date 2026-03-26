@@ -2,6 +2,7 @@ export interface BoxStyle {
   borderColor?: string;
   boxColor?: string;
   textColor?: string;
+  textColor2?: string;
   font?: string;
 }
 
@@ -9,6 +10,7 @@ const DEFAULT_STYLE: BoxStyle = {
   borderColor: "#121212",
   boxColor: "#323232",
   textColor: "#ffffff",
+  textColor2: "#FFD700",
   font: "12px Courier New",
 };
 
@@ -109,4 +111,95 @@ export function renderLabeledBoxRow(
       style,
     ),
   );
+}
+
+export function renderDoubleLabeledBox(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  boxSize: number,
+  border: number,
+  primaryLabel: string,
+  secondaryLabel: string,
+  style: BoxStyle = {},
+) {
+  ctx.save();
+  const { borderColor, boxColor, textColor, textColor2, font } = {
+    ...DEFAULT_STYLE,
+    ...style,
+  };
+
+  ctx.fillStyle = borderColor!;
+  ctx.fillRect(
+    x - border,
+    y - border,
+    boxSize + border * 2,
+    boxSize + border * 2,
+  );
+
+  ctx.fillStyle = boxColor!;
+  ctx.fillRect(x, y, boxSize, boxSize);
+
+  ctx.fillStyle = textColor!;
+  ctx.font = font!;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Primary label in the upper third
+
+  ctx.fillText(primaryLabel, x + boxSize / 2, y + boxSize * 0.33);
+
+  ctx.fillStyle = textColor2!;
+  // Secondary label in the lower third
+  ctx.fillText(secondaryLabel, x + boxSize / 2, y + boxSize * 0.67);
+
+  ctx.restore();
+}
+
+export function renderDoubleLabeledBoxRow(
+  ctx: CanvasRenderingContext2D,
+  primaryLabels: string[],
+  secondaryLabels: string[],
+  positions: { x: number; y: number }[],
+  boxSize: number,
+  border: number,
+  style?: BoxStyle,
+) {
+  primaryLabels.forEach((label, i) =>
+    renderDoubleLabeledBox(
+      ctx,
+      positions[i].x,
+      positions[i].y,
+      boxSize,
+      border,
+      label,
+      secondaryLabels[i] ?? "",
+      style,
+    ),
+  );
+}
+
+export function renderStrokedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  fontSize: number,
+  color: string,
+  strokeColor: string,
+  strokeWidth: number,
+) {
+  ctx.save();
+  ctx.font = `${fontSize}px arial`;
+
+  // Draw the stroke
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = strokeWidth;
+  ctx.strokeText(text, x, y);
+
+  // Draw the text
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+
+  ctx.restore();
 }

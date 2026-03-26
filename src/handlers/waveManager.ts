@@ -32,6 +32,7 @@ export class WaveManager {
     this.spawned = 0;
     this.pauseStart = 0; // <-- reset
     this.currentWave = 1;
+    this.game.globals.cash = this.game.globals.startingCash;
 
     this.game.globals.entityManager.getEntityArray().forEach((ent) => {
       if (ent !== this.base) {
