@@ -18,6 +18,14 @@ export class HudUi extends uiClass {
       EntityType.BASE,
     )[0].health;
 
+    if (this.game.globals.paused) {
+      this.ctx.save();
+      this.ctx.fillStyle = "#FFD700";
+      this.ctx.font = "32px Arial";
+      renderStrokedText(this.ctx, `Paused`, 16, 490, 32, "#fff", "000", 2);
+      this.ctx.restore();
+    }
+
     // left
     renderStrokedText(
       this.ctx,

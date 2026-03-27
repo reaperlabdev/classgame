@@ -88,7 +88,8 @@ async function main(): Promise<void> {
 
   game.globals.waveManager = new WaveManager(game);
   game.globals.waveThread = setInterval(() => {
-    game.globals.waveManager?.update();
+    if (!game.globals.paused) game.globals.waveManager?.update();
+    else game.globals.waveManager.lastSpawned = Date.now();
   }, 1000 / 30);
 
   game.globals.renderThread = () => {

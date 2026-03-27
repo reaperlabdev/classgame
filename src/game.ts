@@ -10,6 +10,7 @@ import { Spawning } from "./spawning/spawning";
 import { KeyboardHandler } from "./handlers/keyboardHandler";
 
 interface Globals {
+  paused: boolean;
   fps: number;
   startingHealth: number;
   startingCash: number;
@@ -39,6 +40,7 @@ const _targetFPS = 60;
 
 export class Game {
   globals: Globals = {
+    paused: false,
     fps: 0,
     startingHealth: 50,
     startingCash: 30,

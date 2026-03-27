@@ -11,7 +11,7 @@ import { TileRock } from "../classes/tile/rock/tileRock";
 import { SniperTurret } from "../classes/entity/friendly/turret/sniperTurret/sniperTurret";
 import { getTileMousePos } from "../utility/mouseUtil";
 import { TurretEntity } from "../classes/entity/friendly/turret/turretEntity";
-import { MachineTurret } from "../classes/entity/friendly/turret/machineTurret/machineTurrent";
+import { MachineTurret } from "../classes/entity/friendly/turret/machineTurret/machineTurret";
 import { SpikeTurret } from "../classes/entity/friendly/turret/spikeTurret/spikeTurret";
 import { EntityType } from "../classes/entity/entityType";
 import { Entity } from "../classes/entity/entityClass";
@@ -108,7 +108,12 @@ export class Spawning {
 
             const nextCost = this.calculateNextCost(this.turretName);
             entityValues[this.turretName as keyof typeof entityValues].cost =
-              nextCost;
+              Math.min(
+                nextCost,
+                placementSettings[
+                  this.turretName as keyof typeof placementSettings
+                ].max,
+              );
 
             this.select(null);
           }
