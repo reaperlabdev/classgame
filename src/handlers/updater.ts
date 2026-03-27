@@ -6,18 +6,27 @@ import { getTileMousePos } from "../utility/mouseUtil";
 export class Updater {
   private game: Game;
   db: boolean;
+  db2: boolean;
 
   constructor(game: Game) {
     this.game = game;
     this.db = false;
+    this.db2 = false;
   }
 
   update(dt: number): void {
-    if (this.game.globals.keyboardHandler.isKeyDown("Escape") && !this.db) {
+    if (this.game.globals.keyboardHandler.isKeyDown("q") && !this.db) {
       this.game.globals.paused = !this.game.globals.paused;
       this.db = true;
-    } else if (!this.game.globals.keyboardHandler.isKeyDown("Escape")) {
+    } else if (!this.game.globals.keyboardHandler.isKeyDown("q")) {
       this.db = false;
+    }
+
+    if (this.game.globals.keyboardHandler.isKeyDown("w") && !this.db2) {
+      this.game.globals.doubleSpeed = !this.game.globals.doubleSpeed;
+      this.db2 = true;
+    } else if (!this.game.globals.keyboardHandler.isKeyDown("w")) {
+      this.db2 = false;
     }
 
     this.game.globals.spawning.update(dt);

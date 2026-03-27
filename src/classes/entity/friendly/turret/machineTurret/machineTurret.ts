@@ -6,30 +6,32 @@ import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class MachineTurret extends TurretEntity {
-  tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 50;
+  tracers: { x: number; y: number; age: number }[] = [];
+  tracerDuration = 0.1;
   static accepts = [TileGrass];
+
+  private attackTimer: number = 0;
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 32);
     this.damage = entityValues.Machine.damage;
     this.range = entityValues.Machine.range;
     this.attackSpeed = entityValues.Machine.attackSpeed;
-    this.lastAttackTime = Date.now();
+    this.name = "Machine";
+    this.attackTimer = this.attackSpeed;
   }
 
   update(dt: number): void {
-    const now = Date.now();
+    for (let i = this.tracers.length - 1; i >= 0; i--) {
+      this.tracers[i].age += dt;
+      if (this.tracers[i].age >= this.tracerDuration) {
+        this.tracers.splice(i, 1);
+      }
+    }
 
-    this.tracers = this.tracers.filter(
-      (t) => now - t.createdAt < this.tracerDuration,
-    );
+    this.attackTimer += dt;
 
-    const enemies: Entity[] = this.game.globals.entityManager.getEntityByType(
-      EntityType.HOSTILE,
-    );
-
-    if (now - this.lastAttackTime < this.attackSpeed * 1000) {
+    if (this.attackTimer < this.attackSpeed) {
       return;
     }
 
@@ -39,14 +41,15 @@ export class MachineTurret extends TurretEntity {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
+      
       if (distance < this.range) {
         this.tracers.push({
           x: this.closest.x,
           y: this.closest.y,
-          createdAt: now,
+          age: 0,
         });
         this.closest.takeDamage(this.damage);
-        this.lastAttackTime = now;
+        this.attackTimer = 0;
       }
     }
   }
@@ -67,12 +70,10 @@ export class MachineTurret extends TurretEntity {
       32,
     );
     ctx.restore();
+    
     ctx.save();
-
-    const now = Date.now();
     for (const tracer of this.tracers) {
-      const age = now - tracer.createdAt;
-      const alpha = 1 - age / this.tracerDuration;
+      const alpha = Math.max(0, 1 - tracer.age / this.tracerDuration);
       ctx.globalAlpha = alpha;
       this.drawTracer(ctx, tracer.x, tracer.y);
     }

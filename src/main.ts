@@ -92,7 +92,9 @@ async function main(): Promise<void> {
 
     const cappedDt: number = Math.min(dt, 0.1);
 
-    game.globals.updater.update(cappedDt);
+    game.globals.updater.update(
+      game.globals.doubleSpeed ? 2 * cappedDt : cappedDt,
+    );
 
     if (!game.globals.paused) {
       game.globals.waveManager?.update(cappedDt);

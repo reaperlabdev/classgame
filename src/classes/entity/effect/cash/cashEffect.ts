@@ -4,6 +4,8 @@ import { Effect } from "../effectEntity";
 
 export class CashEffect extends Effect {
   rand: number;
+  private age: number = 0;
+
   constructor(
     game: Game,
     x: number,
@@ -15,18 +17,19 @@ export class CashEffect extends Effect {
   }
 
   update(dt: number): void {
-    // move to top right or left based on random direction
+    this.age += dt;
+
     this.x += dt * 15 * (this.rand < 0.5 ? 1 : -1);
     this.y -= dt * 20;
 
-    if (Date.now() - this.startTime >= this.duration * 1000) {
+    if (this.age >= this.duration) {
       this.destroy();
     }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    // fade
-    const alpha = 1 - (Date.now() - this.startTime) / (this.duration * 1000);
+    const alpha = Math.max(0, 1 - this.age / this.duration);
+
     ctx.save();
     ctx.globalAlpha = alpha;
     renderStrokedText(

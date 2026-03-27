@@ -6,9 +6,11 @@ import { entityValues } from "../../../entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class SpikeTurret extends TurretEntity {
-  tracers: { x: number; y: number; createdAt: number }[] = [];
+  tracers: { x: number; y: number; age: number }[] = [];
   tracerDuration = 0;
   static accepts = [TilePath];
+
+  private attackTimer: number = 0;
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 16);
@@ -17,21 +19,21 @@ export class SpikeTurret extends TurretEntity {
     this.damage = entityValues.Spike.damage;
     this.range = entityValues.Spike.range;
     this.attackSpeed = entityValues.Spike.attackSpeed;
-    this.lastAttackTime = Date.now();
+    this.name = "Spike";
+    this.attackTimer = this.attackSpeed;
   }
 
   update(dt: number): void {
-    const now = Date.now();
+    for (let i = this.tracers.length - 1; i >= 0; i--) {
+      this.tracers[i].age += dt;
+      if (this.tracers[i].age >= this.tracerDuration) {
+        this.tracers.splice(i, 1);
+      }
+    }
 
-    this.tracers = this.tracers.filter(
-      (t) => now - t.createdAt < this.tracerDuration,
-    );
+    this.attackTimer += dt;
 
-    const enemies: Entity[] = this.game.globals.entityManager.getEntityByType(
-      EntityType.HOSTILE,
-    );
-
-    if (now - this.lastAttackTime < this.attackSpeed * 1000) {
+    if (this.attackTimer < this.attackSpeed) {
       return;
     }
 
@@ -41,11 +43,12 @@ export class SpikeTurret extends TurretEntity {
       const dx = closest.x - this.x;
       const dy = closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
+
       if (distance < this.range) {
-        this.tracers.push({ x: closest.x, y: closest.y, createdAt: now });
+        this.tracers.push({ x: closest.x, y: closest.y, age: 0 });
         closest.takeDamage(this.damage);
         this.takeDamage(1);
-        this.lastAttackTime = now;
+        this.attackTimer = 0;
       }
     }
   }
@@ -55,10 +58,11 @@ export class SpikeTurret extends TurretEntity {
     const sprite = this.game.globals.spriteManager.getSprite("spike");
     ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
 
-    const now = Date.now();
     for (const tracer of this.tracers) {
-      const age = now - tracer.createdAt;
-      const alpha = 1 - age / this.tracerDuration;
+      const alpha =
+        this.tracerDuration > 0
+          ? Math.max(0, 1 - tracer.age / this.tracerDuration)
+          : 0;
       ctx.globalAlpha = alpha;
       this.drawTracer(ctx, tracer.x, tracer.y);
     }

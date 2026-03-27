@@ -62,6 +62,21 @@ export class HudUi extends uiClass {
       "#000",
       2,
     );
+
+    // render bottom right
+    if (this.game.globals.doubleSpeed) {
+      renderStrokedText(
+        this.ctx,
+        `2x`,
+        800 - this.ctx.measureText(`2x`).width - 14,
+        490,
+        16,
+        "#FFD700",
+        "#000",
+        2,
+      );
+    }
+
     this.ctx.restore();
   }
 }

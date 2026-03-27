@@ -6,28 +6,30 @@ import { TurretEntity } from "../turretEntity";
 import { TileGrass } from "../../../../tile/grass/tileGrass";
 
 export class SniperTurret extends TurretEntity {
-  tracers: { x: number; y: number; createdAt: number }[] = [];
-  tracerDuration = 200;
+  tracers: { x: number; y: number; age: number }[] = [];
+  tracerDuration = 0.8;
   static accepts = [TileGrass];
+
+  private attackTimer: number = 0;
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 32);
     this.damage = entityValues.Sniper.damage;
     this.range = entityValues.Sniper.range;
     this.attackSpeed = entityValues.Sniper.attackSpeed;
-    this.lastAttackTime = Date.now();
+    this.name = "Sniper";
+    this.attackTimer = this.attackSpeed;
   }
 
   update(dt: number): void {
-    const now = Date.now();
+    for (let i = this.tracers.length - 1; i >= 0; i--) {
+      this.tracers[i].age += dt;
+      if (this.tracers[i].age >= this.tracerDuration) {
+        this.tracers.splice(i, 1);
+      }
+    }
 
-    this.tracers = this.tracers.filter(
-      (t) => now - t.createdAt < this.tracerDuration,
-    );
-
-    const enemies: Entity[] = this.game.globals.entityManager.getEntityByType(
-      EntityType.HOSTILE,
-    );
+    this.attackTimer += dt;
 
     this.closest = this.getTarget();
 
@@ -35,15 +37,16 @@ export class SniperTurret extends TurretEntity {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
+      
       if (distance < this.range) {
-        if (now - this.lastAttackTime >= this.attackSpeed * 1000) {
+        if (this.attackTimer >= this.attackSpeed) {
           this.tracers.push({
             x: this.closest.x,
             y: this.closest.y,
-            createdAt: now,
+            age: 0,
           });
           this.closest.takeDamage(this.damage);
-          this.lastAttackTime = now;
+          this.attackTimer = 0;
         }
       }
     }
@@ -65,18 +68,15 @@ export class SniperTurret extends TurretEntity {
       32,
     );
     ctx.restore();
+    
     ctx.save();
-
-    const now = Date.now();
     for (const tracer of this.tracers) {
-      const age = now - tracer.createdAt;
-      const alpha = 1 - age / this.tracerDuration;
+      const alpha = Math.max(0, 1 - tracer.age / this.tracerDuration);
       ctx.globalAlpha = alpha;
       this.drawTracer(ctx, tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
 
-    // laser from turret to target
     if (this.closest) {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
