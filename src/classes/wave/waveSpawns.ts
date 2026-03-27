@@ -10,4 +10,6 @@ export const waveSpawns: [number, typeof HostileEntity, number][] = [
   [75, Devil, 5],
 ];
 
-export const specialSpawns: [number, typeof HostileEntity][] = [[25, Devil]];
+export const specialSpawns: [number, typeof HostileEntity][] = [
+  [25, Devil],
+];
