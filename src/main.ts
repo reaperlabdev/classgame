@@ -12,7 +12,9 @@ import pathImageSrc from "./assets/tiles/path.png";
 import grassImageSrc from "./assets/tiles/grass.png";
 import rockImageSrc from "./assets/tiles/rock.png";
 
-import robotImageSrc from "./assets/robots/robot.png";
+import robotImageSrc1 from "./assets/robots/robot1.png";
+import robotImageSrc2 from "./assets/robots/robot2.png";
+import robotImageSrc3 from "./assets/robots/robot3.png";
 
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
@@ -37,7 +39,18 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite("grass", loadImage(grassImageSrc));
   await game.globals.spriteManager.addSprite("rock", loadImage(rockImageSrc));
 
-  await game.globals.spriteManager.addSprite("robot", loadImage(robotImageSrc));
+  await game.globals.spriteManager.addSprite(
+    "robot1",
+    loadImage(robotImageSrc1),
+  );
+  await game.globals.spriteManager.addSprite(
+    "robot2",
+    loadImage(robotImageSrc2),
+  );
+  await game.globals.spriteManager.addSprite(
+    "robot3",
+    loadImage(robotImageSrc3),
+  );
 
   await game.globals.spriteManager.addSprite(
     "turret",
@@ -114,7 +127,8 @@ async function main(): Promise<void> {
     });
 
     setVolume("bgMusic", 0.1);
-    setVolume("hostileDeath", 0);
+    setVolume("hostileDeath", 0.1);
+    setVolume("devilDeath", 0.1);
     play("bgMusic", true);
   }
 

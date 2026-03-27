@@ -1,9 +1,8 @@
 import { Game } from "../../../../game";
-import { play } from "../../../../utility/audioUtil";
 import { findNextTile } from "../../../../utility/entityPathing";
 import { HostileEntity } from "../hostileEntity";
 
-export class Devil extends HostileEntity {
+export class Camo extends HostileEntity {
   lastHealth: number = 0;
   hurtTime: number = 0;
   speed: number = 10;
@@ -14,9 +13,7 @@ export class Devil extends HostileEntity {
 
   constructor(game: Game) {
     super(game, 32);
-    const addition = (game.globals.waveManager.currentWave - 25) * 10;
-    this.health = 1000 + addition;
-    this.lastHealth = this.health;
+    this.camo = true;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);
@@ -24,10 +21,6 @@ export class Devil extends HostileEntity {
       this.x = start.x + (start.width - this.width) / 2;
       this.y = start.y + (start.height - this.height) / 2;
     }
-  }
-
-  deathNoise(): void {
-    play("devilDeath");
   }
 
   update(dt: number): void {
@@ -81,15 +74,6 @@ export class Devil extends HostileEntity {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.isAlive) return;
 
-    ctx.save();
-
-    ctx.fillStyle = "#121212";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.maxHealth / 1000), 3);
-
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.health / 1000), 3);
-
-    ctx.restore();
     ctx.save();
     if (this.hurtTime > 0) {
       ctx.filter = "invert(1)";

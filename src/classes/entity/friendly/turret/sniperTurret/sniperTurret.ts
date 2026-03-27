@@ -19,6 +19,7 @@ export class SniperTurret extends TurretEntity {
     this.attackSpeed = entityValues.Sniper.attackSpeed;
     this.name = "Sniper";
     this.attackTimer = this.attackSpeed;
+    this.canHitCamo = true;
   }
 
   update(dt: number): void {
@@ -37,7 +38,7 @@ export class SniperTurret extends TurretEntity {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance < this.range) {
         if (this.attackTimer >= this.attackSpeed) {
           this.tracers.push({
@@ -68,7 +69,7 @@ export class SniperTurret extends TurretEntity {
       32,
     );
     ctx.restore();
-    
+
     ctx.save();
     for (const tracer of this.tracers) {
       const alpha = Math.max(0, 1 - tracer.age / this.tracerDuration);

@@ -12,6 +12,7 @@ export class TurretEntity extends Entity {
   attackSpeed: number = 0.6;
   lastAttackTime: number = Date.now();
   name: string | null = null;
+  canHitCamo: boolean = false;
 
   constructor(game: Game, x: number, y: number, size: number) {
     super(game, EntityType.TURRET, x, y, size, size, 100);
@@ -38,6 +39,7 @@ export class TurretEntity extends Entity {
 
       if (distSq <= rangeSq) {
         if (enemy.pathProgress > maxProgress) {
+          if (enemy.camo && !this.canHitCamo) continue;
           maxProgress = enemy.pathProgress;
           furthestEnemy = enemy;
         }

@@ -7,6 +7,9 @@ export class Robot extends HostileEntity {
   hurtTime: number = 0;
   speed: number = 50;
   currentOrder: number = -1;
+  animStep: number = 1;
+  maxAnimStep: number = 3;
+  lastStep: number = 0;
 
   constructor(game: Game) {
     super(game, 32);
@@ -56,6 +59,19 @@ export class Robot extends HostileEntity {
     if (this.hurtTime > 0) {
       this.hurtTime -= Date.now();
     }
+
+    this.time += dt;
+
+    const stepDuration = 0.1;
+
+    if (this.time >= stepDuration) {
+      this.animStep++;
+      this.time = 0;
+
+      if (this.animStep > this.maxAnimStep) {
+        this.animStep = 1;
+      }
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
@@ -67,11 +83,11 @@ export class Robot extends HostileEntity {
     }
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite("robot"),
-      -this.width / 4,
-      -this.height / 4,
-      16,
-      16,
+      this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
+      -this.width / 2.8,
+      -this.height / 2,
+      24,
+      24,
     );
     ctx.restore();
   }

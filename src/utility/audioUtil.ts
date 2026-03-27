@@ -6,6 +6,7 @@ const volumes: Record<string, GainNode> = {};
 const soundPaths: Record<string, string> = {
   bgMusic: "./src/assets/sfx/music1.wav",
   hostileDeath: "./src/assets/sfx/death.wav",
+  devilDeath: "./src/assets/sfx/devilDeath.wav",
 };
 
 const loadBuffer = async (name: string): Promise<AudioBuffer> => {

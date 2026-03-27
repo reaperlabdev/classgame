@@ -6,9 +6,15 @@ import { EntityType } from "../entityType";
 
 export class HostileEntity extends Entity {
   pathProgress: number = 0;
+  camo: boolean = false;
+  time: number = 0;
 
   constructor(game: Game, size: number) {
     super(game, EntityType.HOSTILE, 0, 0, size, size, 5);
+  }
+
+  deathNoise(): void {
+    play("hostileDeath");
   }
 
   takeDamage(amount: number): void {
@@ -22,7 +28,7 @@ export class HostileEntity extends Entity {
     );
     this.game.globals.cash += realDamageDealt;
     if (this.health <= 0) {
-      play("hostileDeath");
+      this.deathNoise();
       this.destroy();
     }
   }
