@@ -1,40 +1,53 @@
-const audio = document.getElementById("audiohandler") as HTMLAudioElement;
+const audioContext = new AudioContext();
+const bufferCache: Record<string, AudioBuffer> = {};
+const activeSources: Record<string, AudioBufferSourceNode> = {};
+const volumes: Record<string, GainNode> = {};
 
-const sounds: Record<string, HTMLAudioElement> = {
-  bgMusic: new Audio("./src/assets/sfx/music1.wav"),
-  hostileDeath: new Audio("./src/assets/sfx/death.wav"),
+const soundPaths: Record<string, string> = {
+  bgMusic: "./src/assets/sfx/music1.wav",
+  hostileDeath: "./src/assets/sfx/death.wav",
 };
 
-sounds.bgMusic.loop = true;
+const loadBuffer = async (name: string): Promise<AudioBuffer> => {
+  if (bufferCache[name]) return bufferCache[name];
+  const response = await fetch(soundPaths[name]);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+  bufferCache[name] = audioBuffer;
+  return audioBuffer;
+};
 
-export const play = (name: string) => {
-  const audio = sounds[name];
-  if (!audio) {
-    console.error(`Sound "${name}" not found`);
-    return;
-  }
-  audio.currentTime = 0;
-  audio.play().catch((err) => console.error("Playback failed:", err));
+export const play = async (name: string, loop = false) => {
+  const buffer = await loadBuffer(name);
+
+  // Stop any existing instance
+  activeSources[name]?.stop();
+  activeSources[name]?.disconnect();
+
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = volumes[name] ? volumes[name].gain.value : 1;
+  gainNode.connect(audioContext.destination);
+  volumes[name] = gainNode;
+
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.loop = loop; // sample-accurate looping, zero gap
+  source.connect(gainNode);
+  source.start(0);
+
+  activeSources[name] = source;
 };
 
 export const stop = (name: string) => {
-  const audio = sounds[name];
-  if (!audio) return;
-  audio.pause();
-  audio.currentTime = 0;
+  activeSources[name]?.stop();
+  activeSources[name]?.disconnect();
+  delete activeSources[name];
 };
 
 export const setVolume = (name: string, vol: number) => {
-  const audio = sounds[name];
-  if (!audio) return;
-  audio.volume = vol;
+  if (volumes[name]) {
+    volumes[name].gain.value = vol;
+  }
 };
 
-export const seekTo = (seconds: number) => {
-  audio.currentTime = seconds;
-};
-
-export const loadFile = (path: string) => {
-  audio.src = path;
-  audio.load();
-};
+// Start bg music looping on init

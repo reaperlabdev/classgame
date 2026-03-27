@@ -115,7 +115,7 @@ async function main(): Promise<void> {
 
     setVolume("bgMusic", 0.1);
     setVolume("hostileDeath", 0);
-    play("bgMusic");
+    play("bgMusic", true);
   }
 
   audio();
