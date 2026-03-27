@@ -12,20 +12,13 @@ export class Updater {
     this.db = false;
   }
 
-  update(): void {
-    if (!this.game.globals.paused && !document.hasFocus()) {
-      this.game.globals.paused = true;
-    }
-
+  update(dt: number): void {
     if (this.game.globals.keyboardHandler.isKeyDown("Escape") && !this.db) {
       this.game.globals.paused = !this.game.globals.paused;
       this.db = true;
     } else if (!this.game.globals.keyboardHandler.isKeyDown("Escape")) {
       this.db = false;
     }
-
-    const now = performance.now();
-    const dt = Math.min((now - this.game.globals.frameTime) / 1000, 0.1);
 
     this.game.globals.spawning.update(dt);
 

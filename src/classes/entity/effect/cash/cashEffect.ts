@@ -16,8 +16,8 @@ export class CashEffect extends Effect {
 
   update(dt: number): void {
     // move to top right or left based on random direction
-    this.x += dt * 100 * (this.rand < 0.5 ? 1 : -1);
-    this.y -= dt * 200;
+    this.x += dt * 15 * (this.rand < 0.5 ? 1 : -1);
+    this.y -= dt * 20;
 
     if (Date.now() - this.startTime >= this.duration * 1000) {
       this.destroy();

@@ -82,29 +82,41 @@ async function main(): Promise<void> {
 
   new UpgradeUi(game);
 
-  game.globals.gameThread = setInterval(() => {
-    game.globals.updater.update();
-  }, 1000 / game.globals.targetFPS);
-
   game.globals.waveManager = new WaveManager(game);
-  game.globals.waveThread = setInterval(() => {
-    if (!game.globals.paused) game.globals.waveManager?.update();
-    else game.globals.waveManager.lastSpawned = Date.now();
-  }, 1000 / 30);
 
-  game.globals.renderThread = () => {
+  let lastTime = 0;
+
+  function tick(currentTime: number): void {
+    const dt = lastTime ? (currentTime - lastTime) / 1000 : 0;
+    lastTime = currentTime;
+
+    const cappedDt: number = Math.min(dt, 0.1);
+
+    game.globals.updater.update(cappedDt);
+
+    if (!game.globals.paused) {
+      game.globals.waveManager?.update(cappedDt);
+    }
+
     game.globals.renderer.render();
-    requestAnimationFrame(game.globals.renderThread);
-  };
-  game.globals.renderThread();
 
-  await new Promise((resolve) => {
-    document.addEventListener("click", resolve, { once: true });
-  });
+    requestAnimationFrame(tick);
+  }
 
-  setVolume("bgMusic", 0.1);
-  setVolume("hostileDeath", 0);
-  play("bgMusic");
+  // Initial call
+  requestAnimationFrame(tick);
+
+  async function audio() {
+    await new Promise((resolve) => {
+      document.addEventListener("click", resolve, { once: true });
+    });
+
+    setVolume("bgMusic", 0.1);
+    setVolume("hostileDeath", 0);
+    play("bgMusic");
+  }
+
+  audio();
 }
 
 main();

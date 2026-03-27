@@ -27,9 +27,6 @@ interface Globals {
   tileMapManager: TileMapManager;
   entityManager: EntityManager;
   waveManager: any;
-  gameThread: ReturnType<typeof setInterval>;
-  renderThread: any;
-  waveThread: ReturnType<typeof setInterval>;
   mouseHandler: MouseHandler;
   keyboardHandler: KeyboardHandler;
   spriteManager: SpriteManager;
@@ -61,9 +58,6 @@ export class Game {
     spriteManager: new SpriteManager(this),
     spawning: new Spawning(this),
     waveManager: null,
-    gameThread: setInterval(() => {}, 1000 / _targetFPS),
-    renderThread: setInterval(() => {}, 1000 / _targetFPS),
-    waveThread: setInterval(() => {}, 1000 / _targetFPS),
   };
 
   constructor(

@@ -20,10 +20,10 @@ export class WaveManager {
   waveType: WaveType = WaveType.START;
   toSpawn: number = 5;
 
-  lastSpawned: number = Date.now();
+  private spawnTimer: number = 0;
   spawned: number = 0;
 
-  pauseStart: number = 0;
+  pauseTimer: number = 0;
   currentWave: number = 1;
 
   constructor(game: Game) {
@@ -37,9 +37,9 @@ export class WaveManager {
   reset(): void {
     this.waveType = WaveType.START;
     this.toSpawn = 5;
-    this.lastSpawned = Date.now();
+    this.spawnTimer = 0;
     this.spawned = 0;
-    this.pauseStart = 0;
+    this.pauseTimer = 0;
     this.currentWave = 1;
     this.game.globals.cash = this.game.globals.startingCash;
 
@@ -59,34 +59,13 @@ export class WaveManager {
 
   getSpawning(): number {
     let amt: number = this.toSpawn + this.currentWave * 0.1;
-    console.log(amt);
-    return amt;
+    return Math.floor(amt);
   }
 
   update(dt: number): void {
-    let spawnTypes: (typeof HostileEntity)[] = [];
-    let typeTracker: Record<string, [number, number]> = {};
-
-    for (let i = 0; i < waveSpawns.length; i++) {
-      if (this.currentWave >= waveSpawns[i][0]) {
-        const SpawnClass = waveSpawns[i][1];
-        const maxForThisEntry = waveSpawns[i][2];
-        const className = SpawnClass.name;
-
-        if (!typeTracker[className]) {
-          spawnTypes.push(SpawnClass);
-          typeTracker[className] = [0, 0];
-        }
-        typeTracker[className][0] += maxForThisEntry;
-      }
-    }
-
     let isSpecialWave = false;
     for (let i = 0; i < specialSpawns.length; i++) {
       if (this.currentWave === specialSpawns[i][0]) {
-        const SpecialClass = specialSpawns[i][1];
-        spawnTypes = [SpecialClass];
-        typeTracker = { [SpecialClass.name]: [1, 0] };
         isSpecialWave = true;
         break;
       }
@@ -101,52 +80,60 @@ export class WaveManager {
       this.spawnTypes = [];
       this.typeTracker = {};
 
-      for (let i = 0; i < waveSpawns.length; i++) {
-        if (this.currentWave >= waveSpawns[i][0]) {
-          const SpawnClass = waveSpawns[i][1];
-          const maxForThisEntry = waveSpawns[i][2];
-          const className = SpawnClass.name;
-
-          if (!this.typeTracker[className]) {
-            this.spawnTypes.push(SpawnClass);
-            // [Max allowed, Currently spawned]
-            this.typeTracker[className] = [0, 0];
-          }
-          this.typeTracker[className][0] += maxForThisEntry;
-        }
-      }
-
       if (isSpecialWave) {
+        for (let i = 0; i < specialSpawns.length; i++) {
+          if (this.currentWave === specialSpawns[i][0]) {
+            const SpecialClass = specialSpawns[i][1];
+            this.spawnTypes = [SpecialClass];
+            this.typeTracker = { [SpecialClass.name]: [1, 0] };
+            break;
+          }
+        }
         this.toSpawn = 1;
-      } else if (this.currentWave === 1) {
-        this.toSpawn = 3;
       } else {
-        this.toSpawn = this.getSpawning();
+        for (let i = 0; i < waveSpawns.length; i++) {
+          if (this.currentWave >= waveSpawns[i][0]) {
+            const SpawnClass = waveSpawns[i][1];
+            const maxForThisEntry = waveSpawns[i][2];
+            const className = SpawnClass.name;
+
+            if (!this.typeTracker[className]) {
+              this.spawnTypes.push(SpawnClass);
+              this.typeTracker[className] = [0, 0];
+            }
+            this.typeTracker[className][0] += maxForThisEntry;
+          }
+        }
+        this.toSpawn = this.currentWave === 1 ? 3 : this.getSpawning();
       }
+
+      this.spawnTimer = 0;
       this.waveType = WaveType.SPAWNING;
     }
 
     if (this.waveType === WaveType.SPAWNING) {
-      const baseInterval = 800;
+      const baseInterval = 0.8;
       const waveFactor = 1 + (this.currentWave - 1) * 0.1;
-      const spawnSpeed = Math.max(50, baseInterval / waveFactor);
+      const spawnSpeed = Math.max(0.05, baseInterval / waveFactor);
 
-      if (Date.now() - this.lastSpawned < spawnSpeed) return;
+      this.spawnTimer += dt;
 
-      const availableTypes = this.spawnTypes.filter(
-        (T) => this.typeTracker[T.name][1] < this.typeTracker[T.name][0],
-      );
+      if (this.spawnTimer >= spawnSpeed) {
+        const availableTypes = this.spawnTypes.filter(
+          (T) => this.typeTracker[T.name][1] < this.typeTracker[T.name][0],
+        );
 
-      if (this.spawned < this.toSpawn && availableTypes.length > 0) {
-        const SelectedClass =
-          availableTypes[Math.floor(Math.random() * availableTypes.length)];
-        new SelectedClass(this.game, 32);
+        if (this.spawned < this.toSpawn && availableTypes.length > 0) {
+          const SelectedClass =
+            availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          new SelectedClass(this.game, 32);
 
-        this.typeTracker[SelectedClass.name][1]++;
-        this.lastSpawned = Date.now();
-        this.spawned++;
-      } else {
-        this.waveType = WaveType.WAITING;
+          this.typeTracker[SelectedClass.name][1]++;
+          this.spawned++;
+          this.spawnTimer = 0;
+        } else {
+          this.waveType = WaveType.WAITING;
+        }
       }
     }
 
@@ -160,14 +147,15 @@ export class WaveManager {
         this.currentWave++;
         this.spawned = 0;
         this.waveType = WaveType.END;
-        this.pauseStart = Date.now();
+        this.pauseTimer = 0;
       }
     }
 
     if (this.waveType === WaveType.END) {
-      if (Date.now() - this.pauseStart >= 3000) {
+      this.pauseTimer += dt;
+      if (this.pauseTimer >= 3.0) {
         this.waveType = WaveType.START;
-        this.pauseStart = 0;
+        this.pauseTimer = 0;
       }
     }
   }

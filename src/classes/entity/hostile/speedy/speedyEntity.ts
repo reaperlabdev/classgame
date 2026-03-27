@@ -5,7 +5,7 @@ import { HostileEntity } from "../hostileEntity";
 export class SpeedyRobot extends HostileEntity {
   lastHealth: number = 0;
   hurtTime: number = 0;
-  speed: number = 400;
+  speed: number = 100;
   currentOrder: number = -1;
 
   constructor(game: Game) {
