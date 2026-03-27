@@ -5,7 +5,7 @@ import { HostileEntity } from "../hostileEntity";
 export class Devil extends HostileEntity {
   lastHealth: number = 0;
   hurtTime: number = 0;
-  speed: number = 50;
+  speed: number = 10;
   currentOrder: number = -1;
 
   constructor(game: Game) {
