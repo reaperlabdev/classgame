@@ -13,7 +13,7 @@ export class SpikeTurret extends TurretEntity {
   private attackTimer: number = 0;
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 16);
+    super(game, x, y, 32);
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.damage = entityValues.Spike.damage;
@@ -55,8 +55,16 @@ export class SpikeTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    const sprite = this.game.globals.spriteManager.getSprite("spike");
-    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.drawImage(
+      this.game.globals.spriteManager.getSprite("spike"),
+      -this.width / 2,
+      -this.height / 2,
+      16,
+      16,
+    );
+    ctx.restore();
+    ctx.save();
 
     for (const tracer of this.tracers) {
       const alpha =

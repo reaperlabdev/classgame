@@ -33,8 +33,11 @@ export class TurretEntity extends Entity {
     for (const enemy of enemies) {
       if (!(enemy instanceof HostileEntity)) continue;
 
-      const dx = enemy.x - this.x;
-      const dy = enemy.y - this.y;
+      const centerX = enemy.x + enemy.width / 2;
+      const centerY = enemy.y + enemy.height / 2;
+
+      const dx = centerX - this.x;
+      const dy = centerY - this.y;
       const distSq = dx * dx + dy * dy;
 
       if (distSq <= rangeSq) {

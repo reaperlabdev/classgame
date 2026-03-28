@@ -5,7 +5,7 @@ import { HostileEntity } from "../hostileEntity";
 export class Camo extends HostileEntity {
   lastHealth: number = 0;
   hurtTime: number = 0;
-  speed: number = 10;
+  speed: number = 25;
   currentOrder: number = -1;
   animStep: number = 1;
   maxAnimStep: number = 3;
