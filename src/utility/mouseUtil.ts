@@ -3,7 +3,6 @@ import { Game } from "../game";
 
 export function getTileMousePos(game: Game, tiles: Tile[]): Tile | null {
   const mousePos = game.globals.mouseHandler.getPosition();
-  // find closest tile within 16 px and offset to middle so offset by 8px
   mousePos.x -= 8;
   mousePos.y -= 8;
   let closestTile: Tile | null = null;

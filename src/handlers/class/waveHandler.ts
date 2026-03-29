@@ -1,14 +1,14 @@
-import { EntityType } from "../classes/entity/entityType";
-import { PlayerBase } from "../classes/entity/friendly/playerBaseEntity";
-import { Game } from "../game";
-import { Robot } from "../classes/entity/hostile/robot/robotEntity";
-import { WaveType } from "../classes/wave/waveType";
-import { specialSpawns, waveSpawns } from "../classes/wave/waveSpawns";
-import { HostileEntity } from "../classes/entity/hostile/hostileEntity";
+import { EntityType } from "../../classes/entity/entityType";
+import { PlayerBase } from "../../classes/entity/friendly/playerBaseEntity";
+import { Game } from "../../game";
+import { Robot } from "../../classes/entity/hostile/robot/robotEntity";
+import { WaveType } from "../../classes/wave/waveType";
+import { specialSpawns, waveSpawns } from "../../classes/wave/waveSpawns";
+import { HostileEntity } from "../../classes/entity/hostile/hostileEntity";
 import {
   entityValues,
   placementSettings,
-} from "../classes/entity/entityValues";
+} from "../../classes/entity/entityValues";
 
 export class WaveManager {
   game: Game;
@@ -35,7 +35,10 @@ export class WaveManager {
   }
 
   reset(): void {
+    this.game.globals.forceTimePaused = true;
+
     this.waveType = WaveType.START;
+    this.game.globals.score = 0;
     this.toSpawn = 5;
     this.spawnTimer = 0;
     this.spawned = 0;

@@ -20,7 +20,7 @@ export function findNextTile(
   currentOrder: number,
 ): TilePath | null {
   const path = getOrderedPath(tiles);
-  // Binary search instead of linear find since path is sorted
+
   let lo = 0,
     hi = path.length - 1;
   while (lo <= hi) {

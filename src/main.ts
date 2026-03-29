@@ -5,7 +5,7 @@ import { Game } from "./game";
 import defaultMap from "./assets/map/default.json";
 import { PlayerBase } from "./classes/entity/friendly/playerBaseEntity";
 import { getOrderedPath } from "./utility/entityPathing";
-import { WaveManager } from "./handlers/waveManager";
+import { WaveManager } from "./handlers/class/waveHandler";
 import { loadImage } from "./utility/imageUtil";
 
 import pathImageSrc from "./assets/tiles/path.png";
@@ -24,6 +24,7 @@ import spikeImageSrc from "./assets/turrets/spike.png";
 import { HudUi } from "./classes/ui/hud/hudUi";
 import { play, setVolume } from "./utility/audioUtil";
 import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
+import { EndingUi } from "./classes/ui/ending/endingUi";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -95,6 +96,8 @@ async function main(): Promise<void> {
 
   new UpgradeUi(game);
 
+  new EndingUi(game);
+
   game.globals.waveManager = new WaveManager(game);
 
   let lastTime = 0;
@@ -109,7 +112,9 @@ async function main(): Promise<void> {
       game.globals.doubleSpeed ? 2 * cappedDt : cappedDt,
     );
 
-    if (!game.globals.paused) {
+    game.globals.time += game.globals.doubleSpeed ? 2 * cappedDt : cappedDt;
+
+    if (!game.globals.paused && !game.globals.forceTimePaused) {
       game.globals.waveManager?.update(cappedDt);
     }
 

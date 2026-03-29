@@ -1,9 +1,9 @@
-import { Game } from "../game";
-import { TileManager } from "./tileManager";
-import { Tile } from "../classes/tile/tileClass";
-import { TileRock } from "../classes/tile/rock/tileRock";
-import { TilePath } from "../classes/tile/path/tilePath";
-import { TileGrass } from "../classes/tile/grass/tileGrass";
+import { Game } from "../../game";
+import { Tile } from "../../classes/tile/tileClass";
+import { TileRock } from "../../classes/tile/rock/tileRock";
+import { TilePath } from "../../classes/tile/path/tilePath";
+import { TileGrass } from "../../classes/tile/grass/tileGrass";
+import { TileHandler } from "./tileHandler";
 
 export interface TileMapJson {
   tileSize: number;
@@ -22,12 +22,12 @@ export type TileFactory = (game: Game, x: number, y: number) => Tile;
 
 export class TileMapManager {
   game: Game;
-  tileManager: TileManager;
+  tileManager: TileHandler;
   private tileRegistry: Map<string, TileFactory> = new Map();
 
   constructor(game: Game) {
     this.game = game;
-    this.tileManager = new TileManager(game);
+    this.tileManager = new TileHandler(game);
     this.registerTileType("grass", (g, x, y) => new TileGrass(g, x, y));
     this.registerTileType("rock", (g, x, y) => new TileRock(g, x, y, "gray"));
     this.registerTileType("path", (g, x, y) => new TilePath(g, x, y));

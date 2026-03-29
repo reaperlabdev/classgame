@@ -1,6 +1,6 @@
-import { Game } from "../game";
-import { Entity } from "../classes/entity/entityClass";
-import { EntityType } from "../classes/entity/entityType";
+import { Game } from "../../game";
+import { Entity } from "../../classes/entity/entityClass";
+import { EntityType } from "../../classes/entity/entityType";
 
 export class EntityManager {
   game: Game;

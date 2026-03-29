@@ -4,7 +4,6 @@ import { HostileEntity } from "../hostileEntity";
 
 export class Robot extends HostileEntity {
   lastHealth: number = 0;
-  hurtTime: number = 0;
   speed: number = 50;
   currentOrder: number = -1;
   animStep: number = 1;
@@ -16,7 +15,6 @@ export class Robot extends HostileEntity {
     this.health = Math.round(
       4 + this.game.globals.waveManager.currentWave ** 1.1,
     );
-    this.lastHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);
@@ -28,11 +26,6 @@ export class Robot extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
-
-    if (this.health < this.lastHealth) {
-      this.hurtTime = Date.now() + 5000;
-    }
-    this.lastHealth = this.health;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);
@@ -57,12 +50,12 @@ export class Robot extends HostileEntity {
     this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
-      this.hurtTime -= Date.now();
+      this.hurtTime -= dt;
     }
 
     this.time += dt;
 
-    const stepDuration = 0.1;
+    const stepDuration = (this.speed * dt) / 2;
 
     if (this.time >= stepDuration) {
       this.animStep++;

@@ -11,6 +11,7 @@ export class SpikeTurret extends TurretEntity {
   static accepts = [TilePath];
 
   private attackTimer: number = 0;
+  private lastAttacked: Entity | null = null;
 
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 32);
@@ -31,13 +32,11 @@ export class SpikeTurret extends TurretEntity {
       }
     }
 
-    this.attackTimer += dt;
+    const closest: Entity | null = this.getTarget();
 
-    if (this.attackTimer < this.attackSpeed) {
+    if (closest == this.lastAttacked) {
       return;
     }
-
-    const closest: Entity | null = this.getTarget();
 
     if (closest) {
       const dx = closest.x - this.x;
@@ -46,9 +45,9 @@ export class SpikeTurret extends TurretEntity {
 
       if (distance < this.range) {
         this.tracers.push({ x: closest.x, y: closest.y, age: 0 });
+        this.lastAttacked = closest;
         closest.takeDamage(this.damage);
         this.takeDamage(1);
-        this.attackTimer = 0;
       }
     }
   }

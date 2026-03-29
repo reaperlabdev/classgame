@@ -114,9 +114,8 @@ export class Spawning {
                   this.turretName as keyof typeof placementSettings
                 ].max,
               );
-
-            this.select(null);
           }
+          this.select(null);
         }
       }
     } else if (!this.game.globals.mouseHandler.getIsDown() && this.debounce) {
