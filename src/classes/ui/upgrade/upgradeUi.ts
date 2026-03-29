@@ -199,16 +199,28 @@ export class UpgradeUi extends uiClass {
   isHovered(x: number, y: number): boolean {
     if (!this.selected || this.selectedX === null || this.selectedY === null)
       return false;
-    const rx = this.selectedX - 16;
-    const ry = this.selectedY - 16;
+
+    let startX = this.selectedX - 16;
+    let startY = this.selectedY - 16;
+
+    if (startX + this.uiWidth > this.game.globals.renderContext.canvas.width)
+      startX = this.game.globals.renderContext.canvas.width - this.uiWidth;
+    if (startY + this.uiHeight > this.game.globals.renderContext.canvas.height)
+      startY = this.game.globals.renderContext.canvas.height - this.uiHeight;
+
     return (
-      x >= rx && x <= rx + this.uiWidth && y >= ry && y <= ry + this.uiHeight
+      x >= startX &&
+      x <= startX + this.uiWidth &&
+      y >= startY &&
+      y <= startY + this.uiHeight
     );
   }
 
   render(): void {
     if (!this.selected || this.selectedX === null || this.selectedY === null)
       return;
+
+    this.renderContext.save();
 
     let startX = this.selectedX - 16;
     let startY = this.selectedY - 16;
@@ -312,5 +324,7 @@ export class UpgradeUi extends uiClass {
       "black",
       1,
     );
+
+    this.renderContext.restore();
   }
 }
