@@ -41,9 +41,6 @@ export class UpgradeUi extends uiClass {
     const limits = upgradeLimits[turretType] as any;
 
     if (!settings?.paths?.[index]) {
-      console.error(
-        `UpgradeUI: No path found for index ${index} on ${turretType}`,
-      );
       return;
     }
 
@@ -54,8 +51,6 @@ export class UpgradeUi extends uiClass {
     if (cost !== Infinity && this.game.globals.cash >= cost) {
       this.game.globals.cash -= cost;
       this.executeStatIncrease(path, limits[path.property]);
-    } else {
-      console.warn("UpgradeUI: Upgrade failed (Insufficient funds or Maxed)");
     }
 
     if ("attackSpeed" in this.selected) {
