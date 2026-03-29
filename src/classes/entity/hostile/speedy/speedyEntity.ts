@@ -2,7 +2,7 @@ import { Game } from "../../../../game";
 import { findNextTile } from "../../../../utility/entityPathing";
 import { HostileEntity } from "../hostileEntity";
 
-export class SpeedyRobot extends HostileEntity {
+export class Speedy extends HostileEntity {
   speed: number = 100;
   currentOrder: number = -1;
   animStep: number = 1;
@@ -25,6 +25,8 @@ export class SpeedyRobot extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);

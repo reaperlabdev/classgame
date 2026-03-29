@@ -145,12 +145,9 @@ export function renderDoubleLabeledBox(
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  // Primary label in the upper third
-
   ctx.fillText(primaryLabel, x + boxSize / 2, y + boxSize * 0.33);
 
   ctx.fillStyle = textColor2!;
-  // Secondary label in the lower third
   ctx.fillText(secondaryLabel, x + boxSize / 2, y + boxSize * 0.67);
 
   ctx.restore();
@@ -192,12 +189,10 @@ export function renderStrokedText(
   ctx.save();
   ctx.font = `${fontSize}px Courier New`;
 
-  // Draw the stroke
   ctx.strokeStyle = strokeColor;
   ctx.lineWidth = strokeWidth;
   ctx.strokeText(text, x, y);
 
-  // Draw the text
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);
 

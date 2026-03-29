@@ -107,6 +107,31 @@ export const upgradeSettings: Record<string, { paths: UpgradePath[] }> = {
       },
     ],
   },
+  EMP: {
+    paths: [
+      {
+        label: "Damage",
+        property: "damage",
+        baseCost: 20,
+        growth: 1,
+        step: 2,
+      },
+      {
+        label: "Range",
+        property: "range",
+        baseCost: 100,
+        growth: 2.0,
+        step: 5,
+      },
+      {
+        label: "Fire Rate",
+        property: "attackSpeed",
+        baseCost: 40,
+        growth: 1.6,
+        step: -0.05,
+      },
+    ],
+  },
 };
 
 export const upgradeLimits: Record<string, Record<string, number>> = {
@@ -114,6 +139,7 @@ export const upgradeLimits: Record<string, Record<string, number>> = {
   Sniper: { damage: 40, range: 200, attackSpeed: 0.8 },
   Machine: { damage: 10, range: 100, attackSpeed: 0.15 },
   Spike: { damage: 15, range: 15, health: 500 },
+  EMP: { damage: 10, range: 75, attackSpeed: 1.5 },
 };
 
 export const entityValues: Record<string, Record<string, number>> = {
@@ -121,4 +147,5 @@ export const entityValues: Record<string, Record<string, number>> = {
   Sniper: { damage: 5, attackSpeed: 2, range: 150 },
   Machine: { damage: 1, attackSpeed: 0.3, range: 75 },
   Spike: { damage: 10, range: 15, health: 50 },
+  EMP: { damage: 5, range: 50, attackSpeed: 2 },
 };

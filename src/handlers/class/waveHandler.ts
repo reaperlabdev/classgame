@@ -2,13 +2,13 @@ import { EntityType } from "../../classes/entity/entityType";
 import { PlayerBase } from "../../classes/entity/friendly/playerBaseEntity";
 import { Game } from "../../game";
 import { Robot } from "../../classes/entity/hostile/robot/robotEntity";
-import { WaveType } from "../../classes/wave/waveType";
-import { specialSpawns, waveSpawns } from "../../classes/wave/waveSpawns";
+import { WaveType } from "../../settings/wave/waveType";
+import { specialSpawns, waveSpawns } from "../../settings/wave/waveVaules";
 import { HostileEntity } from "../../classes/entity/hostile/hostileEntity";
 import {
   entityValues,
-  placementSettings,
-} from "../../classes/entity/entityValues";
+  entityDefaults,
+} from "../../settings/entity/entityValues";
 
 export class WaveManager {
   game: Game;
@@ -46,9 +46,8 @@ export class WaveManager {
     this.currentWave = 1;
     this.game.globals.cash = this.game.globals.startingCash;
 
-    for (const [key, value] of Object.entries(entityValues)) {
-      const turretKey = key as keyof typeof entityValues;
-      entityValues[turretKey].cost = entityValues[turretKey].defaultCost;
+    for (const key of Object.keys(entityValues)) {
+      entityValues[key].cost = entityDefaults[key].cost;
     }
 
     this.game.globals.entityManager.getEntityArray().forEach((ent) => {

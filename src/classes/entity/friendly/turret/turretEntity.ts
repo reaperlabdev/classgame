@@ -52,7 +52,37 @@ export class TurretEntity extends Entity {
     return furthestEnemy;
   }
 
+  getEnemiesInRadius(
+    cx: number,
+    cy: number,
+    ignoreCamo: boolean,
+    radius: number,
+  ): HostileEntity[] {
+    const enemies = this.game.globals.entityManager.getEntityByType(
+      EntityType.HOSTILE,
+    );
+    const radiusSq = radius * radius;
+    const hits: HostileEntity[] = [];
+
+    for (const enemy of enemies) {
+      if (!(enemy instanceof HostileEntity)) continue;
+      if (enemy.camo && !this.canHitCamo && !ignoreCamo) continue;
+
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
+      const dx = ex - cx;
+      const dy = ey - cy;
+
+      if (dx * dx + dy * dy <= radiusSq) {
+        hits.push(enemy);
+      }
+    }
+
+    return hits;
+  }
+
   drawLOS(ctx: CanvasRenderingContext2D) {
+    ctx.save();
     ctx.strokeStyle = "#ffffff";
     ctx.beginPath();
     ctx.arc(
@@ -66,9 +96,14 @@ export class TurretEntity extends Entity {
     ctx.restore();
   }
 
-  drawTracer(ctx: CanvasRenderingContext2D, targetX: number, targetY: number) {
+  drawTracer(
+    ctx: CanvasRenderingContext2D,
+    color: string,
+    targetX: number,
+    targetY: number,
+  ) {
     ctx.save();
-    ctx.strokeStyle = "yellow";
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);

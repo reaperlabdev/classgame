@@ -19,7 +19,7 @@ export class UpgradeUi extends uiClass {
   private hoveredClose: boolean = false;
   private hoveredSell: boolean = false;
   private readonly uiWidth = 248;
-  private readonly uiHeight = 130; // extended from 96
+  private readonly uiHeight = 130;
 
   constructor(game: Game) {
     super(game);
@@ -283,7 +283,6 @@ export class UpgradeUi extends uiClass {
       );
     });
 
-    // Divider line
     const dividerY = startY + 12 + 3 * 26 + 2;
     this.renderContext.strokeStyle = "rgba(255,255,255,0.15)";
     this.renderContext.lineWidth = 1;

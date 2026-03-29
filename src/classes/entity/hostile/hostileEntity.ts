@@ -18,6 +18,11 @@ export class HostileEntity extends Entity {
     play("hostileDeath");
   }
 
+  setStunned(time: number): void {
+    this.stunned = true;
+    this.stunTime = time;
+  }
+
   takeDamage(amount: number): void {
     const realDamageDealt = Math.min(amount, this.health);
     this.health -= realDamageDealt;

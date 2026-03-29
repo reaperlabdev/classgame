@@ -2,7 +2,7 @@ import { Game } from "../../../../../game";
 import { TileGrass } from "../../../../tile/grass/tileGrass";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
-import { entityValues } from "../../../entityValues";
+import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class MachineTurret extends TurretEntity {
@@ -41,7 +41,7 @@ export class MachineTurret extends TurretEntity {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance < this.range) {
         this.tracers.push({
           x: this.closest.x,
@@ -70,12 +70,12 @@ export class MachineTurret extends TurretEntity {
       32,
     );
     ctx.restore();
-    
+
     ctx.save();
     for (const tracer of this.tracers) {
       const alpha = Math.max(0, 1 - tracer.age / this.tracerDuration);
       ctx.globalAlpha = alpha;
-      this.drawTracer(ctx, tracer.x, tracer.y);
+      this.drawTracer(ctx, "yellow", tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
 

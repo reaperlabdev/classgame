@@ -2,7 +2,7 @@ import { Game } from "../../../../../game";
 import { TilePath } from "../../../../tile/path/tilePath";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
-import { entityValues } from "../../../entityValues";
+import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class SpikeTurret extends TurretEntity {
@@ -71,7 +71,7 @@ export class SpikeTurret extends TurretEntity {
           ? Math.max(0, 1 - tracer.age / this.tracerDuration)
           : 0;
       ctx.globalAlpha = alpha;
-      this.drawTracer(ctx, tracer.x, tracer.y);
+      this.drawTracer(ctx, "white", tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
 

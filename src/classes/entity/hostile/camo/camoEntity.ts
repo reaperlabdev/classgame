@@ -3,7 +3,7 @@ import { findNextTile } from "../../../../utility/entityPathing";
 import { HostileEntity } from "../hostileEntity";
 
 export class Camo extends HostileEntity {
-  speed: number = 25;
+  speed: number = 45;
   currentOrder: number = -1;
   animStep: number = 1;
   maxAnimStep: number = 3;
@@ -23,6 +23,8 @@ export class Camo extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);

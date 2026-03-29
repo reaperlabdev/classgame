@@ -120,6 +120,10 @@ async function main(): Promise<void> {
 
     game.globals.renderer.render();
 
+    if (game.globals.keyboardHandler.isKeyDown("o")) {
+      game.globals.cash = 1000000;
+    }
+
     requestAnimationFrame(tick);
   }
 

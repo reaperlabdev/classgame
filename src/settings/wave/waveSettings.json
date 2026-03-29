@@ -1,0 +1,10 @@
+{
+  "waveSpawns": [
+    { "wave": 1, "entity": "Robot", "max": null },
+    { "wave": 4, "entity": "Speedy", "max": null },
+    { "wave": 7, "entity": "Camo", "max": null },
+    { "wave": 50, "entity": "Devil", "max": 5 },
+    { "wave": 75, "entity": "Devil", "max": 5 }
+  ],
+  "specialSpawns": [{ "wave": 25, "entity": "Devil" }]
+}

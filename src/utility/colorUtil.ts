@@ -1,3 +1,5 @@
+// AI
+
 export function toHex(color: string): string {
   return color.replace(/^#/, "");
 }

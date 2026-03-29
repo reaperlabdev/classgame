@@ -1,6 +1,6 @@
 import { Game } from "../../../game";
 import { uiClass } from "../uiClass";
-import { entityValues } from "../../entity/entityValues";
+import { entityValues } from "../../../settings/entity/entityValues";
 import {
   getBoxLayout,
   getHoveredIndex,
@@ -13,7 +13,7 @@ export class SpawnUi extends uiClass {
   private pressedKeys: Set<string> = new Set();
   mouseX: number;
   mouseY: number;
-  turrets: string[] = ["Turret", "Sniper", "Machine", "Spike"];
+  turrets: string[] = ["Turret", "Sniper", "Machine", "EMP", "Spike"];
   selectedTurret: string | null = null;
 
   private readonly boxSize = 42;
@@ -107,6 +107,7 @@ export class SpawnUi extends uiClass {
       "$" + entityValues.Turret.cost.toString(),
       "$" + entityValues.Sniper.cost.toString(),
       "$" + entityValues.Machine.cost.toString(),
+      "$" + entityValues.EMP.cost.toString(),
       "$" + entityValues.Spike.cost.toString(),
     ];
 
@@ -118,17 +119,14 @@ export class SpawnUi extends uiClass {
       this.boxSize,
       this.boxBorder,
     );
-    // put down arrow above selected
     const selectedIdx = this.turrets.indexOf(this.selectedTurret!);
     if (selectedIdx !== -1) {
       const { x, y } = this.getPositions()[selectedIdx];
       this.game.renderContext.save();
-      // outline
       this.game.renderContext.strokeStyle = "#121212";
       this.game.renderContext.lineWidth = 2;
       this.game.renderContext.strokeText("▼", x + this.boxSize / 2 - 4, y - 10);
 
-      // fill
       this.renderContext.fillStyle = "#ffffff";
       this.renderContext.fillText("▼", x + this.boxSize / 2 - 4, y - 10);
       this.game.renderContext.restore();

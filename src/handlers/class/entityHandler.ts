@@ -45,7 +45,6 @@ export class EntityManager {
   }
 
   render(): void {
-    // render hostiles first to put turrets on top
     for (const entity of this.getEntityByType(EntityType.HOSTILE)) {
       entity.render(this.game.renderContext);
     }

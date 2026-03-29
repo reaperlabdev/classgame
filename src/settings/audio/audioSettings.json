@@ -1,0 +1,19 @@
+{
+  "sounds": {
+    "bgMusic": {
+      "path": "./src/assets/sfx/music1.wav",
+      "loop": true,
+      "volume": 0.8
+    },
+    "hostileDeath": {
+      "path": "./src/assets/sfx/death.wav",
+      "loop": false,
+      "volume": 1
+    },
+    "devilDeath": {
+      "path": "./src/assets/sfx/devilDeath.wav",
+      "loop": false,
+      "volume": 1
+    }
+  }
+}

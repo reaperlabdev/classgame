@@ -1,54 +1,89 @@
+// AI
+
+import audioSettings from "../settings/audio/audioSettings.json";
+
+type SoundConfig = {
+  path: string;
+  loop: boolean;
+  volume: number;
+};
+
 const audioContext = new AudioContext();
 const bufferCache: Record<string, AudioBuffer> = {};
-const activeSources: Record<string, AudioBufferSourceNode> = {};
+const activeSources: Record<string, AudioBufferSourceNode[]> = {};
 const volumes: Record<string, GainNode> = {};
 
-const soundPaths: Record<string, string> = {
-  bgMusic: "./src/assets/sfx/music1.wav",
-  hostileDeath: "./src/assets/sfx/death.wav",
-  devilDeath: "./src/assets/sfx/devilDeath.wav",
-};
+const soundConfigs: Record<string, SoundConfig> = audioSettings.sounds;
 
 const loadBuffer = async (name: string): Promise<AudioBuffer> => {
   if (bufferCache[name]) return bufferCache[name];
-  const response = await fetch(soundPaths[name]);
+
+  const config = soundConfigs[name];
+  if (!config)
+    throw new Error(`Sound "${name}" is not registered in audioSettings.json`);
+
+  const response = await fetch(config.path);
   const arrayBuffer = await response.arrayBuffer();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
   bufferCache[name] = audioBuffer;
   return audioBuffer;
 };
 
-export const play = async (name: string, loop = false) => {
+const getOrCreateGain = (name: string): GainNode => {
+  if (!volumes[name]) {
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = soundConfigs[name]?.volume ?? 1;
+    gainNode.connect(audioContext.destination);
+    volumes[name] = gainNode;
+  }
+  return volumes[name];
+};
+
+export const preloadAll = async (): Promise<void> => {
+  await Promise.all(Object.keys(soundConfigs).map(loadBuffer));
+};
+
+export const play = async (name: string, loop?: boolean): Promise<void> => {
   const buffer = await loadBuffer(name);
-
-  // Stop any existing instance
-  activeSources[name]?.stop();
-  activeSources[name]?.disconnect();
-
-  const gainNode = audioContext.createGain();
-  gainNode.gain.value = volumes[name] ? volumes[name].gain.value : 1;
-  gainNode.connect(audioContext.destination);
-  volumes[name] = gainNode;
+  const config = soundConfigs[name];
+  const gainNode = getOrCreateGain(name);
 
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
-  source.loop = loop; // sample-accurate looping, zero gap
+  source.loop = loop ?? config.loop;
   source.connect(gainNode);
   source.start(0);
 
-  activeSources[name] = source;
+  if (!activeSources[name]) activeSources[name] = [];
+  activeSources[name].push(source);
+
+  source.onended = () => {
+    activeSources[name] = activeSources[name].filter((s) => s !== source);
+  };
 };
 
-export const stop = (name: string) => {
-  activeSources[name]?.stop();
-  activeSources[name]?.disconnect();
-  delete activeSources[name];
+export const stop = (name: string): void => {
+  activeSources[name]?.forEach((s) => {
+    s.stop();
+    s.disconnect();
+  });
+  activeSources[name] = [];
 };
 
-export const setVolume = (name: string, vol: number) => {
+export const stopOldest = (name: string): void => {
+  const oldest = activeSources[name]?.shift();
+  if (oldest) {
+    oldest.stop();
+    oldest.disconnect();
+  }
+};
+
+export const getActiveCount = (name: string): number => {
+  return activeSources[name]?.length ?? 0;
+};
+
+export const setVolume = (name: string, vol: number): void => {
   if (volumes[name]) {
     volumes[name].gain.value = vol;
   }
 };
-
-// Start bg music looping on init

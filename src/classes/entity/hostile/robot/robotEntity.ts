@@ -26,6 +26,8 @@ export class Robot extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);

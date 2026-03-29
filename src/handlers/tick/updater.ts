@@ -40,7 +40,7 @@ export class Updater {
 
     let tiles: Tile[] =
       this.game.globals.tileMapManager.tileManager.getTileArray();
-    // get mouse Event
+
     const tile: Tile | null = getTileMousePos(this.game, tiles);
     if (tile?.canHover && !uiHovered) {
       this.game.globals.targetTile = tile;
