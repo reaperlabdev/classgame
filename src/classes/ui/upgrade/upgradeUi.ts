@@ -4,9 +4,9 @@ import { TurretEntity } from "../../entity/friendly/turret/turretEntity";
 import {
   upgradeSettings,
   upgradeLimits,
-  entityValues,
   UpgradePath,
-} from "../../upgrades/upgrades";
+  entityValues,
+} from "../../../settings/entity/entityValues";
 import { uiClass } from "../uiClass";
 
 export class UpgradeUi extends uiClass {

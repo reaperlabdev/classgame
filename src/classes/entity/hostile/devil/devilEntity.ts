@@ -5,7 +5,6 @@ import { HostileEntity } from "../hostileEntity";
 
 export class Devil extends HostileEntity {
   speed: number = 25;
-  currentOrder: number = -1;
   animStep: number = 1;
   maxAnimStep: number = 3;
   lastStep: number = 0;

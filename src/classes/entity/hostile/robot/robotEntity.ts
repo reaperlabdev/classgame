@@ -5,7 +5,6 @@ import { HostileEntity } from "../hostileEntity";
 export class Robot extends HostileEntity {
   lastHealth: number = 0;
   speed: number = 50;
-  currentOrder: number = -1;
   animStep: number = 1;
   maxAnimStep: number = 3;
   lastStep: number = 0;

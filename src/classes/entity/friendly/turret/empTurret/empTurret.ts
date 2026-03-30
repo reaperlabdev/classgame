@@ -1,6 +1,6 @@
 import { Game } from "../../../../../game";
 import { TileGrass } from "../../../../tile/grass/tileGrass";
-import { entityValues } from "../../../../upgrades/upgrades";
+import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class EmpTurret extends TurretEntity {

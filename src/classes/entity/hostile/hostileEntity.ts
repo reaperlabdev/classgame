@@ -6,6 +6,7 @@ import { EntityType } from "../entityType";
 
 export class HostileEntity extends Entity {
   pathProgress: number = 0;
+  currentOrder: number = -1;
   hurtTime: number = 0;
   camo: boolean = false;
   time: number = 0;

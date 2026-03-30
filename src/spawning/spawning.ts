@@ -15,6 +15,7 @@ import { SpikeTurret } from "../classes/entity/friendly/turret/spikeTurret/spike
 import { EntityType } from "../classes/entity/entityType";
 import { Entity } from "../classes/entity/entityClass";
 import { EmpTurret } from "../classes/entity/friendly/turret/empTurret/empTurret";
+import { MagnetTurret } from "../classes/entity/friendly/turret/magnetTurret/magnetTurret";
 
 export class Spawning {
   game: Game;
@@ -40,6 +41,7 @@ export class Spawning {
     | typeof SniperTurret
     | typeof BaseTurret
     | typeof EmpTurret
+    | typeof MagnetTurret
     | typeof SpikeTurret
     | null;
   turretName: string | null;
@@ -54,6 +56,7 @@ export class Spawning {
   }
 
   select(turret: string | null) {
+    console.log(turret);
     if (turret === null) {
       this.selectedTurret = null;
       this.turretName = null;
