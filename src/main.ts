@@ -16,9 +16,14 @@ import robotImageSrc1 from "./assets/robots/robot1.png";
 import robotImageSrc2 from "./assets/robots/robot2.png";
 import robotImageSrc3 from "./assets/robots/robot3.png";
 
+import camoImageSrc1 from "./assets/robots/camo1.png";
+import camoImageSrc2 from "./assets/robots/camo2.png";
+import camoImageSrc3 from "./assets/robots/camo3.png";
+
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
 import machineImageSrc from "./assets/turrets/machine.png";
+import empImageSrc from "./assets/turrets/emp.png";
 import spikeImageSrc from "./assets/turrets/spike.png";
 
 import { HudUi } from "./classes/ui/hud/hudUi";
@@ -53,6 +58,10 @@ async function main(): Promise<void> {
     loadImage(robotImageSrc3),
   );
 
+  await game.globals.spriteManager.addSprite("camo1", loadImage(camoImageSrc1));
+  await game.globals.spriteManager.addSprite("camo2", loadImage(camoImageSrc2));
+  await game.globals.spriteManager.addSprite("camo3", loadImage(camoImageSrc3));
+
   await game.globals.spriteManager.addSprite(
     "turret",
     loadImage(turretImageSrc),
@@ -66,6 +75,8 @@ async function main(): Promise<void> {
     "machine",
     loadImage(machineImageSrc),
   );
+
+  await game.globals.spriteManager.addSprite("emp", loadImage(empImageSrc));
 
   await game.globals.spriteManager.addSprite("spike", loadImage(spikeImageSrc));
 
@@ -138,7 +149,7 @@ async function main(): Promise<void> {
     setVolume("bgMusic", 0.1);
     setVolume("hostileDeath", 0.1);
     setVolume("devilDeath", 0.1);
-    setVolume("shooting", 0.1);
+    setVolume("shooting", 1);
     //play("bgMusic", true);
   }
 

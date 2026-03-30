@@ -16,7 +16,7 @@ export class HostileEntity extends Entity {
   }
 
   deathNoise(): void {
-    play("hostileDeath");
+    //play("hostileDeath");
   }
 
   setStunned(time: number): void {

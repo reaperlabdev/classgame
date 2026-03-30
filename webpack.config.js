@@ -30,7 +30,7 @@ module.exports = {
     compress: true,
     port: 8080,
     hot: false,
-    liveReload: true,
+    liveReload: false,
     open: true,
   },
 };

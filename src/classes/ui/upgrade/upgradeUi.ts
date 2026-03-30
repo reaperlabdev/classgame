@@ -18,11 +18,58 @@ export class UpgradeUi extends uiClass {
   private hoveredButtonIndex: number | null = null;
   private hoveredClose: boolean = false;
   private hoveredSell: boolean = false;
-  private readonly uiWidth = 248;
+  private readonly uiMinWidth = 220;
   private readonly uiHeight = 130;
+  private _cachedUiWidth: number = 220;
 
   constructor(game: Game) {
     super(game);
+  }
+
+  private measureText(text: string, fontSize: number): number {
+    return this.game.renderContext.measureText(text).width * 1.67;
+  }
+
+  private computeUiWidth(): number {
+    if (!this.selected) {
+      this._cachedUiWidth = this.uiMinWidth;
+      return this._cachedUiWidth;
+    }
+
+    const turretType = this.selected.name as keyof typeof upgradeSettings;
+    const settings = upgradeSettings[turretType] as any;
+
+    if (!settings?.paths) {
+      this._cachedUiWidth = this.uiMinWidth;
+      return this._cachedUiWidth;
+    }
+
+    let maxRowWidth = 0;
+
+    settings.paths.forEach((path: UpgradePath, index: number) => {
+      const currentValue = (this.selected as any)[path.property];
+      const cost = this.getUpgradeCost(index, currentValue);
+      const btnLabel =
+        cost === Infinity ? `${path.label} MAX` : `${path.label} $${cost}`;
+      const statLabel = `${path.label}: ${
+        typeof currentValue === "number"
+          ? currentValue.toFixed(1)
+          : currentValue
+      }`;
+      const rowWidth =
+        this.measureText(btnLabel, 11) +
+        16 +
+        16 +
+        this.measureText(statLabel, 12) +
+        20;
+      if (rowWidth > maxRowWidth) maxRowWidth = rowWidth;
+    });
+
+    this._cachedUiWidth = Math.max(
+      this.uiMinWidth,
+      Math.ceil(maxRowWidth) + 24,
+    );
+    return this._cachedUiWidth;
   }
 
   getStatByIndex(index: number): number {
@@ -96,6 +143,19 @@ export class UpgradeUi extends uiClass {
     return Math.floor(path.baseCost * Math.pow(path.growth, level));
   }
 
+  private getBottomButtonLayout(uiWidth: number): {
+    btnW: number;
+    closeX: number;
+    sellX: number;
+  } {
+    const gap = 8;
+    const sidePad = 12;
+    const btnW = Math.floor((uiWidth - sidePad * 2 - gap) / 2);
+    const closeX = sidePad;
+    const sellX = sidePad + btnW + gap;
+    return { btnW, closeX, sellX };
+  }
+
   update(dt: number) {
     const { x, y } = this.game.globals.mouseHandler.getPosition();
     const isMouseDown = this.game.globals.mouseHandler.getIsDown();
@@ -105,6 +165,10 @@ export class UpgradeUi extends uiClass {
       this.selected = null;
       this.debounce = true;
       return;
+    }
+
+    if (this.selected) {
+      this.computeUiWidth();
     }
 
     if (isMouseDown) {
@@ -143,6 +207,7 @@ export class UpgradeUi extends uiClass {
           this.selected = closest;
           this.selectedX = closest.x + 24;
           this.selectedY = closest.y;
+          this.computeUiWidth();
         } else {
           this.selected = null;
         }
@@ -158,10 +223,13 @@ export class UpgradeUi extends uiClass {
     this.hoveredSell = false;
 
     if (this.selected && this.isHovered(x, y)) {
+      const uiWidth = this._cachedUiWidth;
+
       let startX = this.selectedX! - 16;
       let startY = this.selectedY! - 16;
-      if (startX + this.uiWidth > this.game.globals.renderContext.canvas.width)
-        startX = this.game.globals.renderContext.canvas.width - this.uiWidth;
+
+      if (startX + uiWidth > this.game.globals.renderContext.canvas.width)
+        startX = this.game.globals.renderContext.canvas.width - uiWidth;
       if (
         startY + this.uiHeight >
         this.game.globals.renderContext.canvas.height
@@ -169,24 +237,26 @@ export class UpgradeUi extends uiClass {
         startY = this.game.globals.renderContext.canvas.height - this.uiHeight;
 
       const bottomRowY = startY + 12 + 3 * 26 + 6;
+      const { btnW, closeX, sellX } = this.getBottomButtonLayout(uiWidth);
 
       const relY = y - (startY + 12);
       const index = Math.floor(relY / 26);
       if (index >= 0 && index <= 2) this.hoveredButtonIndex = index;
 
-      const closeX1 = startX + 12;
-      const closeX2 = startX + 12 + 90;
       if (
-        x >= closeX1 &&
-        x <= closeX2 &&
+        x >= startX + closeX &&
+        x <= startX + closeX + btnW &&
         y >= bottomRowY &&
         y <= bottomRowY + 24
       )
         this.hoveredClose = true;
 
-      const sellX1 = startX + 114;
-      const sellX2 = startX + this.uiWidth - 12;
-      if (x >= sellX1 && x <= sellX2 && y >= bottomRowY && y <= bottomRowY + 24)
+      if (
+        x >= startX + sellX &&
+        x <= startX + sellX + btnW &&
+        y >= bottomRowY &&
+        y <= bottomRowY + 24
+      )
         this.hoveredSell = true;
     }
   }
@@ -195,17 +265,19 @@ export class UpgradeUi extends uiClass {
     if (!this.selected || this.selectedX === null || this.selectedY === null)
       return false;
 
+    const uiWidth = this._cachedUiWidth;
+
     let startX = this.selectedX - 16;
     let startY = this.selectedY - 16;
 
-    if (startX + this.uiWidth > this.game.globals.renderContext.canvas.width)
-      startX = this.game.globals.renderContext.canvas.width - this.uiWidth;
+    if (startX + uiWidth > this.game.globals.renderContext.canvas.width)
+      startX = this.game.globals.renderContext.canvas.width - uiWidth;
     if (startY + this.uiHeight > this.game.globals.renderContext.canvas.height)
       startY = this.game.globals.renderContext.canvas.height - this.uiHeight;
 
     return (
       x >= startX &&
-      x <= startX + this.uiWidth &&
+      x <= startX + uiWidth &&
       y >= startY &&
       y <= startY + this.uiHeight
     );
@@ -217,11 +289,13 @@ export class UpgradeUi extends uiClass {
 
     this.renderContext.save();
 
+    const uiWidth = this.computeUiWidth();
+
     let startX = this.selectedX - 16;
     let startY = this.selectedY - 16;
 
-    if (startX + this.uiWidth > this.game.globals.renderContext.canvas.width)
-      startX = this.game.globals.renderContext.canvas.width - this.uiWidth;
+    if (startX + uiWidth > this.game.globals.renderContext.canvas.width)
+      startX = this.game.globals.renderContext.canvas.width - uiWidth;
     if (startY + this.uiHeight > this.game.globals.renderContext.canvas.height)
       startY = this.game.globals.renderContext.canvas.height - this.uiHeight;
 
@@ -231,8 +305,11 @@ export class UpgradeUi extends uiClass {
 
     if (!settings?.paths || !limits) return;
 
+    const panelMid = Math.floor(uiWidth * 0.48);
+    const btnColW = panelMid - 24;
+
     this.renderContext.fillStyle = "rgba(10, 10, 15, 0.9)";
-    this.renderContext.fillRect(startX, startY, this.uiWidth, this.uiHeight);
+    this.renderContext.fillRect(startX, startY, uiWidth, this.uiHeight);
 
     settings.paths.forEach((path: UpgradePath, index: number) => {
       const rowY = startY + 12 + index * 26;
@@ -248,7 +325,7 @@ export class UpgradeUi extends uiClass {
         : isBtnHovered
           ? "#ffff00"
           : "#ffcc00";
-      this.renderContext.fillRect(startX + 12, rowY, 110, 22);
+      this.renderContext.fillRect(startX + 12, rowY, btnColW, 22);
 
       const displayVal =
         typeof currentValue === "number"
@@ -269,7 +346,7 @@ export class UpgradeUi extends uiClass {
       renderStrokedText(
         this.renderContext,
         `${path.label}: ${displayVal}`,
-        startX + 135,
+        startX + panelMid + 11,
         rowY + 16,
         12,
         "white",
@@ -283,17 +360,18 @@ export class UpgradeUi extends uiClass {
     this.renderContext.lineWidth = 1;
     this.renderContext.beginPath();
     this.renderContext.moveTo(startX + 8, dividerY);
-    this.renderContext.lineTo(startX + this.uiWidth - 8, dividerY);
+    this.renderContext.lineTo(startX + uiWidth - 8, dividerY);
     this.renderContext.stroke();
 
     const bottomRowY = dividerY + 4;
+    const { btnW, closeX, sellX } = this.getBottomButtonLayout(uiWidth);
 
     this.renderContext.fillStyle = this.hoveredClose ? "#888" : "#555";
-    this.renderContext.fillRect(startX + 12, bottomRowY, 90, 24);
+    this.renderContext.fillRect(startX + closeX, bottomRowY, btnW, 24);
     renderStrokedText(
       this.renderContext,
       "✕ Close",
-      startX + 16,
+      startX + closeX + btnW / 2 - this.measureText("✕ Close", 11) / 2,
       bottomRowY + 16,
       11,
       this.hoveredClose ? "white" : "#ddd",
@@ -302,16 +380,11 @@ export class UpgradeUi extends uiClass {
     );
 
     this.renderContext.fillStyle = this.hoveredSell ? "#ff4400" : "#cc3300";
-    this.renderContext.fillRect(
-      startX + 114,
-      bottomRowY,
-      this.uiWidth - 126,
-      24,
-    );
+    this.renderContext.fillRect(startX + sellX, bottomRowY, btnW, 24);
     renderStrokedText(
       this.renderContext,
-      `Sell`,
-      startX + 57 + (this.uiWidth - 126) / 2,
+      "Sell",
+      startX + sellX + btnW / 2 - this.measureText("Sell", 11) / 2,
       bottomRowY + 16,
       11,
       "white",

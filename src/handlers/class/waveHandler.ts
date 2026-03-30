@@ -38,7 +38,6 @@ export class WaveManager {
     this.game.globals.forceTimePaused = true;
 
     this.waveType = WaveType.START;
-    this.game.globals.score = 0;
     this.toSpawn = 5;
     this.spawnTimer = 0;
     this.spawned = 0;

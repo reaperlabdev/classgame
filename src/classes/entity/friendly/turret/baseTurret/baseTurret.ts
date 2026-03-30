@@ -48,7 +48,7 @@ export class BaseTurret extends TurretEntity {
           y: this.closest.y,
           age: 0,
         });
-        play("shooting");
+        play("shooting", false, 100000);
         this.closest.takeDamage(this.damage);
         this.attackTimer = 0;
       }

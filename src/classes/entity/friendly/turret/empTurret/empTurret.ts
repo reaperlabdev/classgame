@@ -78,7 +78,7 @@ export class EmpTurret extends TurretEntity {
       }
     }
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite("turret"),
+      this.game.globals.spriteManager.getSprite("emp"),
       -this.width / 2,
       -this.height / 2,
       32,

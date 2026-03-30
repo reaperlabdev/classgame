@@ -74,7 +74,7 @@ export class Camo extends HostileEntity {
     }
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
+      this.game.globals.spriteManager.getSprite(`camo${this.animStep}`),
       -this.width / 2.8,
       -this.height / 2,
       24,

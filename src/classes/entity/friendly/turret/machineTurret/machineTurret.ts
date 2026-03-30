@@ -4,6 +4,7 @@ import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
+import { play } from "../../../../../utility/audioUtil";
 
 export class MachineTurret extends TurretEntity {
   tracers: { x: number; y: number; age: number }[] = [];
@@ -48,6 +49,7 @@ export class MachineTurret extends TurretEntity {
           y: this.closest.y,
           age: 0,
         });
+        play("shooting");
         this.closest.takeDamage(this.damage);
         this.attackTimer = 0;
       }

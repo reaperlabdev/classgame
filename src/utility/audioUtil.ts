@@ -6,12 +6,14 @@ type SoundConfig = {
   path: string;
   loop: boolean;
   volume: number;
+  pitch?: number;
 };
 
 const audioContext = new AudioContext();
 const bufferCache: Record<string, AudioBuffer> = {};
 const activeSources: Record<string, AudioBufferSourceNode[]> = {};
 const volumes: Record<string, GainNode> = {};
+const pitches: Record<string, BiquadFilterNode> = {};
 
 const soundConfigs: Record<string, SoundConfig> = audioSettings.sounds;
 
@@ -39,19 +41,36 @@ const getOrCreateGain = (name: string): GainNode => {
   return volumes[name];
 };
 
+const getOrCreatePitch = (name: string): BiquadFilterNode => {
+  if (!pitches[name]) {
+    const pitchNode = audioContext.createBiquadFilter();
+    pitchNode.type = "highpass";
+    pitchNode.frequency.value = soundConfigs[name]?.pitch ?? 1;
+    pitchNode.connect(audioContext.destination);
+    pitches[name] = pitchNode;
+  }
+  return pitches[name];
+};
+
 export const preloadAll = async (): Promise<void> => {
   await Promise.all(Object.keys(soundConfigs).map(loadBuffer));
 };
 
-export const play = async (name: string, loop?: boolean): Promise<void> => {
+export const play = async (
+  name: string,
+  loop?: boolean,
+  pitch?: number,
+): Promise<void> => {
   const buffer = await loadBuffer(name);
   const config = soundConfigs[name];
   const gainNode = getOrCreateGain(name);
+  const pitchNode = getOrCreatePitch(name);
 
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
   source.loop = loop ?? config.loop;
   source.connect(gainNode);
+  source.connect(pitchNode);
   source.start(0);
 
   if (!activeSources[name]) activeSources[name] = [];
