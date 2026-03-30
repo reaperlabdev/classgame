@@ -11,6 +11,8 @@ export class Entity {
   height: number;
   maxHealth: number;
   health: number;
+  stunned: boolean;
+  stunTime: number;
   isAlive: boolean;
 
   constructor(
@@ -31,11 +33,20 @@ export class Entity {
     this.height = height;
     this.maxHealth = health;
     this.health = health;
+    this.stunned = false;
+    this.stunTime = 0;
     this.isAlive = true;
     game.globals.entityManager.addEntity(this);
   }
 
-  update(dt: number): void {}
+  update(dt: number): void {
+    if (this.stunned) {
+      this.stunTime -= dt;
+      if (this.stunTime <= 0) {
+        this.stunned = false;
+      }
+    }
+  }
 
   render(ctx: CanvasRenderingContext2D): void {}
 

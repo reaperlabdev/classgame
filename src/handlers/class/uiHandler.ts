@@ -1,5 +1,5 @@
-import { uiClass } from "../classes/ui/uiClass";
-import { Game } from "../game";
+import { uiClass } from "../../classes/ui/uiClass";
+import { Game } from "../../game";
 
 export class uiHandler {
   game: Game;

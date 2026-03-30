@@ -1,7 +1,7 @@
-import { Tile } from "../classes/tile/tileClass";
-import { Game } from "../game";
+import { Tile } from "../../classes/tile/tileClass";
+import { Game } from "../../game";
 
-export class TileManager {
+export class TileHandler {
   game: Game;
   tiles = new Map<string, Tile>();
   private staticCache: OffscreenCanvas | null = null;

@@ -1,6 +1,6 @@
-import { Game } from "../game";
-import { Entity } from "../classes/entity/entityClass";
-import { EntityType } from "../classes/entity/entityType";
+import { Game } from "../../game";
+import { Entity } from "../../classes/entity/entityClass";
+import { EntityType } from "../../classes/entity/entityType";
 
 export class EntityManager {
   game: Game;
@@ -45,7 +45,6 @@ export class EntityManager {
   }
 
   render(): void {
-    // render hostiles first to put turrets on top
     for (const entity of this.getEntityByType(EntityType.HOSTILE)) {
       entity.render(this.game.renderContext);
     }

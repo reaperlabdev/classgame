@@ -1,14 +1,14 @@
-import { EntityType } from "../classes/entity/entityType";
-import { PlayerBase } from "../classes/entity/friendly/playerBaseEntity";
-import { Game } from "../game";
-import { Robot } from "../classes/entity/hostile/robot/robotEntity";
-import { WaveType } from "../classes/wave/waveType";
-import { specialSpawns, waveSpawns } from "../classes/wave/waveSpawns";
-import { HostileEntity } from "../classes/entity/hostile/hostileEntity";
+import { EntityType } from "../../classes/entity/entityType";
+import { PlayerBase } from "../../classes/entity/friendly/playerBaseEntity";
+import { Game } from "../../game";
+import { Robot } from "../../classes/entity/hostile/robot/robotEntity";
+import { WaveType } from "../../settings/wave/waveType";
+import { specialSpawns, waveSpawns } from "../../settings/wave/waveVaules";
+import { HostileEntity } from "../../classes/entity/hostile/hostileEntity";
 import {
   entityValues,
-  placementSettings,
-} from "../classes/entity/entityValues";
+  entityDefaults,
+} from "../../settings/entity/entityValues";
 
 export class WaveManager {
   game: Game;
@@ -35,7 +35,10 @@ export class WaveManager {
   }
 
   reset(): void {
+    this.game.globals.forceTimePaused = true;
+
     this.waveType = WaveType.START;
+    this.game.globals.score = 0;
     this.toSpawn = 5;
     this.spawnTimer = 0;
     this.spawned = 0;
@@ -43,9 +46,8 @@ export class WaveManager {
     this.currentWave = 1;
     this.game.globals.cash = this.game.globals.startingCash;
 
-    for (const [key, value] of Object.entries(entityValues)) {
-      const turretKey = key as keyof typeof entityValues;
-      entityValues[turretKey].cost = entityValues[turretKey].defaultCost;
+    for (const key of Object.keys(entityValues)) {
+      entityValues[key].cost = entityDefaults[key].cost;
     }
 
     this.game.globals.entityManager.getEntityArray().forEach((ent) => {
@@ -83,13 +85,18 @@ export class WaveManager {
       if (isSpecialWave) {
         for (let i = 0; i < specialSpawns.length; i++) {
           if (this.currentWave === specialSpawns[i][0]) {
-            const SpecialClass = specialSpawns[i][1];
-            this.spawnTypes = [SpecialClass];
-            this.typeTracker = { [SpecialClass.name]: [1, 0] };
+            const entries = specialSpawns[i][1];
+
+            let totalToSpawn = 0;
+            for (const [SpecialClass, max] of entries) {
+              this.spawnTypes.push(SpecialClass);
+              this.typeTracker[SpecialClass.name] = [max, 0];
+              totalToSpawn += max;
+            }
+            this.toSpawn = totalToSpawn;
             break;
           }
         }
-        this.toSpawn = 1;
       } else {
         for (let i = 0; i < waveSpawns.length; i++) {
           if (this.currentWave >= waveSpawns[i][0]) {

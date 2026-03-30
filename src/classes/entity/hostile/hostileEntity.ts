@@ -6,6 +6,8 @@ import { EntityType } from "../entityType";
 
 export class HostileEntity extends Entity {
   pathProgress: number = 0;
+  currentOrder: number = -1;
+  hurtTime: number = 0;
   camo: boolean = false;
   time: number = 0;
 
@@ -17,16 +19,24 @@ export class HostileEntity extends Entity {
     play("hostileDeath");
   }
 
+  setStunned(time: number): void {
+    this.stunned = true;
+    this.stunTime = time;
+  }
+
   takeDamage(amount: number): void {
     const realDamageDealt = Math.min(amount, this.health);
     this.health -= realDamageDealt;
+    this.hurtTime = 0.1;
     let cashEffect: CashEffect = new CashEffect(
       this.game,
       this.x,
       this.y,
       realDamageDealt,
     );
+    this.game.globals.score += realDamageDealt;
     this.game.globals.cash += realDamageDealt;
+
     if (this.health <= 0) {
       this.deathNoise();
       this.destroy();

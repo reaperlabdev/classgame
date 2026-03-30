@@ -2,7 +2,7 @@ import { Game } from "../../../../../game";
 import { TilePath } from "../../../../tile/path/tilePath";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
-import { entityValues } from "../../../entityValues";
+import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
 
 export class SpikeTurret extends TurretEntity {
@@ -11,9 +11,10 @@ export class SpikeTurret extends TurretEntity {
   static accepts = [TilePath];
 
   private attackTimer: number = 0;
+  private lastAttacked: Entity | null = null;
 
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 16);
+    super(game, x, y, 32);
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.damage = entityValues.Spike.damage;
@@ -31,13 +32,11 @@ export class SpikeTurret extends TurretEntity {
       }
     }
 
-    this.attackTimer += dt;
+    const closest: Entity | null = this.getTarget();
 
-    if (this.attackTimer < this.attackSpeed) {
+    if (closest == this.lastAttacked) {
       return;
     }
-
-    const closest: Entity | null = this.getTarget();
 
     if (closest) {
       const dx = closest.x - this.x;
@@ -46,17 +45,25 @@ export class SpikeTurret extends TurretEntity {
 
       if (distance < this.range) {
         this.tracers.push({ x: closest.x, y: closest.y, age: 0 });
+        this.lastAttacked = closest;
         closest.takeDamage(this.damage);
         this.takeDamage(1);
-        this.attackTimer = 0;
       }
     }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    const sprite = this.game.globals.spriteManager.getSprite("spike");
-    ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.drawImage(
+      this.game.globals.spriteManager.getSprite("spike"),
+      -this.width / 2,
+      -this.height / 2,
+      16,
+      16,
+    );
+    ctx.restore();
+    ctx.save();
 
     for (const tracer of this.tracers) {
       const alpha =
@@ -64,7 +71,7 @@ export class SpikeTurret extends TurretEntity {
           ? Math.max(0, 1 - tracer.age / this.tracerDuration)
           : 0;
       ctx.globalAlpha = alpha;
-      this.drawTracer(ctx, tracer.x, tracer.y);
+      this.drawTracer(ctx, "white", tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
 

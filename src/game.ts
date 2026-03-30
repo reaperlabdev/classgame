@@ -1,21 +1,24 @@
-import { Updater } from "./handlers/updater";
-import { Renderer } from "./handlers/renderer";
-import { uiHandler } from "./handlers/uiHandler";
-import { TileMapManager } from "./handlers/tilemapManager";
-import { EntityManager } from "./handlers/entityManager";
-import { WaveManager } from "./handlers/waveManager";
-import { MouseHandler } from "./handlers/mouseHandler";
-import { SpriteManager } from "./handlers/spriteManager";
+import { Updater } from "./handlers/tick/updater";
+import { Renderer } from "./handlers/tick/renderer";
+import { uiHandler } from "./handlers/class/uiHandler";
+import { TileMapManager } from "./handlers/tile/tilemapHandler";
+import { EntityManager } from "./handlers/class/entityHandler";
+import { WaveManager } from "./handlers/class/waveHandler";
+import { MouseHandler } from "./handlers/input/mouseHandler";
+import { SpriteManager } from "./handlers/image/spriteHandler";
 import { Spawning } from "./spawning/spawning";
-import { KeyboardHandler } from "./handlers/keyboardHandler";
+import { KeyboardHandler } from "./handlers/input/keyboardHandler";
 
 interface Globals {
+  forceTimePaused: boolean;
   paused: boolean;
   doubleSpeed: boolean;
   fps: number;
+  time: number;
   startingHealth: number;
   startingCash: number;
   cash: number;
+  score: number;
   targetFPS: number;
   targetTile: any;
   frameTime: number;
@@ -38,11 +41,14 @@ const _targetFPS = 60;
 
 export class Game {
   globals: Globals = {
+    forceTimePaused: false,
     paused: false,
     doubleSpeed: false,
     fps: 0,
+    time: 0,
     startingHealth: 50,
     startingCash: 30,
+    score: 0,
     cash: 30,
     targetFPS: _targetFPS,
     targetTile: null,

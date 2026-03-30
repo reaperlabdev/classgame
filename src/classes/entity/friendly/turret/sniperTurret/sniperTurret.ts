@@ -1,7 +1,7 @@
 import { Game } from "../../../../../game";
 import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
-import { entityValues } from "../../../entityValues";
+import { entityValues } from "../../../../../settings/entity/entityValues";
 import { TurretEntity } from "../turretEntity";
 import { TileGrass } from "../../../../tile/grass/tileGrass";
 
@@ -74,7 +74,7 @@ export class SniperTurret extends TurretEntity {
     for (const tracer of this.tracers) {
       const alpha = Math.max(0, 1 - tracer.age / this.tracerDuration);
       ctx.globalAlpha = alpha;
-      this.drawTracer(ctx, tracer.x, tracer.y);
+      this.drawTracer(ctx, "yellow", tracer.x, tracer.y);
     }
     ctx.globalAlpha = 1;
 

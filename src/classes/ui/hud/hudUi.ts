@@ -26,7 +26,6 @@ export class HudUi extends uiClass {
       this.ctx.restore();
     }
 
-    // left
     renderStrokedText(
       this.ctx,
       `Lives: ${lives}`,
@@ -49,7 +48,6 @@ export class HudUi extends uiClass {
       2,
     );
 
-    // right
     renderStrokedText(
       this.ctx,
       `Cash: ${this.game.globals.cash.toString()}`,
@@ -63,7 +61,6 @@ export class HudUi extends uiClass {
       2,
     );
 
-    // render bottom right
     if (this.game.globals.doubleSpeed) {
       renderStrokedText(
         this.ctx,

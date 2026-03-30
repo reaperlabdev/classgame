@@ -6,8 +6,7 @@ import { Game } from "../game";
 import {
   entityValues,
   placementSettings,
-} from "../classes/entity/entityValues";
-import { TileRock } from "../classes/tile/rock/tileRock";
+} from "../settings/entity/entityValues";
 import { SniperTurret } from "../classes/entity/friendly/turret/sniperTurret/sniperTurret";
 import { getTileMousePos } from "../utility/mouseUtil";
 import { TurretEntity } from "../classes/entity/friendly/turret/turretEntity";
@@ -15,6 +14,7 @@ import { MachineTurret } from "../classes/entity/friendly/turret/machineTurret/m
 import { SpikeTurret } from "../classes/entity/friendly/turret/spikeTurret/spikeTurret";
 import { EntityType } from "../classes/entity/entityType";
 import { Entity } from "../classes/entity/entityClass";
+import { EmpTurret } from "../classes/entity/friendly/turret/empTurret/empTurret";
 
 export class Spawning {
   game: Game;
@@ -39,6 +39,7 @@ export class Spawning {
     | typeof MachineTurret
     | typeof SniperTurret
     | typeof BaseTurret
+    | typeof EmpTurret
     | typeof SpikeTurret
     | null;
   turretName: string | null;
@@ -53,6 +54,7 @@ export class Spawning {
   }
 
   select(turret: string | null) {
+    console.log(turret);
     if (turret === null) {
       this.selectedTurret = null;
       this.turretName = null;
@@ -64,6 +66,7 @@ export class Spawning {
       Turret: BaseTurret,
       Sniper: SniperTurret,
       Machine: MachineTurret,
+      EMP: EmpTurret,
       Spike: SpikeTurret,
     };
 
@@ -114,9 +117,8 @@ export class Spawning {
                   this.turretName as keyof typeof placementSettings
                 ].max,
               );
-
-            this.select(null);
           }
+          this.select(null);
         }
       }
     } else if (!this.game.globals.mouseHandler.getIsDown() && this.debounce) {
@@ -126,6 +128,7 @@ export class Spawning {
 
   render(ctx: CanvasRenderingContext2D) {
     if (this.selectedTurret) {
+      console.log(this.turretName);
       const previewRange =
         entityValues[this.turretName as keyof typeof entityValues].range;
       ctx.save();

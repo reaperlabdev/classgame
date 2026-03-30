@@ -3,10 +3,7 @@ import { findNextTile } from "../../../../utility/entityPathing";
 import { HostileEntity } from "../hostileEntity";
 
 export class Camo extends HostileEntity {
-  lastHealth: number = 0;
-  hurtTime: number = 0;
-  speed: number = 10;
-  currentOrder: number = -1;
+  speed: number = 45;
   animStep: number = 1;
   maxAnimStep: number = 3;
   lastStep: number = 0;
@@ -25,11 +22,8 @@ export class Camo extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
-
-    if (this.health < this.lastHealth) {
-      this.hurtTime = Date.now() + 5000;
-    }
-    this.lastHealth = this.health;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);
@@ -54,12 +48,12 @@ export class Camo extends HostileEntity {
     this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
-      this.hurtTime -= Date.now();
+      this.hurtTime -= dt;
     }
 
     this.time += dt;
 
-    const stepDuration = 0.1;
+    const stepDuration = (this.speed * dt) / 4;
 
     if (this.time >= stepDuration) {
       this.animStep++;

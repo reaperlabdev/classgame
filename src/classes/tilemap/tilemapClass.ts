@@ -1,17 +1,17 @@
 import { Game } from "../../game";
-import { TileManager } from "../../handlers/tileManager";
 import { Tile } from "../../classes/tile/tileClass";
+import { TileHandler } from "../../handlers/tile/tileHandler";
 
 export class TileMap {
   game: Game;
-  tileManager: TileManager;
+  tileHandler: TileHandler;
 
   constructor(game: Game) {
     this.game = game;
-    this.tileManager = new TileManager(game);
+    this.tileHandler = new TileHandler(game);
   }
 
   addTile(tile: Tile) {
-    this.tileManager.addTile(tile);
+    this.tileHandler.addTile(tile);
   }
 }

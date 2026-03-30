@@ -19,5 +19,15 @@ export class uiDebug extends uiClass {
     if (!this.show) return;
     this.ctx.fillStyle = "white";
     this.ctx.fillText("FPS: " + this.game.globals.fps, 5, 15);
+    this.ctx.fillText(
+      "Entities: " + this.game.globals.entityManager.getEntityArray().length,
+      5,
+      30,
+    );
+    this.ctx.fillText(
+      "Tiles: " + this.game.globals.tileMapManager.getTileArray().length,
+      5,
+      45,
+    );
   }
 }
