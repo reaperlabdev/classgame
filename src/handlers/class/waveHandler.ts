@@ -85,13 +85,18 @@ export class WaveManager {
       if (isSpecialWave) {
         for (let i = 0; i < specialSpawns.length; i++) {
           if (this.currentWave === specialSpawns[i][0]) {
-            const SpecialClass = specialSpawns[i][1];
-            this.spawnTypes = [SpecialClass];
-            this.typeTracker = { [SpecialClass.name]: [1, 0] };
+            const entries = specialSpawns[i][1];
+
+            let totalToSpawn = 0;
+            for (const [SpecialClass, max] of entries) {
+              this.spawnTypes.push(SpecialClass);
+              this.typeTracker[SpecialClass.name] = [max, 0];
+              totalToSpawn += max;
+            }
+            this.toSpawn = totalToSpawn;
             break;
           }
         }
-        this.toSpawn = 1;
       } else {
         for (let i = 0; i < waveSpawns.length; i++) {
           if (this.currentWave >= waveSpawns[i][0]) {

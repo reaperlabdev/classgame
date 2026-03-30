@@ -13,7 +13,7 @@ export class SpawnUi extends uiClass {
   private pressedKeys: Set<string> = new Set();
   mouseX: number;
   mouseY: number;
-  turrets: string[] = ["Turret", "Sniper", "Machine", "EMP", "Magnet", "Spike"];
+  turrets: string[] = ["Turret", "Sniper", "Machine", "EMP", "Spike"];
   selectedTurret: string | null = null;
 
   private readonly boxSize = 42;

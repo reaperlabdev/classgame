@@ -138,7 +138,8 @@ async function main(): Promise<void> {
     setVolume("bgMusic", 0.1);
     setVolume("hostileDeath", 0.1);
     setVolume("devilDeath", 0.1);
-    play("bgMusic", true);
+    setVolume("shooting", 0.1);
+    //play("bgMusic", true);
   }
 
   audio();

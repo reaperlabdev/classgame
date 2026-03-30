@@ -9,8 +9,11 @@ export const waveSpawns: [number, typeof HostileEntity, number][] =
     max ?? Infinity,
   ]);
 
-export const specialSpawns: [number, typeof HostileEntity][] =
-  waveData.specialSpawns.map(({ wave, entity }) => [
+export const specialSpawns: [number, [typeof HostileEntity, number][]][] =
+  waveData.specialSpawns.map(({ wave, entities }) => [
     wave,
-    entityRegistry[entity],
+    entities.map(({ entity, max }) => [
+      entityRegistry[entity],
+      max ?? Infinity,
+    ]),
   ]);

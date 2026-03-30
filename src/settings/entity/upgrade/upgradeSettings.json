@@ -70,8 +70,8 @@
           "label": "Fire Rate",
           "property": "attackSpeed",
           "baseCost": 40,
-          "growth": 1.65,
-          "step": -0.02
+          "growth": 2,
+          "step": -0.1
         }
       ]
     },
@@ -100,38 +100,13 @@
         }
       ]
     },
-    "Magnet": {
-      "paths": [
-        {
-          "label": "Pull Strength",
-          "property": "pullStrength",
-          "baseCost": 100,
-          "growth": 2,
-          "step": 5
-        },
-        {
-          "label": "Range",
-          "property": "range",
-          "baseCost": 500,
-          "growth": 5,
-          "step": 5
-        },
-        {
-          "label": "Fire Rate",
-          "property": "attackSpeed",
-          "baseCost": 200,
-          "growth": 1.6,
-          "step": -0.1
-        }
-      ]
-    },
     "EMP": {
       "paths": [
         {
           "label": "Damage",
           "property": "damage",
           "baseCost": 20,
-          "growth": 1,
+          "growth": 1.8,
           "step": 2
         },
         {
@@ -145,8 +120,8 @@
           "label": "Fire Rate",
           "property": "attackSpeed",
           "baseCost": 40,
-          "growth": 1.6,
-          "step": -0.05
+          "growth": 2.2,
+          "step": -0.1
         }
       ]
     }
@@ -155,7 +130,6 @@
     "Turret": { "damage": 12, "range": 125, "attackSpeed": 0.7 },
     "Sniper": { "damage": 40, "range": 200, "attackSpeed": 0.8 },
     "Machine": { "damage": 10, "range": 100, "attackSpeed": 0.15 },
-    "Magnet": { "pullStrength": 100, "range": 100, "attackSpeed": 3 },
     "Spike": { "damage": 15, "range": 15, "health": 500 },
     "EMP": { "damage": 10, "range": 75, "attackSpeed": 1.5 }
   }

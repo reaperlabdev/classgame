@@ -85,7 +85,7 @@ export class UpgradeUi extends uiClass {
     if (!settings?.paths?.[index] || !baseData || !limits) return Infinity;
 
     const path = settings.paths[index];
-    const baseStat = baseData[path.property];
+    const baseStat = baseData[path.property] ?? currentValue;
     const limit = limits[path.property];
 
     const isMaxed =

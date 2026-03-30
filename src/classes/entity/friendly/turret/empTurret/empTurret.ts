@@ -94,6 +94,9 @@ export class EmpTurret extends TurretEntity {
       this.drawTracer(ctx, "#4af", tracer.x, tracer.y);
     }
 
+    ctx.restore();
+    ctx.save();
+
     for (const blast of this.blastMarkers) {
       const progress = blast.age / this.blastDuration;
       const alpha = Math.max(0, 0.45 * (1 - progress));
@@ -110,6 +113,8 @@ export class EmpTurret extends TurretEntity {
     }
 
     ctx.globalAlpha = 1;
+    ctx.restore();
+    ctx.save();
 
     const { x, y } = this.game.globals.mouseHandler.getPosition();
     const distanceToMouse = Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2);
