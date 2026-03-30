@@ -49,7 +49,7 @@ export class MachineTurret extends TurretEntity {
           y: this.closest.y,
           age: 0,
         });
-        play("shooting");
+        play("shooting", false, true);
         this.closest.takeDamage(this.damage);
         this.attackTimer = 0;
       }

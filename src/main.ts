@@ -20,6 +20,8 @@ import camoImageSrc1 from "./assets/robots/camo1.png";
 import camoImageSrc2 from "./assets/robots/camo2.png";
 import camoImageSrc3 from "./assets/robots/camo3.png";
 
+import spiderImageSrc from "./assets/robots/spider.png";
+
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
 import machineImageSrc from "./assets/turrets/machine.png";
@@ -61,6 +63,11 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite("camo1", loadImage(camoImageSrc1));
   await game.globals.spriteManager.addSprite("camo2", loadImage(camoImageSrc2));
   await game.globals.spriteManager.addSprite("camo3", loadImage(camoImageSrc3));
+
+  await game.globals.spriteManager.addSprite(
+    "spider",
+    loadImage(spiderImageSrc),
+  );
 
   await game.globals.spriteManager.addSprite(
     "turret",

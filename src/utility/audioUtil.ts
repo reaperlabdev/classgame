@@ -59,18 +59,27 @@ export const preloadAll = async (): Promise<void> => {
 export const play = async (
   name: string,
   loop?: boolean,
-  pitch?: number,
+  randomize: boolean = true,
 ): Promise<void> => {
+  if (audioContext.state === "suspended") await audioContext.resume();
+
   const buffer = await loadBuffer(name);
   const config = soundConfigs[name];
   const gainNode = getOrCreateGain(name);
-  const pitchNode = getOrCreatePitch(name);
 
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
   source.loop = loop ?? config.loop;
+
+  if (randomize) {
+    const min = 0.9;
+    const max = 1.1;
+    source.playbackRate.value = Math.random() * (max - min) + min;
+  } else {
+    source.playbackRate.value = config.pitch ?? 1;
+  }
+
   source.connect(gainNode);
-  source.connect(pitchNode);
   source.start(0);
 
   if (!activeSources[name]) activeSources[name] = [];

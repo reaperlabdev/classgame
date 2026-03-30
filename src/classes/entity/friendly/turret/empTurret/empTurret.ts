@@ -6,7 +6,7 @@ import { TurretEntity } from "../turretEntity";
 export class EmpTurret extends TurretEntity {
   tracers: { x: number; y: number; age: number }[] = [];
   blastMarkers: { x: number; y: number; age: number }[] = [];
-  tracerDuration = 0.2;
+  tracerDuration = 1.8;
   blastDuration = 0.4;
   aoeRadius = 60;
   static accepts = [TileGrass];
