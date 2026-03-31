@@ -8,11 +8,10 @@ import map2 from "./assets/maps/2.json";
 import map3 from "./assets/maps/3.json";
 import map4 from "./assets/maps/4.json";
 import map5 from "./assets/maps/5.json";
+import map6 from "./assets/maps/6.json";
 
-const maps = [map1, map2, map3, map4, map5];
+const maps = [map1, map2, map3, map4, map5, map6];
 
-import { PlayerBase } from "./classes/entity/friendly/playerBaseEntity";
-import { getOrderedPath } from "./utility/entityPathing";
 import { WaveManager } from "./handlers/class/waveHandler";
 import { loadImage } from "./utility/imageUtil";
 
@@ -20,6 +19,13 @@ import pathImageSrc from "./assets/tiles/path.png";
 import grassImageSrc from "./assets/tiles/grass.png";
 import rockImageSrc from "./assets/tiles/rock.png";
 import waterImageSrc from "./assets/tiles/water.png";
+
+import treeImageSrc1 from "./assets/decor/tree1.png";
+import treeImageSrc2 from "./assets/decor/tree2.png";
+
+import rockImageSrc1 from "./assets/decor/rock1.png";
+import rockImageSrc2 from "./assets/decor/rock2.png";
+import rockImageSrc3 from "./assets/decor/rock3.png";
 
 import robotImageSrc1 from "./assets/robots/robot1.png";
 import robotImageSrc2 from "./assets/robots/robot2.png";
@@ -29,7 +35,14 @@ import camoImageSrc1 from "./assets/robots/camo1.png";
 import camoImageSrc2 from "./assets/robots/camo2.png";
 import camoImageSrc3 from "./assets/robots/camo3.png";
 
-import spiderImageSrc from "./assets/robots/spider.png";
+import spiderImageSrc1 from "./assets/robots/spider1.png";
+import spiderImageSrc2 from "./assets/robots/spider2.png";
+import spiderImageSrc3 from "./assets/robots/spider3.png";
+import spiderImageSrc4 from "./assets/robots/spider4.png";
+
+import bomberImageSrc1 from "./assets/robots/bomber1.png";
+import bomberImageSrc2 from "./assets/robots/bomber2.png";
+import bomberImageSrc3 from "./assets/robots/bomber3.png";
 
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
@@ -43,6 +56,7 @@ import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
 import { EndingUi } from "./classes/ui/ending/endingUi";
 import { SettingsUi } from "./classes/ui/settings/settingsUi";
 import { StartingUi } from "./classes/ui/starting/startingUi";
+import { SettingsLoader } from "./settings/settingsLoader";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -54,11 +68,20 @@ async function main(): Promise<void> {
   (document as any).game = game;
   game.globals.maps = maps;
 
+  game.globals.settings.loadSettings();
+
   // load sprites
   await game.globals.spriteManager.addSprite("path", loadImage(pathImageSrc));
   await game.globals.spriteManager.addSprite("grass", loadImage(grassImageSrc));
   await game.globals.spriteManager.addSprite("rock", loadImage(rockImageSrc));
   await game.globals.spriteManager.addSprite("water", loadImage(waterImageSrc));
+
+  await game.globals.spriteManager.addSprite("tree1", loadImage(treeImageSrc1));
+  await game.globals.spriteManager.addSprite("tree2", loadImage(treeImageSrc2));
+
+  await game.globals.spriteManager.addSprite("rock1", loadImage(rockImageSrc1));
+  await game.globals.spriteManager.addSprite("rock2", loadImage(rockImageSrc2));
+  await game.globals.spriteManager.addSprite("rock3", loadImage(rockImageSrc3));
 
   await game.globals.spriteManager.addSprite(
     "robot1",
@@ -78,8 +101,33 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite("camo3", loadImage(camoImageSrc3));
 
   await game.globals.spriteManager.addSprite(
-    "spider",
-    loadImage(spiderImageSrc),
+    "spider1",
+    loadImage(spiderImageSrc1),
+  );
+  await game.globals.spriteManager.addSprite(
+    "spider2",
+    loadImage(spiderImageSrc2),
+  );
+  await game.globals.spriteManager.addSprite(
+    "spider3",
+    loadImage(spiderImageSrc3),
+  );
+  await game.globals.spriteManager.addSprite(
+    "spider4",
+    loadImage(spiderImageSrc4),
+  );
+
+  await game.globals.spriteManager.addSprite(
+    "bomber1",
+    loadImage(bomberImageSrc1),
+  );
+  await game.globals.spriteManager.addSprite(
+    "bomber2",
+    loadImage(bomberImageSrc2),
+  );
+  await game.globals.spriteManager.addSprite(
+    "bomber3",
+    loadImage(bomberImageSrc3),
   );
 
   await game.globals.spriteManager.addSprite(

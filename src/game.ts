@@ -8,6 +8,7 @@ import { MouseHandler } from "./handlers/input/mouseHandler";
 import { SpriteManager } from "./handlers/image/spriteHandler";
 import { Spawning } from "./spawning/spawning";
 import { KeyboardHandler } from "./handlers/input/keyboardHandler";
+import { SettingsLoader } from "./settings/settingsLoader";
 
 interface Globals {
   maps: any;
@@ -21,6 +22,7 @@ interface Globals {
   startingCash: number;
   cash: number;
   score: number;
+  settings: SettingsLoader;
   targetFPS: number;
   targetTile: any;
   frameTime: number;
@@ -54,6 +56,7 @@ export class Game {
     startingCash: 30,
     score: 0,
     cash: 30,
+    settings: new SettingsLoader(),
     targetFPS: _targetFPS,
     targetTile: null,
     frameTime: performance.now(),

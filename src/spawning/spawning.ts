@@ -15,6 +15,7 @@ import { SpikeTurret } from "../classes/entity/friendly/turret/spikeTurret/spike
 import { EntityType } from "../classes/entity/entityType";
 import { Entity } from "../classes/entity/entityClass";
 import { EmpTurret } from "../classes/entity/friendly/turret/empTurret/empTurret";
+import { DecorEntity } from "../classes/entity/decor/decorEntity";
 
 export class Spawning {
   game: Game;
@@ -94,12 +95,17 @@ export class Spawning {
             .getEntityArray()
             .some(
               (entity) =>
-                entity instanceof TurretEntity &&
-                entity.x === tile.x &&
-                entity.y === tile.y,
+                (entity instanceof TurretEntity &&
+                  entity.x === tile.x &&
+                  entity.y === tile.y) ||
+                (entity instanceof DecorEntity &&
+                  ((entity.x === tile.x + 16 && entity.y === tile.y + 16) || // same tile (shifted)
+                    (entity.x === tile.x && entity.y === tile.y + 16) || // left
+                    (entity.x === tile.x + 16 && entity.y === tile.y) || // above
+                    (entity.x === tile.x && entity.y === tile.y))), // top-left
             );
 
-          const canPlaceOnTile = this.selectedTurret.accepts?.some(
+          let canPlaceOnTile = this.selectedTurret.accepts?.some(
             (accepted) => tile instanceof accepted,
           );
 

@@ -20,6 +20,20 @@ export class TurretEntity extends Entity {
     console.log(this.name);
   }
 
+  update(dt: number): void {
+    if (this.stunned) {
+      this.stunTime -= dt;
+      if (this.stunTime <= 0) {
+        this.stunned = false;
+      }
+    }
+  }
+
+  setStunned(time: number): void {
+    this.stunned = true;
+    this.stunTime = time;
+  }
+
   getTarget(): Entity | null {
     const enemies = this.game.globals.entityManager.getEntityByType(
       EntityType.HOSTILE,
@@ -32,6 +46,8 @@ export class TurretEntity extends Entity {
 
     for (const enemy of enemies) {
       if (!(enemy instanceof HostileEntity)) continue;
+      if (!enemy.isAlive) continue;
+      if (enemy.camo && !this.canHitCamo) continue;
 
       const centerX = enemy.x + enemy.width / 2;
       const centerY = enemy.y + enemy.height / 2;
@@ -42,7 +58,6 @@ export class TurretEntity extends Entity {
 
       if (distSq <= rangeSq) {
         if (enemy.pathProgress > maxProgress) {
-          if (enemy.camo && !this.canHitCamo) continue;
           maxProgress = enemy.pathProgress;
           furthestEnemy = enemy;
         }
@@ -66,6 +81,7 @@ export class TurretEntity extends Entity {
 
     for (const enemy of enemies) {
       if (!(enemy instanceof HostileEntity)) continue;
+      if (!enemy.isAlive) continue;
       if (enemy.camo && !this.canHitCamo && !ignoreCamo) continue;
 
       const ex = enemy.x + enemy.width / 2;
@@ -102,13 +118,15 @@ export class TurretEntity extends Entity {
     targetX: number,
     targetY: number,
   ) {
-    ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);
-    ctx.lineTo(targetX + 16, targetY + 16);
-    ctx.stroke();
-    ctx.restore();
+    if (this.game.globals.settings.getSettings().effects) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(this.x + this.width / 4, this.y + this.height / 4);
+      ctx.lineTo(targetX + 16, targetY + 16);
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 }

@@ -29,6 +29,11 @@ export class BaseTurret extends TurretEntity {
       }
     }
 
+    super.update(dt);
+    if (this.stunned) {
+      return;
+    }
+
     this.attackTimer += dt;
 
     if (this.attackTimer < this.attackSpeed) {

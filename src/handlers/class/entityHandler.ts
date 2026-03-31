@@ -45,15 +45,16 @@ export class EntityManager {
   }
 
   render(): void {
-    for (const entity of this.getEntityByType(EntityType.HOSTILE)) {
+    const entitiesWithoutEffects = this.getEntityArray().filter(
+      (entity) => entity.type !== EntityType.EFFECT,
+    );
+    const sortedEntities = entitiesWithoutEffects.sort((a, b) => {
+      return a.y - b.y;
+    });
+    for (const entity of sortedEntities) {
       entity.render(this.game.renderContext);
     }
-    for (const entity of this.getEntityByType(EntityType.TURRET)) {
-      entity.render(this.game.renderContext);
-    }
-    for (const entity of this.getEntityByType(EntityType.BASE)) {
-      entity.render(this.game.renderContext);
-    }
+
     for (const entity of this.getEntityByType(EntityType.EFFECT)) {
       entity.render(this.game.renderContext);
     }

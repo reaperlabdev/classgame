@@ -11,6 +11,8 @@ import {
   invalidatePathCache,
 } from "../../utility/entityPathing";
 import { TileWater } from "../../classes/tile/water/tileWater";
+import { Tree } from "../../classes/entity/decor/tree/treeEntity";
+import { Rock } from "../../classes/entity/decor/rock/rockEntity";
 
 export interface TileMapJson {
   tileSize: number;
@@ -55,6 +57,7 @@ export class TileMapManager {
   }
 
   async genNewMap(maps: Array<TileMapJson>) {
+    const startTime = performance.now();
     invalidatePathCache();
     this.clearTiles();
 
@@ -69,6 +72,51 @@ export class TileMapManager {
       this.game.globals.tileMapManager.tileManager.tiles,
     );
     const lastTile = pathOrder[pathOrder.length - 1];
+
+    for (const tile of this.game.globals.tileMapManager.tileManager.getTileArray()) {
+      if (tile instanceof TileGrass) {
+        const nearbyEntities = Array.from(
+          this.game.globals.entityManager.entities.values(),
+        ).filter(
+          (entity) =>
+            entity instanceof Tree ||
+            entity instanceof Rock ||
+            entity instanceof PlayerBase,
+        );
+        const isNearby = nearbyEntities.some(
+          (entity) =>
+            Math.abs(entity.x - tile.x) < 32 &&
+            Math.abs(entity.y - tile.y) < 32,
+        );
+
+        const tiles =
+          this.game.globals.tileMapManager.tileManager.getTileArray();
+        const nearbyTiles = tiles.filter(
+          (otherTile) =>
+            Math.abs(otherTile.x - tile.x) < 32 &&
+            Math.abs(otherTile.y - tile.y) < 32,
+        );
+        const isRockNearby = nearbyTiles.some(
+          (otherTile) => otherTile instanceof TileRock,
+        );
+
+        if (isNearby || isRockNearby) continue;
+
+        const chance = Math.floor(Math.random() * 50);
+        console.log(chance);
+        if (chance == 1) {
+          console.log("tree!");
+          new Tree(this.game, tile.x, tile.y);
+        }
+
+        if (Math.floor(Math.random() * 100) == 1) {
+          new Rock(this.game, tile.x, tile.y);
+        }
+      }
+    }
+
+    const endTime = performance.now();
+    console.log(`decor and tile generation took ${endTime - startTime}ms`);
 
     const playerBase = new PlayerBase(
       this.game,

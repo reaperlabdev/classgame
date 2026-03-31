@@ -32,6 +32,11 @@ export class SpikeTurret extends TurretEntity {
       }
     }
 
+    super.update(dt);
+    if (this.stunned) {
+      return;
+    }
+
     const closest: Entity | null = this.getTarget();
 
     if (closest == this.lastAttacked) {

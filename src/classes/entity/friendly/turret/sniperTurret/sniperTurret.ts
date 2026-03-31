@@ -31,6 +31,11 @@ export class SniperTurret extends TurretEntity {
       }
     }
 
+    super.update(dt);
+    if (this.stunned) {
+      return;
+    }
+
     this.attackTimer += dt;
 
     this.closest = this.getTarget();

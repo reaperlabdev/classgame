@@ -36,6 +36,11 @@ export class EmpTurret extends TurretEntity {
       }
     }
 
+    super.update(dt);
+    if (this.stunned) {
+      return;
+    }
+
     this.attackTimer += dt;
     if (this.attackTimer < this.attackSpeed) return;
 
@@ -97,24 +102,25 @@ export class EmpTurret extends TurretEntity {
     ctx.restore();
     ctx.save();
 
-    for (const blast of this.blastMarkers) {
-      const progress = blast.age / this.blastDuration;
-      const alpha = Math.max(0, 0.45 * (1 - progress));
-      const radius = this.aoeRadius * (0.4 + 0.6 * progress);
+    if (this.game.globals.settings.getSettings().effects) {
+      for (const blast of this.blastMarkers) {
+        const progress = blast.age / this.blastDuration;
+        const alpha = Math.max(0, 0.45 * (1 - progress));
+        const radius = this.aoeRadius * (0.4 + 0.6 * progress);
 
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.arc(blast.x, blast.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = "#4af";
-      ctx.fill();
-      ctx.strokeStyle = "#8df";
-      ctx.lineWidth = 2;
-      ctx.stroke();
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(blast.x, blast.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#4af";
+        ctx.fill();
+        ctx.strokeStyle = "#8df";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.restore();
     }
-
-    ctx.globalAlpha = 1;
-    ctx.restore();
-    ctx.save();
 
     const { x, y } = this.game.globals.mouseHandler.getPosition();
     const distanceToMouse = Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2);

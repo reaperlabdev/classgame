@@ -12,6 +12,9 @@ export class Effect extends Entity {
     public duration: number,
   ) {
     super(game, EntityType.EFFECT, x, y, 16, 16, 0);
+    if (!this.game.globals.settings.getSettings().effects) {
+      this.game.globals.entityManager.removeEntity(this.id);
+    }
     this.startTime = Date.now();
   }
 

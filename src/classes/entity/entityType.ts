@@ -3,4 +3,5 @@ export enum EntityType {
   "HOSTILE",
   "BASE",
   "EFFECT",
+  "DECOR",
 }

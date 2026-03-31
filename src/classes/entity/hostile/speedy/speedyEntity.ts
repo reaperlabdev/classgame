@@ -85,8 +85,20 @@ export class Speedy extends HostileEntity {
       ctx.filter = "invert(1)";
     }
 
+    let spriteID = "1";
+
+    if (this.health < this.maxHealth * 0.75) {
+      spriteID = "2";
+    }
+    if (this.health < this.maxHealth * 0.5) {
+      spriteID = "3";
+    }
+    if (this.health < this.maxHealth * 0.25) {
+      spriteID = "4";
+    }
+
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite(`spider`),
+      this.game.globals.spriteManager.getSprite(`spider${spriteID}`),
       -12,
       -12,
       24,

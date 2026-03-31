@@ -44,7 +44,6 @@ export class WaveManager {
     this.spawned = 0;
     this.pauseTimer = 0;
     this.currentWave = 1;
-    this.game.globals.cash = this.game.globals.startingCash;
 
     for (const key of Object.keys(entityValues)) {
       entityValues[key].cost = entityDefaults[key].cost;
@@ -54,6 +53,7 @@ export class WaveManager {
       .getEntityArray()
       .find((ent): ent is PlayerBase => ent.type === EntityType.BASE)!;
 
+    this.game.globals.cash = this.game.globals.startingCash;
     this.base.health = this.base.maxHealth;
   }
 
