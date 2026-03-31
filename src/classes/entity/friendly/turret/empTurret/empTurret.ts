@@ -82,6 +82,9 @@ export class EmpTurret extends TurretEntity {
         ctx.scale(-1, 1);
       }
     }
+    if (this.stunned) {
+      ctx.filter = "invert()";
+    }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite("emp"),
       -this.width / 2,

@@ -60,6 +60,9 @@ export class SpikeTurret extends TurretEntity {
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    if (this.stunned) {
+      ctx.filter = "invert()";
+    }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite("spike"),
       -this.width / 2,

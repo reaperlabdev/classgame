@@ -3,21 +3,25 @@
     "bgMusic": {
       "path": "./src/assets/sfx/music1.wav",
       "loop": true,
-      "volume": 0.8
+      "type": "music",
+      "volume": 0.1
     },
     "hostileDeath": {
       "path": "./src/assets/sfx/death.wav",
       "loop": false,
+      "type": "effect",
       "volume": 1
     },
     "devilDeath": {
       "path": "./src/assets/sfx/devilDeath.wav",
       "loop": false,
+      "type": "effect",
       "volume": 1
     },
     "shooting": {
       "path": "./src/assets/sfx/shooting.wav",
       "loop": false,
+      "type": "effect",
       "volume": 1
     }
   }

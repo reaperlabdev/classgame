@@ -51,7 +51,7 @@ import empImageSrc from "./assets/turrets/emp.png";
 import spikeImageSrc from "./assets/turrets/spike.png";
 
 import { HudUi } from "./classes/ui/hud/hudUi";
-import { play, setVolume } from "./utility/audioUtil";
+import { audioUtilInit, play, setVolume } from "./utility/audioUtil";
 import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
 import { EndingUi } from "./classes/ui/ending/endingUi";
 import { SettingsUi } from "./classes/ui/settings/settingsUi";
@@ -69,6 +69,7 @@ async function main(): Promise<void> {
   game.globals.maps = maps;
 
   game.globals.settings.loadSettings();
+  audioUtilInit(game);
 
   // load sprites
   await game.globals.spriteManager.addSprite("path", loadImage(pathImageSrc));
@@ -209,12 +210,7 @@ async function main(): Promise<void> {
     await new Promise((resolve) => {
       document.addEventListener("click", resolve, { once: true });
     });
-
-    setVolume("bgMusic", 0.1);
-    setVolume("hostileDeath", 0.1);
-    setVolume("devilDeath", 0.1);
-    setVolume("shooting", 1);
-    //play("bgMusic", true);
+    play("bgMusic", true);
   }
 
   audio();

@@ -57,7 +57,7 @@ export class Bomber extends HostileEntity {
         const dy = turret.y + 8 - (this.y + this.height / 2);
         const dist = Math.hypot(dx, dy);
 
-        if (dist < 85) {
+        if (dist < 50) {
           turret.setStunned(4);
         }
       }
@@ -123,7 +123,7 @@ export class Bomber extends HostileEntity {
       const sprite = this.game.globals.spriteManager.getSprite(
         `bomber${this.animStep}`,
       );
-      ctx.drawImage(sprite, this.x, this.y, this.width, this.height);
+      ctx.drawImage(sprite, this.x + 2, this.y - 6, this.width, this.height);
       ctx.restore();
     }
 
@@ -132,7 +132,7 @@ export class Bomber extends HostileEntity {
       for (const blast of this.blastMarkers) {
         const progress = blast.age / this.blastDuration;
         const alpha = 1 - progress;
-        const radius = 85 * Math.sin((progress * Math.PI) / 2);
+        const radius = 50 * Math.sin((progress * Math.PI) / 2);
 
         ctx.globalAlpha = alpha;
         ctx.beginPath();

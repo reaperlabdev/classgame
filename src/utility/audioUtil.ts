@@ -1,56 +1,45 @@
-// AI
-// fixed by us
-
+import { Game } from "../game";
 import audioSettings from "../settings/audio/audioSettings.json";
 
 type SoundConfig = {
   path: string;
   loop: boolean;
+  type?: "music" | "effect";
   volume: number;
   pitch?: number;
 };
 
+let game: Game | null = null;
 const audioContext = new AudioContext();
 const bufferCache: Record<string, AudioBuffer> = {};
 const activeSources: Record<string, AudioBufferSourceNode[]> = {};
-const volumes: Record<string, GainNode> = {};
-const pitches: Record<string, BiquadFilterNode> = {};
+const globalGains: Record<string, GainNode> = {};
 
-const soundConfigs: Record<string, SoundConfig> = audioSettings.sounds;
+const soundConfigs = audioSettings.sounds as Record<string, SoundConfig>;
+
+export const audioUtilInit = (gameInstance: Game): void => {
+  game = gameInstance;
+};
 
 const loadBuffer = async (name: string): Promise<AudioBuffer> => {
   if (bufferCache[name]) return bufferCache[name];
 
   const config = soundConfigs[name];
-  if (!config)
-    throw new Error(`Sound "${name}" is not registered in audioSettings.json`);
+  if (!config) throw new Error(`Sound "${name}" not found`);
 
   const response = await fetch(config.path);
   const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  bufferCache[name] = audioBuffer;
-  return audioBuffer;
+  return (bufferCache[name] = await audioContext.decodeAudioData(arrayBuffer));
 };
 
 const getOrCreateGain = (name: string): GainNode => {
-  if (!volumes[name]) {
+  if (!globalGains[name]) {
     const gainNode = audioContext.createGain();
     gainNode.gain.value = soundConfigs[name]?.volume ?? 1;
     gainNode.connect(audioContext.destination);
-    volumes[name] = gainNode;
+    globalGains[name] = gainNode;
   }
-  return volumes[name];
-};
-
-const getOrCreatePitch = (name: string): BiquadFilterNode => {
-  if (!pitches[name]) {
-    const pitchNode = audioContext.createBiquadFilter();
-    pitchNode.type = "highpass";
-    pitchNode.frequency.value = soundConfigs[name]?.pitch ?? 1;
-    pitchNode.connect(audioContext.destination);
-    pitches[name] = pitchNode;
-  }
-  return pitches[name];
+  return globalGains[name];
 };
 
 export const preloadAll = async (): Promise<void> => {
@@ -60,61 +49,76 @@ export const preloadAll = async (): Promise<void> => {
 export const play = async (
   name: string,
   loop?: boolean,
-  randomize: boolean = true,
+  randomize: boolean = false,
 ): Promise<void> => {
   if (audioContext.state === "suspended") await audioContext.resume();
+  const settings = game?.globals.settings.getSettings();
 
   const buffer = await loadBuffer(name);
   const config = soundConfigs[name];
   const gainNode = getOrCreateGain(name);
-  const pitchNode = getOrCreatePitch(name);
 
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
   source.loop = loop ?? config.loop;
-  source.connect(pitchNode);
-  pitchNode.connect(gainNode);
 
   if (randomize) {
-    const min = 0.9;
-    const max = 1.4;
-    source.playbackRate.value = Math.random() * (max - min) + min;
+    source.playbackRate.value = 0.9 + Math.random() * 0.5;
   } else {
     source.playbackRate.value = config.pitch ?? 1;
   }
 
+  source.connect(gainNode);
   source.start(0);
-
   if (!activeSources[name]) activeSources[name] = [];
   activeSources[name].push(source);
 
   source.onended = () => {
     activeSources[name] = activeSources[name].filter((s) => s !== source);
   };
+
+  muteUnallowedPlayback();
+};
+
+export const muteUnallowedPlayback = (): void => {
+  for (const name in soundConfigs) {
+    const config = soundConfigs[name];
+    const gainNode = getOrCreateGain(name);
+
+    const isAllowed = checkIfAllowedPlayback(name);
+
+    const targetVolume = isAllowed ? (config.volume ?? 1) : 0;
+
+    gainNode.gain.setTargetAtTime(
+      targetVolume,
+      audioContext.currentTime,
+      0.015,
+    );
+  }
+};
+
+export const checkIfAllowedPlayback = (name: string): boolean => {
+  const config = soundConfigs[name];
+  const settings = game?.globals.settings.getSettings();
+  if (config.type === "music") {
+    return settings?.music ?? false;
+  } else if (config.type === "effect") {
+    return settings?.sfx ?? false;
+  }
+  return false;
 };
 
 export const stop = (name: string): void => {
   activeSources[name]?.forEach((s) => {
-    s.stop();
+    try {
+      s.stop();
+    } catch (e) {}
     s.disconnect();
   });
   activeSources[name] = [];
 };
 
-export const stopOldest = (name: string): void => {
-  const oldest = activeSources[name]?.shift();
-  if (oldest) {
-    oldest.stop();
-    oldest.disconnect();
-  }
-};
-
-export const getActiveCount = (name: string): number => {
-  return activeSources[name]?.length ?? 0;
-};
-
 export const setVolume = (name: string, vol: number): void => {
-  if (volumes[name]) {
-    volumes[name].gain.value = vol;
-  }
+  const node = getOrCreateGain(name);
+  node.gain.setTargetAtTime(vol, audioContext.currentTime, 0.05);
 };
