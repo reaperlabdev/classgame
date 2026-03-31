@@ -15,6 +15,7 @@ export class EndingUi extends uiClass {
     if (this.game.globals.mouseHandler.getIsDown()) {
       this.game.globals.score = 0;
       this.game.globals.forceTimePaused = false;
+      this.game.globals.starting = true;
     }
   }
 

@@ -4,11 +4,13 @@ import { Tile } from "../classes/tile/tileClass";
 let cachedPath: TilePath[] | null = null;
 
 export function invalidatePathCache(): void {
+  console.log("invalidatePathCache");
   cachedPath = null;
 }
 
 export function getOrderedPath(tiles: Map<string, Tile>): TilePath[] {
   if (cachedPath) return cachedPath;
+  console.log("gen new path");
   cachedPath = Array.from(tiles.values())
     .filter((t): t is TilePath => t instanceof TilePath)
     .sort((a, b) => a.order - b.order);

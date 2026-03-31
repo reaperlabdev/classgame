@@ -10,6 +10,8 @@ import { Spawning } from "./spawning/spawning";
 import { KeyboardHandler } from "./handlers/input/keyboardHandler";
 
 interface Globals {
+  maps: any;
+  starting: boolean;
   forceTimePaused: boolean;
   paused: boolean;
   doubleSpeed: boolean;
@@ -41,6 +43,8 @@ const _targetFPS = 60;
 
 export class Game {
   globals: Globals = {
+    maps: null,
+    starting: true,
     forceTimePaused: false,
     paused: false,
     doubleSpeed: false,

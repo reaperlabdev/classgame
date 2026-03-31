@@ -30,7 +30,11 @@ export class Updater {
 
     this.game.globals.spawning.update(dt);
 
-    if (!this.game.globals.paused || this.game.globals.forceTimePaused)
+    if (
+      !this.game.globals.paused ||
+      this.game.globals.forceTimePaused ||
+      this.game.globals.starting
+    )
       this.game.globals.entityManager.update(dt);
     this.game.globals.uiHandler.update(dt);
 

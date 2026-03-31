@@ -4,6 +4,13 @@ import { TileRock } from "../../classes/tile/rock/tileRock";
 import { TilePath } from "../../classes/tile/path/tilePath";
 import { TileGrass } from "../../classes/tile/grass/tileGrass";
 import { TileHandler } from "./tileHandler";
+import { TileMap } from "../../classes/tilemap/tilemapClass";
+import { PlayerBase } from "../../classes/entity/friendly/playerBaseEntity";
+import {
+  getOrderedPath,
+  invalidatePathCache,
+} from "../../utility/entityPathing";
+import { TileWater } from "../../classes/tile/water/tileWater";
 
 export interface TileMapJson {
   tileSize: number;
@@ -12,12 +19,10 @@ export interface TileMapJson {
   tileTypes: Record<string, string>;
   layers: TileMapLayerJson[];
 }
-
 export interface TileMapLayerJson {
   name: string;
   data: number[][];
 }
-
 export type TileFactory = (game: Game, x: number, y: number) => Tile;
 
 export class TileMapManager {
@@ -25,20 +30,53 @@ export class TileMapManager {
   tileManager: TileHandler;
   private tileRegistry: Map<string, TileFactory> = new Map();
 
+  private mapPixelWidth = 0;
+  private mapPixelHeight = 0;
+
   constructor(game: Game) {
     this.game = game;
     this.tileManager = new TileHandler(game);
     this.registerTileType("grass", (g, x, y) => new TileGrass(g, x, y));
     this.registerTileType("rock", (g, x, y) => new TileRock(g, x, y, "gray"));
     this.registerTileType("path", (g, x, y) => new TilePath(g, x, y));
+    this.registerTileType("water", (g, x, y) => new TileWater(g, x, y));
   }
 
   getTileArray(): Tile[] {
     return this.tileManager.getTileArray();
   }
 
+  clearTiles() {
+    this.tileManager.tiles.clear();
+  }
+
   registerTileType(name: string, factory: TileFactory): void {
     this.tileRegistry.set(name, factory);
+  }
+
+  async genNewMap(maps: Array<TileMapJson>) {
+    invalidatePathCache();
+    this.clearTiles();
+
+    const ind = Math.floor(Math.random() * maps.length);
+    const mapJson = maps[ind];
+    this.loadTileMapFromJson(mapJson);
+
+    // clear entities
+    this.game.globals.entityManager.entities.clear();
+
+    const pathOrder = getOrderedPath(
+      this.game.globals.tileMapManager.tileManager.tiles,
+    );
+    const lastTile = pathOrder[pathOrder.length - 1];
+
+    const playerBase = new PlayerBase(
+      this.game,
+      lastTile.x,
+      lastTile.y,
+      this.game.globals.startingHealth,
+    );
+    this.game.globals.entityManager.entities.set(playerBase.id, playerBase);
   }
 
   async loadFile(path: string): Promise<void> {
@@ -51,6 +89,9 @@ export class TileMapManager {
   }
 
   loadTileMapFromJson(json: TileMapJson): void {
+    this.mapPixelWidth = json.width * json.tileSize;
+    this.mapPixelHeight = json.height * json.tileSize;
+
     for (const layer of json.layers) {
       for (let row = 0; row < json.height; row++) {
         for (let col = 0; col < json.width; col++) {
@@ -62,14 +103,14 @@ export class TileMapManager {
         }
       }
     }
-    this.computePathOrder();
+
+    this.computePathOrder(json.tileSize);
   }
 
-  private computePathOrder(): void {
+  private computePathOrder(tileSize: number): void {
     const pathTiles = Array.from(this.tileManager.tiles.values()).filter(
       (t): t is TilePath => t instanceof TilePath,
     );
-
     if (pathTiles.length === 0) return;
 
     const posMap = new Map<string, TilePath>();
@@ -77,8 +118,17 @@ export class TileMapManager {
       posMap.set(`${tile.x},${tile.y}`, tile);
     }
 
-    const start = pathTiles.reduce((a, b) => (a.x < b.x ? a : b));
-    const step = 16;
+    const maxX = this.mapPixelWidth - tileSize;
+    const maxY = this.mapPixelHeight - tileSize;
+
+    const edgeTiles = pathTiles.filter(
+      (t) => t.x === 0 || t.y === 0 || t.x === maxX || t.y === maxY,
+    );
+
+    const start =
+      edgeTiles.find((t) => t.x === 0 || t.y === 0) ??
+      edgeTiles[0] ??
+      pathTiles.reduce((a, b) => (a.x < b.x ? a : b));
 
     const visited = new Set<string>();
     const queue: [TilePath, number][] = [[start, 0]];
@@ -90,19 +140,21 @@ export class TileMapManager {
       visited.add(key);
       tile.order = order;
 
-      const neighbors = [
-        posMap.get(`${tile.x + step},${tile.y}`),
-        posMap.get(`${tile.x - step},${tile.y}`),
-        posMap.get(`${tile.x},${tile.y + step}`),
-        posMap.get(`${tile.x},${tile.y - step}`),
+      const neighbours = [
+        posMap.get(`${tile.x + tileSize},${tile.y}`),
+        posMap.get(`${tile.x - tileSize},${tile.y}`),
+        posMap.get(`${tile.x},${tile.y + tileSize}`),
+        posMap.get(`${tile.x},${tile.y - tileSize}`),
       ];
 
-      for (const neighbor of neighbors) {
-        if (neighbor && !visited.has(`${neighbor.x},${neighbor.y}`)) {
-          queue.push([neighbor, order + 1]);
+      for (const neighbour of neighbours) {
+        if (neighbour && !visited.has(`${neighbour.x},${neighbour.y}`)) {
+          queue.push([neighbour, order + 1]);
         }
       }
     }
+
+    const unreached = pathTiles.filter((t) => !visited.has(`${t.x},${t.y}`));
   }
 
   update(dt: number): void {

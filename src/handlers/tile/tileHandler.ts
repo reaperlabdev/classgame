@@ -1,4 +1,5 @@
 import { Tile } from "../../classes/tile/tileClass";
+import { TileWater } from "../../classes/tile/water/tileWater";
 import { Game } from "../../game";
 
 export class TileHandler {
@@ -99,6 +100,12 @@ export class TileHandler {
 
     if (this.hoveredTile) {
       this.hoveredTile.renderToContext(ctx, true);
+    }
+
+    for (const tile of this.tiles.values()) {
+      if (tile instanceof TileWater) {
+        tile.render(ctx);
+      }
     }
   }
 }
