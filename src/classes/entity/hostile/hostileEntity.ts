@@ -1,4 +1,4 @@
-  import { Game } from "../../../game";
+import { Game } from "../../../game";
 import { play } from "../../../utility/audioUtil";
 import { CashEffect } from "../effect/cash/cashEffect";
 import { Entity } from "../entityClass";
