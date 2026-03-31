@@ -198,3 +198,30 @@ export function renderStrokedText(
 
   ctx.restore();
 }
+
+export function renderCenteredStrokedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  fontSize: number,
+  color: string,
+  strokeColor: string,
+  strokeWidth: number,
+) {
+  ctx.save();
+  ctx.font = `${fontSize}px Courier New`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  x = x + ctx.measureText(text).width / 2;
+
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = strokeWidth;
+  ctx.strokeText(text, x, y);
+
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+
+  ctx.restore();
+}

@@ -32,11 +32,8 @@ export class Devil extends HostileEntity {
 
   update(dt: number): void {
     if (!this.isAlive) return;
-
-    if (this.health < this.lastHealth) {
-      this.hurtTime = Date.now() + 5000;
-    }
-    this.lastHealth = this.health;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);
@@ -61,12 +58,12 @@ export class Devil extends HostileEntity {
     this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
-      this.hurtTime -= Date.now();
+      this.hurtTime -= dt;
     }
 
     this.time += dt;
 
-    const stepDuration = 0.1;
+    const stepDuration = (this.speed * dt) / 4;
 
     if (this.time >= stepDuration) {
       this.animStep++;
@@ -83,11 +80,7 @@ export class Devil extends HostileEntity {
 
     ctx.save();
 
-    ctx.fillStyle = "#121212";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.maxHealth / 1000), 3);
-
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.health / 1000), 3);
+    this.renderHealthBar(ctx, "Devil");
 
     ctx.restore();
     ctx.save();

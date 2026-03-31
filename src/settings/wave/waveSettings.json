@@ -6,7 +6,7 @@
     { "wave": 20, "entity": "Bomber", "max": 3 },
     { "wave": 50, "entity": "Devil", "max": 5 },
     { "wave": 65, "entity": "Bomber", "max": 3 },
-    { "wave": 75, "entity": "Devil", "max": 5 }
+    { "wave": 75, "entity": "Factory", "max": 2 }
   ],
   "specialSpawns": [
     { "wave": 5, "entities": [{ "entity": "Speedy", "max": 3 }] },
@@ -19,6 +19,7 @@
         { "entity": "Speedy", "max": 5 },
         { "entity": "Camo", "max": 5 }
       ]
-    }
+    },
+    { "wave": 50, "entities": [{ "entity": "Factory", "max": 1 }] }
   ]
 }
