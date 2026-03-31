@@ -14,9 +14,11 @@ export class HudUi extends uiClass {
     this.ctx.fillStyle = "#FF4444";
     this.ctx.font = "24px Arial";
 
-    const lives = this.game.globals.entityManager.getEntityByType(
+    const BASE = this.game.globals.entityManager.getEntityByType(
       EntityType.BASE,
-    )[0].health;
+    )[0];
+    if (!BASE) return;
+    const lives = BASE.health;
 
     if (this.game.globals.paused) {
       this.ctx.save();

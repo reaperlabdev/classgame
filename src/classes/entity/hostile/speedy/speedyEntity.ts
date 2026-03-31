@@ -8,6 +8,9 @@ export class Speedy extends HostileEntity {
   maxAnimStep: number = 3;
   lastStep: number = 0;
 
+  moveDirX = 0;
+  moveDirY = 0;
+
   constructor(game: Game) {
     super(game, 32);
     this.health = Math.round(
@@ -38,13 +41,16 @@ export class Speedy extends HostileEntity {
     const dist = Math.sqrt(dx * dx + dy * dy);
     const move = this.speed * dt;
 
+    this.moveDirX = dx / dist;
+    this.moveDirY = dy / dist;
+
     if (move >= dist) {
       this.x = targetX;
       this.y = targetY;
       this.currentOrder = target.order;
     } else {
-      this.x += (dx / dist) * move;
-      this.y += (dy / dist) * move;
+      this.x += this.moveDirX * move;
+      this.y += this.moveDirY * move;
     }
     this.pathProgress += this.speed * dt;
 
@@ -70,17 +76,23 @@ export class Speedy extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
+
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+
+    ctx.rotate(Math.atan2(this.moveDirY, this.moveDirX));
+
     if (this.hurtTime > 0) {
       ctx.filter = "invert(1)";
     }
-    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`spider`),
-      -this.width / 2.8,
-      -this.height / 2,
+      -12,
+      -12,
       24,
       24,
     );
+
     ctx.restore();
   }
 }

@@ -2,7 +2,15 @@ import { uiDebug } from "./classes/ui/debug/debugUi";
 import { SpawnUi } from "./classes/ui/spawn/spawnUi";
 
 import { Game } from "./game";
-import defaultMap from "./assets/map/default.json";
+
+import map1 from "./assets/maps/1.json";
+import map2 from "./assets/maps/2.json";
+import map3 from "./assets/maps/3.json";
+import map4 from "./assets/maps/4.json";
+import map5 from "./assets/maps/5.json";
+
+const maps = [map1, map2, map3, map4, map5];
+
 import { PlayerBase } from "./classes/entity/friendly/playerBaseEntity";
 import { getOrderedPath } from "./utility/entityPathing";
 import { WaveManager } from "./handlers/class/waveHandler";
@@ -11,6 +19,7 @@ import { loadImage } from "./utility/imageUtil";
 import pathImageSrc from "./assets/tiles/path.png";
 import grassImageSrc from "./assets/tiles/grass.png";
 import rockImageSrc from "./assets/tiles/rock.png";
+import waterImageSrc from "./assets/tiles/water.png";
 
 import robotImageSrc1 from "./assets/robots/robot1.png";
 import robotImageSrc2 from "./assets/robots/robot2.png";
@@ -32,6 +41,8 @@ import { HudUi } from "./classes/ui/hud/hudUi";
 import { play, setVolume } from "./utility/audioUtil";
 import { UpgradeUi } from "./classes/ui/upgrade/upgradeUi";
 import { EndingUi } from "./classes/ui/ending/endingUi";
+import { SettingsUi } from "./classes/ui/settings/settingsUi";
+import { StartingUi } from "./classes/ui/starting/startingUi";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const renderContext = canvas.getContext("2d")!;
@@ -41,11 +52,13 @@ const game = new Game(canvas, renderContext);
 async function main(): Promise<void> {
   // add game to document
   (document as any).game = game;
+  game.globals.maps = maps;
 
   // load sprites
   await game.globals.spriteManager.addSprite("path", loadImage(pathImageSrc));
   await game.globals.spriteManager.addSprite("grass", loadImage(grassImageSrc));
   await game.globals.spriteManager.addSprite("rock", loadImage(rockImageSrc));
+  await game.globals.spriteManager.addSprite("water", loadImage(waterImageSrc));
 
   await game.globals.spriteManager.addSprite(
     "robot1",
@@ -93,26 +106,18 @@ async function main(): Promise<void> {
 
   new uiDebug(game);
 
-  game.globals.tileMapManager.loadTileMapFromJson(defaultMap);
-
-  const pathOrder = getOrderedPath(
-    game.globals.tileMapManager.tileManager.tiles,
-  );
-  const lastTile = pathOrder[pathOrder.length - 1];
-  const playerBase = new PlayerBase(
-    game,
-    lastTile.x,
-    lastTile.y,
-    game.globals.startingHealth,
-  );
-  game.globals.entityManager.addEntity(playerBase);
+  game.globals.tileMapManager.genNewMap(maps);
 
   // setup spawn UI
+  new StartingUi(game);
+
   new SpawnUi(game);
 
   new HudUi(game);
 
   new UpgradeUi(game);
+
+  new SettingsUi(game);
 
   new EndingUi(game);
 
@@ -132,7 +137,11 @@ async function main(): Promise<void> {
 
     game.globals.time += game.globals.doubleSpeed ? 2 * cappedDt : cappedDt;
 
-    if (!game.globals.paused && !game.globals.forceTimePaused) {
+    if (
+      !game.globals.paused &&
+      !game.globals.forceTimePaused &&
+      !game.globals.starting
+    ) {
       game.globals.waveManager?.update(cappedDt);
     }
 

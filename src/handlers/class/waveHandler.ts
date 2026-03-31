@@ -35,6 +35,7 @@ export class WaveManager {
   }
 
   reset(): void {
+    this.game.globals.tileMapManager.genNewMap(this.game.globals.maps);
     this.game.globals.forceTimePaused = true;
 
     this.waveType = WaveType.START;
@@ -49,11 +50,9 @@ export class WaveManager {
       entityValues[key].cost = entityDefaults[key].cost;
     }
 
-    this.game.globals.entityManager.getEntityArray().forEach((ent) => {
-      if (ent !== this.base) {
-        this.game.globals.entityManager.removeEntity(ent.id);
-      }
-    });
+    this.base = this.game.globals.entityManager
+      .getEntityArray()
+      .find((ent): ent is PlayerBase => ent.type === EntityType.BASE)!;
 
     this.base.health = this.base.maxHealth;
   }
