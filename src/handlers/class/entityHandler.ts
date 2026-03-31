@@ -45,18 +45,23 @@ export class EntityManager {
   }
 
   render(): void {
-    const entitiesWithoutEffects = this.getEntityArray().filter(
-      (entity) => entity.type !== EntityType.EFFECT,
+    const entities = this.game.globals.entityManager.getEntityArray();
+
+    const physicalUnits = entities.filter(
+      (e: Entity) => e.type !== EntityType.EFFECT,
     );
-    const sortedEntities = entitiesWithoutEffects.sort((a, b) => {
-      return a.y - b.y;
-    });
-    for (const entity of sortedEntities) {
+    const effects = entities.filter(
+      (e: Entity) => e.type === EntityType.EFFECT,
+    );
+
+    physicalUnits.sort((a, b) => a.y + a.height - (b.y + b.height));
+
+    for (const entity of physicalUnits) {
       entity.render(this.game.renderContext);
     }
 
-    for (const entity of this.getEntityByType(EntityType.EFFECT)) {
-      entity.render(this.game.renderContext);
+    for (const effect of effects) {
+      effect.render(this.game.renderContext);
     }
   }
 }
