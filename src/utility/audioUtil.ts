@@ -1,4 +1,5 @@
 // AI
+// fixed by us
 
 import audioSettings from "../settings/audio/audioSettings.json";
 
@@ -66,20 +67,22 @@ export const play = async (
   const buffer = await loadBuffer(name);
   const config = soundConfigs[name];
   const gainNode = getOrCreateGain(name);
+  const pitchNode = getOrCreatePitch(name);
 
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
   source.loop = loop ?? config.loop;
+  source.connect(pitchNode);
+  pitchNode.connect(gainNode);
 
   if (randomize) {
     const min = 0.9;
-    const max = 1.1;
+    const max = 1.4;
     source.playbackRate.value = Math.random() * (max - min) + min;
   } else {
     source.playbackRate.value = config.pitch ?? 1;
   }
 
-  source.connect(gainNode);
   source.start(0);
 
   if (!activeSources[name]) activeSources[name] = [];
