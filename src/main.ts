@@ -30,10 +30,12 @@ import rockImageSrc3 from "./assets/decor/rock3.png";
 import robotImageSrc1 from "./assets/robots/robot1.png";
 import robotImageSrc2 from "./assets/robots/robot2.png";
 import robotImageSrc3 from "./assets/robots/robot3.png";
+import robotImageSrc4 from "./assets/robots/robot4.png";
 
 import camoImageSrc1 from "./assets/robots/camo1.png";
 import camoImageSrc2 from "./assets/robots/camo2.png";
 import camoImageSrc3 from "./assets/robots/camo3.png";
+import camoImageSrc4 from "./assets/robots/camo4.png";
 
 import spiderImageSrc1 from "./assets/robots/spider1.png";
 import spiderImageSrc2 from "./assets/robots/spider2.png";
@@ -43,6 +45,7 @@ import spiderImageSrc4 from "./assets/robots/spider4.png";
 import bomberImageSrc1 from "./assets/robots/bomber1.png";
 import bomberImageSrc2 from "./assets/robots/bomber2.png";
 import bomberImageSrc3 from "./assets/robots/bomber3.png";
+import bomberImageSrc4 from "./assets/robots/bomber4.png";
 
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
@@ -96,10 +99,15 @@ async function main(): Promise<void> {
     "robot3",
     loadImage(robotImageSrc3),
   );
+  await game.globals.spriteManager.addSprite(
+    "robot4",
+    loadImage(robotImageSrc4),
+  );
 
   await game.globals.spriteManager.addSprite("camo1", loadImage(camoImageSrc1));
   await game.globals.spriteManager.addSprite("camo2", loadImage(camoImageSrc2));
   await game.globals.spriteManager.addSprite("camo3", loadImage(camoImageSrc3));
+  await game.globals.spriteManager.addSprite("camo4", loadImage(camoImageSrc4));
 
   await game.globals.spriteManager.addSprite(
     "spider1",
@@ -129,6 +137,10 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite(
     "bomber3",
     loadImage(bomberImageSrc3),
+  );
+  await game.globals.spriteManager.addSprite(
+    "bomber4",
+    loadImage(bomberImageSrc4),
   );
 
   await game.globals.spriteManager.addSprite(

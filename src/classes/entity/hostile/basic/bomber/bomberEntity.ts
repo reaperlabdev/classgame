@@ -9,7 +9,7 @@ export class Bomber extends HostileEntity {
   blastDuration: number = 0.8;
   speed: number = 65;
   animStep: number = 1;
-  maxAnimStep: number = 3;
+  maxAnimStep: number = 4;
   animTimer: number = 0;
   exploded: boolean = false;
   deathTimer: number = 1.0;

@@ -62,10 +62,10 @@
     {
       "wave": 100,
       "entities": [
-        { "entity": "Devil", "max": 3 },
-        { "entity": "Jammer", "max": 2 },
-        { "entity": "Factory", "max": 2 },
-        { "entity": "Phaser", "max": 5 }
+        { "entity": "Devil", "max": 5 },
+        { "entity": "Jammer", "max": 5 },
+        { "entity": "Factory", "max": 5 },
+        { "entity": "Phaser", "max": 10 }
       ]
     }
   ]

@@ -5,7 +5,7 @@ import { HostileEntity } from "../../hostileEntity";
 export class Camo extends HostileEntity {
   speed: number = 45;
   animStep: number = 1;
-  maxAnimStep: number = 3;
+  maxAnimStep: number = 4;
   lastStep: number = 0;
 
   constructor(game: Game) {

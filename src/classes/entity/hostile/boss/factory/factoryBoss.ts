@@ -32,7 +32,7 @@ export class Factory extends BossEntity {
     if (this.isSpawning) {
       this.spawnProgress += dt;
       if (this.spawnProgress >= this.SPAWN_DURATION) {
-        this.executeBurstSpawn(3);
+        this.executeBurstSpawn(10);
       }
     } else {
       this.handleMovement(dt, this.speed);

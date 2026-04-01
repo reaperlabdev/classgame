@@ -6,7 +6,7 @@ export class Robot extends HostileEntity {
   lastHealth: number = 0;
   speed: number = 50;
   animStep: number = 1;
-  maxAnimStep: number = 3;
+  maxAnimStep: number = 4;
   lastStep: number = 0;
 
   constructor(game: Game) {
