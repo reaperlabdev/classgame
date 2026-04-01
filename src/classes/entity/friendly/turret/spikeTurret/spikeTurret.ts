@@ -51,8 +51,8 @@ export class SpikeTurret extends TurretEntity {
       if (distance < this.range) {
         this.tracers.push({ x: closest.x, y: closest.y, age: 0 });
         this.lastAttacked = closest;
-        closest.takeDamage(this.damage);
-        this.takeDamage(1);
+        closest.takeDamage(this, this.damage);
+        this.takeDamage(this, 1);
       }
     }
   }

@@ -8,9 +8,11 @@ import { Factory } from "../../classes/entity/hostile/boss/factory/factoryBoss";
 import { Jammer } from "../../classes/entity/hostile/boss/jammer/jammerBoss";
 import { Shifter } from "../../classes/entity/hostile/boss/shifter/shifterBoss";
 import { Phaser } from "../../classes/entity/hostile/boss/phaser/phaserBoss";
+import { Shielder } from "../../classes/entity/hostile/basic/shielder/shielderEntity";
 
 export const entityRegistry: Record<string, typeof HostileEntity> = {
   Robot,
+  Shielder,
   Speedy,
   Camo,
   Devil,

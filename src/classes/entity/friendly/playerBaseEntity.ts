@@ -23,7 +23,7 @@ export class PlayerBase extends Entity {
           this.y < entity.y + entity.height &&
           this.y + this.height > entity.y
         ) {
-          this.takeDamage(entity.health);
+          this.takeDamage(entity, entity.health);
           entity.destroy();
         }
       }

@@ -33,10 +33,16 @@ export class Updater {
     if (
       !this.game.globals.paused ||
       this.game.globals.forceTimePaused ||
-      this.game.globals.starting
-    )
+      this.game.globals.starting ||
+      this.game.globals.pauseSeconds > 0
+    ) {
       this.game.globals.entityManager.update(dt);
+    }
+
     this.game.globals.uiHandler.update(dt);
+    if (this.game.globals.pauseSeconds > 0) {
+      this.game.globals.pauseSeconds -= dt;
+    }
 
     const uiHovered: boolean = Array.from(
       this.game.globals.uiHandler.uiClassesMap.values(),

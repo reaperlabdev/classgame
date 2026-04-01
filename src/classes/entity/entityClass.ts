@@ -50,7 +50,7 @@ export class Entity {
 
   render(ctx: CanvasRenderingContext2D): void {}
 
-  takeDamage(amount: number): void {
+  takeDamage(attacker: Entity, amount: number): void {
     this.health -= amount;
     if (this.health <= 0) {
       this.destroy();

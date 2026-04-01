@@ -65,7 +65,7 @@ export class EmpTurret extends TurretEntity {
           this.aoeRadius,
         );
         for (const enemy of hitEnemies) {
-          enemy.takeDamage(this.damage);
+          enemy.takeDamage(this, this.damage);
           enemy.setStunned(1);
         }
 

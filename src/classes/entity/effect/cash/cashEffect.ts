@@ -12,7 +12,7 @@ export class CashEffect extends Effect {
     y: number,
     public amount: number,
   ) {
-    super(game, x + Math.random() * 16, y, 0.8);
+    super(game, x + Math.random() * 16, y + 5 , 0.8);
     this.rand = Math.random();
   }
 

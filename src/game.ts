@@ -16,6 +16,7 @@ interface Globals {
   forceTimePaused: boolean;
   paused: boolean;
   doubleSpeed: boolean;
+  pauseSeconds: number;
   fps: number;
   time: number;
   startingHealth: number;
@@ -48,6 +49,7 @@ export class Game {
     maps: null,
     starting: true,
     forceTimePaused: false,
+    pauseSeconds: 0,
     paused: false,
     doubleSpeed: false,
     fps: 0,

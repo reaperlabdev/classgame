@@ -1,5 +1,6 @@
 import { Game } from "../../../../../game";
 import { findNextTile } from "../../../../../utility/entityPathing";
+import { Entity } from "../../../entityClass";
 import { EntityType } from "../../../entityType";
 import { TurretEntity } from "../../../friendly/turret/turretEntity";
 import { HostileEntity } from "../../hostileEntity";
@@ -19,6 +20,7 @@ export class Bomber extends HostileEntity {
     this.health = Math.round(
       4 + Math.pow(this.game.globals.waveManager.currentWave, 1.1),
     );
+    this.maxHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);
@@ -28,7 +30,7 @@ export class Bomber extends HostileEntity {
     }
   }
 
-  takeDamage(amount: number): void {
+  takeDamage(attacker: Entity, amount: number): void {
     if (this.exploded) return;
 
     this.health -= amount;

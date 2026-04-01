@@ -4,6 +4,7 @@
     { "wave": 8, "entity": "Speedy", "max": null },
     { "wave": 15, "entity": "Camo", "max": null },
     { "wave": 20, "entity": "Bomber", "max": 3 },
+    { "wave": 25, "entity": "Shielder", "max": 5 },
     { "wave": 35, "entity": "Phaser", "max": 2 },
     { "wave": 50, "entity": "Devil", "max": 3 },
     { "wave": 65, "entity": "Bomber", "max": 3 },
@@ -15,6 +16,7 @@
   "specialSpawns": [
     { "wave": 5, "entities": [{ "entity": "Speedy", "max": 5 }] },
     { "wave": 10, "entities": [{ "entity": "Camo", "max": 8 }] },
+    { "wave": 12, "entities": [{ "entity": "Shielder", "max": 3 }] },
     {
       "wave": 20,
       "entities": [
@@ -70,9 +72,7 @@
     },
     {
       "wave": 85,
-      "entities": [
-        { "entity": "Shifter", "max": 3 }
-      ]
+      "entities": [{ "entity": "Shifter", "max": 3 }]
     },
     {
       "wave": 100,

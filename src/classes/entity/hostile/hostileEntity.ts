@@ -70,7 +70,7 @@ export class HostileEntity extends Entity {
     this.stunTime = time;
   }
 
-  takeDamage(amount: number): void {
+  takeDamage(attacker: Entity, amount: number): void {
     const realDamageDealt = Math.min(amount, this.health);
     this.health -= realDamageDealt;
     this.hurtTime = 0.1;

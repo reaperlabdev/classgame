@@ -211,7 +211,8 @@ async function main(): Promise<void> {
     if (
       !game.globals.paused &&
       !game.globals.forceTimePaused &&
-      !game.globals.starting
+      !game.globals.starting &&
+      game.globals.pauseSeconds <= 0
     ) {
       game.globals.waveManager?.update(cappedDt);
     }
