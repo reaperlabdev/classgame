@@ -88,7 +88,7 @@ export class SniperTurret extends TurretEntity {
     }
     ctx.globalAlpha = 1;
 
-    if (this.closest) {
+    if (this.closest && !this.stunned) {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);

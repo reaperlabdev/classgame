@@ -16,6 +16,7 @@ export class Speedy extends HostileEntity {
     this.health = Math.round(
       2 + this.game.globals.waveManager.currentWave ** 1.1,
     );
+    this.maxHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);

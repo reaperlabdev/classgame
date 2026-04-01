@@ -16,6 +16,7 @@ export class Devil extends HostileEntity {
     super(game, 32);
     const addition = (game.globals.waveManager.currentWave - 25) * 10;
     this.health = 1000 + addition;
+    this.maxHealth = this.health;
     this.lastHealth = this.health;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
