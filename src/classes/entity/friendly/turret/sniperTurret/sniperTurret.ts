@@ -62,7 +62,10 @@ export class SniperTurret extends TurretEntity {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.translate(this.x + this.width / 4, this.y + this.height / 4);
+    ctx.translate(
+      this.game.globals.renderer.offsetX + this.x + this.width / 4,
+      this.game.globals.renderer.offsetY + this.y + this.height / 4,
+    );
     if (this.closest) {
       if (this.closest.x > this.x) {
         ctx.scale(-1, 1);

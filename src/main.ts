@@ -23,6 +23,9 @@ import waterImageSrc from "./assets/tiles/water.png";
 import treeImageSrc1 from "./assets/decor/tree1.png";
 import treeImageSrc2 from "./assets/decor/tree2.png";
 
+import trailerImageSrc from "./assets/decor/trailer.png";
+import flagImageSrc from "./assets/decor/flag.png";
+
 import rockImageSrc1 from "./assets/decor/rock1.png";
 import rockImageSrc2 from "./assets/decor/rock2.png";
 import rockImageSrc3 from "./assets/decor/rock3.png";
@@ -86,6 +89,13 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite("rock1", loadImage(rockImageSrc1));
   await game.globals.spriteManager.addSprite("rock2", loadImage(rockImageSrc2));
   await game.globals.spriteManager.addSprite("rock3", loadImage(rockImageSrc3));
+
+  await game.globals.spriteManager.addSprite(
+    "trailer",
+    loadImage(trailerImageSrc),
+  );
+
+  await game.globals.spriteManager.addSprite("flag", loadImage(flagImageSrc));
 
   await game.globals.spriteManager.addSprite(
     "robot1",

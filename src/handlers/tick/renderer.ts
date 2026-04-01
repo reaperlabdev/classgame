@@ -5,6 +5,9 @@ export class Renderer {
   private shakeIntensity: number = 0;
   private shakeDuration: number = 0;
 
+  offsetX: number = 0;
+  offsetY: number = 0;
+
   constructor(game: Game) {
     this.game = game;
   }
@@ -19,29 +22,26 @@ export class Renderer {
     const dt = Math.min((now - this.game.globals.frameTime) / 1000, 0.1);
     this.game.globals.fps = Math.round(1 / dt);
     this.game.globals.frameTime = now;
-
     const ctx = this.game.renderContext;
     const { width, height } = this.game.canvas;
-
     ctx.clearRect(0, 0, width, height);
-
     ctx.save();
-
+    let shakeOffsetX = 0;
+    let shakeOffsetY = 0;
     if (this.shakeDuration > 0) {
       this.shakeDuration -= dt;
-      const offsetX = (Math.random() - 0.5) * 2 * this.shakeIntensity;
-      const offsetY = (Math.random() - 0.5) * 2 * this.shakeIntensity;
-      ctx.translate(offsetX, offsetY);
+      shakeOffsetX = (Math.random() - 0.5) * 2 * this.shakeIntensity;
+      shakeOffsetY = (Math.random() - 0.5) * 2 * this.shakeIntensity;
+      ctx.translate(shakeOffsetX, shakeOffsetY);
     }
+    this.offsetX = shakeOffsetX;
+    this.offsetY = shakeOffsetY;
     ctx.fillStyle = "#121212";
     ctx.fillRect(-20, -20, width + 40, height + 40);
-
     this.game.globals.tileMapManager.render();
     this.game.globals.entityManager.render();
     this.game.globals.spawning.render(ctx);
-
     ctx.restore();
-
     this.game.globals.uiHandler.render();
   }
 }

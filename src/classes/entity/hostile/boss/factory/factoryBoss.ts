@@ -14,7 +14,7 @@ export class Factory extends BossEntity {
   cooldownTimer: number = 0;
 
   constructor(game: Game) {
-    super(game, 32, 800, 15);
+    super(game, 32, 1500, 15);
   }
 
   deathNoise(): void {
@@ -88,7 +88,10 @@ export class Factory extends BossEntity {
       const pulse = Math.sin(Date.now() / 100) * 0.5 + 1.5;
       ctx.filter = `drop-shadow(0 0 5px orange) brightness(${pulse})`;
     }
-    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.translate(
+      this.game.globals.renderer.offsetX + this.x + this.width / 2,
+      this.game.globals.renderer.offsetY + this.y + this.height / 2,
+    );
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
       -this.width / 2.8,

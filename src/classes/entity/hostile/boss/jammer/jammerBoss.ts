@@ -90,7 +90,10 @@ export class Jammer extends BossEntity {
     ctx.restore();
     ctx.save();
     if (this.hurtTime > 0) ctx.filter = "invert(1)";
-    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.translate(
+      this.game.globals.renderer.offsetX + this.x + this.width / 2,
+      this.game.globals.renderer.offsetY + this.y + this.height / 2,
+    );
     if (this.attackTimer < 0.5) {
       ctx.translate((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
     }

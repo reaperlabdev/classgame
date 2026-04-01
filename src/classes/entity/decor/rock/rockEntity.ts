@@ -14,7 +14,10 @@ export class Rock extends DecorEntity {
   render(ctx: CanvasRenderingContext2D) {
     ctx.save();
 
-    ctx.translate(this.x, this.y);
+    ctx.translate(
+      this.game.globals.renderer.offsetX + this.x,
+      this.game.globals.renderer.offsetY + this.y,
+    );
     if (this.flipped) ctx.scale(-1, 1);
 
     ctx.drawImage(

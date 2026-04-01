@@ -71,7 +71,10 @@ export class Phaser extends BossEntity {
       ctx.save();
       ctx.globalAlpha = p.alpha * 0.5;
       ctx.filter = "cyan(1) blur(2px)";
-      ctx.translate(p.x + this.width / 2, p.y + this.height / 2);
+      ctx.translate(
+        this.game.globals.renderer.offsetX + p.x + this.width / 2,
+        this.game.globals.renderer.offsetY + p.y + this.height / 2,
+      );
       ctx.drawImage(
         this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
         -this.width / 2.8,
@@ -91,7 +94,10 @@ export class Phaser extends BossEntity {
       ctx.filter = `brightness(${1 + this.teleportFlash * 2}) drop-shadow(0 0 10px cyan)`;
     }
 
-    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.translate(
+      this.game.globals.renderer.offsetX + this.x + this.width / 2,
+      this.game.globals.renderer.offsetY + this.y + this.height / 2,
+    );
 
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),

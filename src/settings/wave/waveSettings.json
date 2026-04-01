@@ -9,6 +9,7 @@
     { "wave": 65, "entity": "Bomber", "max": 3 },
     { "wave": 75, "entity": "Factory", "max": 1 },
     { "wave": 80, "entity": "Jammer", "max": 1 },
+    { "wave": 85, "entity": "Shifter", "max": 3 },
     { "wave": 90, "entity": "Phaser", "max": 2 }
   ],
   "specialSpawns": [
@@ -52,11 +53,25 @@
       ]
     },
     {
+      "wave": 75,
+      "entities": [
+        { "entity": "Shifter", "max": 3 },
+        { "entity": "Jammer", "max": 2 },
+        { "entity": "Bomber", "max": 5 }
+      ]
+    },
+    {
       "wave": 80,
       "entities": [
         { "entity": "Factory", "max": 2 },
         { "entity": "Jammer", "max": 1 },
         { "entity": "Bomber", "max": 5 }
+      ]
+    },
+    {
+      "wave": 85,
+      "entities": [
+        { "entity": "Shifter", "max": 3 }
       ]
     },
     {
