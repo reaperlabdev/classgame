@@ -68,6 +68,9 @@ export class BaseTurret extends TurretEntity {
         ctx.scale(-1, 1);
       }
     }
+    if (this.stunned) {
+      ctx.filter = "invert()";
+    }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite("turret"),
       -this.width / 2,

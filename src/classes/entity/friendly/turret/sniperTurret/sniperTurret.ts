@@ -68,6 +68,9 @@ export class SniperTurret extends TurretEntity {
         ctx.scale(-1, 1);
       }
     }
+    if (this.stunned) {
+      ctx.filter = "invert()";
+    }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite("sniper"),
       -this.width / 2,
@@ -85,7 +88,7 @@ export class SniperTurret extends TurretEntity {
     }
     ctx.globalAlpha = 1;
 
-    if (this.closest) {
+    if (this.closest && !this.stunned) {
       const dx = this.closest.x - this.x;
       const dy = this.closest.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);

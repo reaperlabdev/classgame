@@ -28,16 +28,7 @@ export class HudUi extends uiClass {
       this.ctx.restore();
     }
 
-    renderStrokedText(
-      this.ctx,
-      `Lives: ${lives}`,
-      16,
-      32,
-      16,
-      "#FF4444",
-      "#000",
-      2,
-    );
+    renderStrokedText(this.ctx, `❤︎${lives}`, 16, 32, 16, "#FF4444", "#000", 2);
 
     renderStrokedText(
       this.ctx,
@@ -52,10 +43,8 @@ export class HudUi extends uiClass {
 
     renderStrokedText(
       this.ctx,
-      `Cash: ${this.game.globals.cash.toString()}`,
-      800 -
-        this.ctx.measureText(`Cash: ${this.game.globals.cash.toString()}`)
-          .width,
+      `$${this.game.globals.cash.toString()}`,
+      800 - this.ctx.measureText(`$${this.game.globals.cash.toString()}`).width,
       32,
       16,
       "#FFD700",

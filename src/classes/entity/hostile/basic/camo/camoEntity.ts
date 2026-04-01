@@ -1,6 +1,6 @@
-import { Game } from "../../../../game";
-import { findNextTile } from "../../../../utility/entityPathing";
-import { HostileEntity } from "../hostileEntity";
+import { Game } from "../../../../../game";
+import { findNextTile } from "../../../../../utility/entityPathing";
+import { HostileEntity } from "../../hostileEntity";
 
 export class Camo extends HostileEntity {
   speed: number = 45;
@@ -10,6 +10,10 @@ export class Camo extends HostileEntity {
 
   constructor(game: Game) {
     super(game, 32);
+    this.health = Math.round(
+      4 + this.game.globals.waveManager.currentWave ** 1.1,
+    );
+    this.maxHealth = this.health;
     this.camo = true;
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;

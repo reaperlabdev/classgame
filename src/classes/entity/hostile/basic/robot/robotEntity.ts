@@ -1,22 +1,19 @@
-import { Game } from "../../../../game";
-import { play } from "../../../../utility/audioUtil";
-import { findNextTile } from "../../../../utility/entityPathing";
-import { HostileEntity } from "../hostileEntity";
+import { Game } from "../../../../../game";
+import { findNextTile } from "../../../../../utility/entityPathing";
+import { HostileEntity } from "../../hostileEntity";
 
-export class Devil extends HostileEntity {
+export class Robot extends HostileEntity {
   lastHealth: number = 0;
-  hurtTime: number = 0;
-  speed: number = 10;
-  currentOrder: number = -1;
+  speed: number = 50;
   animStep: number = 1;
   maxAnimStep: number = 3;
   lastStep: number = 0;
 
   constructor(game: Game) {
     super(game, 32);
-    const addition = (game.globals.waveManager.currentWave - 25) * 10;
-    this.health = 1000 + addition;
-    this.lastHealth = this.health;
+    this.health = Math.round(
+      4 + this.game.globals.waveManager.currentWave ** 1.1,
+    );
 
     const tiles = game.globals.tileMapManager.tileManager.tiles;
     const start = findNextTile(tiles, -1);
@@ -26,17 +23,10 @@ export class Devil extends HostileEntity {
     }
   }
 
-  deathNoise(): void {
-    play("devilDeath");
-  }
-
   update(dt: number): void {
     if (!this.isAlive) return;
-
-    if (this.health < this.lastHealth) {
-      this.hurtTime = Date.now() + 5000;
-    }
-    this.lastHealth = this.health;
+    super.update(dt);
+    if (this.stunned) return;
 
     const tiles = this.game.globals.tileMapManager.tileManager.tiles;
     const target = findNextTile(tiles, this.currentOrder);
@@ -61,12 +51,12 @@ export class Devil extends HostileEntity {
     this.pathProgress += this.speed * dt;
 
     if (this.hurtTime > 0) {
-      this.hurtTime -= Date.now();
+      this.hurtTime -= dt;
     }
 
     this.time += dt;
 
-    const stepDuration = 0.1;
+    const stepDuration = (this.speed * dt) / 2;
 
     if (this.time >= stepDuration) {
       this.animStep++;
@@ -81,15 +71,6 @@ export class Devil extends HostileEntity {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.isAlive) return;
 
-    ctx.save();
-
-    ctx.fillStyle = "#121212";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.maxHealth / 1000), 3);
-
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y - 5, this.width * (this.health / 1000), 3);
-
-    ctx.restore();
     ctx.save();
     if (this.hurtTime > 0) {
       ctx.filter = "invert(1)";

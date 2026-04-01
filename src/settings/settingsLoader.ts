@@ -1,3 +1,5 @@
+import { muteUnallowedPlayback } from "../utility/audioUtil";
+
 const SETTINGS_KEY = "game_settings";
 
 export interface Settings {
@@ -32,6 +34,7 @@ class SettingsLoader {
   }
 
   saveSettings(): void {
+    muteUnallowedPlayback();
     try {
       localStorage.setItem(
         SETTINGS_KEY,

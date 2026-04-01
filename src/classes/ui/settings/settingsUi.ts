@@ -54,7 +54,7 @@ export class SettingsUi extends uiClass {
         value: this.sfxEnabled,
       },
       {
-        label: "FX",
+        label: "EFX",
         sub: this.effectsEnabled ? "ON" : "OFF",
         value: this.effectsEnabled,
       },
@@ -149,15 +149,15 @@ export class SettingsUi extends uiClass {
 
     ctx.save();
 
-    ctx.fillStyle = "rgba(10, 10, 20, 0.9)";
+    ctx.fillStyle = "#323232";
     ctx.fillRect(px, py, this.PANEL_W, this.PANEL_H);
-    ctx.strokeStyle = "#444466";
+    ctx.strokeStyle = "#121212";
     ctx.lineWidth = 2;
     ctx.strokeRect(px, py, this.PANEL_W, this.PANEL_H);
 
     renderStrokedText(
       ctx,
-      "SETTINGS",
+      "Settings",
       px + this.PANEL_W / 2 - 40,
       py + 25,
       18,
@@ -165,6 +165,7 @@ export class SettingsUi extends uiClass {
       "#000000",
       2,
     );
+    
 
     this.rows.forEach((row, i) => {
       const bx = this.getButtonX(i);

@@ -4,20 +4,68 @@
     { "wave": 8, "entity": "Speedy", "max": null },
     { "wave": 15, "entity": "Camo", "max": null },
     { "wave": 20, "entity": "Bomber", "max": 3 },
-    { "wave": 50, "entity": "Devil", "max": 5 },
+    { "wave": 35, "entity": "Phaser", "max": 2 },
+    { "wave": 50, "entity": "Devil", "max": 3 },
     { "wave": 65, "entity": "Bomber", "max": 3 },
-    { "wave": 75, "entity": "Devil", "max": 5 }
+    { "wave": 75, "entity": "Factory", "max": 1 },
+    { "wave": 80, "entity": "Jammer", "max": 1 },
+    { "wave": 90, "entity": "Phaser", "max": 2 }
   ],
   "specialSpawns": [
-    { "wave": 5, "entities": [{ "entity": "Speedy", "max": 3 }] },
-    { "wave": 10, "entities": [{ "entity": "Camo", "max": 5 }] },
-    { "wave": 15, "entities": [{ "entity": "Bomber", "max": 3 }] },
+    { "wave": 5, "entities": [{ "entity": "Speedy", "max": 5 }] },
+    { "wave": 10, "entities": [{ "entity": "Camo", "max": 8 }] },
     {
-      "wave": 25,
+      "wave": 20,
+      "entities": [
+        { "entity": "Bomber", "max": 2 },
+        { "entity": "Robot", "max": 10 }
+      ]
+    },
+    {
+      "wave": 30,
       "entities": [
         { "entity": "Devil", "max": 1 },
-        { "entity": "Speedy", "max": 5 },
-        { "entity": "Camo", "max": 5 }
+        { "entity": "Camo", "max": 10 }
+      ]
+    },
+    {
+      "wave": 40,
+      "entities": [
+        { "entity": "Phaser", "max": 1 },
+        { "entity": "Speedy", "max": 15 }
+      ]
+    },
+    {
+      "wave": 50,
+      "entities": [
+        { "entity": "Factory", "max": 1 },
+        { "entity": "Devil", "max": 2 },
+        { "entity": "Speedy", "max": 5 }
+      ]
+    },
+    {
+      "wave": 65,
+      "entities": [
+        { "entity": "Jammer", "max": 2 },
+        { "entity": "Phaser", "max": 2 },
+        { "entity": "Camo", "max": 10 }
+      ]
+    },
+    {
+      "wave": 80,
+      "entities": [
+        { "entity": "Factory", "max": 2 },
+        { "entity": "Jammer", "max": 1 },
+        { "entity": "Bomber", "max": 5 }
+      ]
+    },
+    {
+      "wave": 100,
+      "entities": [
+        { "entity": "Devil", "max": 3 },
+        { "entity": "Jammer", "max": 2 },
+        { "entity": "Factory", "max": 2 },
+        { "entity": "Phaser", "max": 5 }
       ]
     }
   ]

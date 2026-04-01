@@ -2,37 +2,46 @@ import { Game } from "../../game";
 
 export class Renderer {
   private game: Game;
+  private shakeIntensity: number = 0;
+  private shakeDuration: number = 0;
 
   constructor(game: Game) {
     this.game = game;
   }
 
+  screenshake(intensity: number, duration: number): void {
+    this.shakeIntensity = intensity;
+    this.shakeDuration = duration;
+  }
+
   render(): void {
     const now = performance.now();
     const dt = Math.min((now - this.game.globals.frameTime) / 1000, 0.1);
-
     this.game.globals.fps = Math.round(1 / dt);
+    this.game.globals.frameTime = now;
 
-    this.game.renderContext.clearRect(
-      0,
-      0,
-      this.game.canvas.width,
-      this.game.canvas.height,
-    );
-    this.game.renderContext.fillStyle = "black";
-    this.game.renderContext.fillRect(
-      0,
-      0,
-      this.game.canvas.width,
-      this.game.canvas.height,
-    );
+    const ctx = this.game.renderContext;
+    const { width, height } = this.game.canvas;
+
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.save();
+
+    if (this.shakeDuration > 0) {
+      this.shakeDuration -= dt;
+      const offsetX = (Math.random() - 0.5) * 2 * this.shakeIntensity;
+      const offsetY = (Math.random() - 0.5) * 2 * this.shakeIntensity;
+      ctx.translate(offsetX, offsetY);
+    }
+    ctx.fillStyle = "#121212";
+    ctx.fillRect(-20, -20, width + 40, height + 40);
 
     this.game.globals.tileMapManager.render();
     this.game.globals.entityManager.render();
+    this.game.globals.spawning.render(ctx);
+
+    ctx.restore();
+
     this.game.globals.uiHandler.render();
-
-    this.game.globals.spawning.render(this.game.renderContext);
-
-    this.game.globals.frameTime = now;
   }
 }
