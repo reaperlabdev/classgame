@@ -1,7 +1,7 @@
 import { EntityType } from "../../classes/entity/entityType";
 import { PlayerBase } from "../../classes/entity/friendly/playerBaseEntity";
 import { Game } from "../../game";
-import { Robot } from "../../classes/entity/hostile/robot/robotEntity";
+import { Robot } from "../../classes/entity/hostile/basic/robot/robotEntity";
 import { WaveType } from "../../settings/wave/waveType";
 import { specialSpawns, waveSpawns } from "../../settings/wave/waveVaules";
 import { HostileEntity } from "../../classes/entity/hostile/hostileEntity";

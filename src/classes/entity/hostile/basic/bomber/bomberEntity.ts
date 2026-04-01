@@ -1,8 +1,8 @@
-import { Game } from "../../../../game";
-import { findNextTile } from "../../../../utility/entityPathing";
-import { EntityType } from "../../entityType";
-import { TurretEntity } from "../../friendly/turret/turretEntity";
-import { HostileEntity } from "../hostileEntity";
+import { Game } from "../../../../../game";
+import { findNextTile } from "../../../../../utility/entityPathing";
+import { EntityType } from "../../../entityType";
+import { TurretEntity } from "../../../friendly/turret/turretEntity";
+import { HostileEntity } from "../../hostileEntity";
 
 export class Bomber extends HostileEntity {
   blastMarkers: { x: number; y: number; age: number }[] = [];

@@ -19,7 +19,11 @@ export class HostileEntity extends Entity {
     super(game, EntityType.HOSTILE, 0, 0, size, size, 5);
   }
 
-  renderHealthBar(ctx: CanvasRenderingContext2D, name: string): void {
+  renderHealthBar(
+    ctx: CanvasRenderingContext2D,
+    color: string,
+    name: string,
+  ): void {
     ctx.save();
     const fontSize = 12;
     ctx.font = `bold ${fontSize}px Courier New`;
@@ -47,7 +51,7 @@ export class HostileEntity extends Entity {
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
     ctx.fillRect(this.x, this.y - gap, barW, barH);
 
-    ctx.fillStyle = "#ff3333";
+    ctx.fillStyle = color;
     ctx.fillRect(this.x, this.y - gap, barW * healthPercent, barH);
 
     ctx.strokeStyle = "black";

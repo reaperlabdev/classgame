@@ -1,6 +1,6 @@
-import { Game } from "../../../../game";
-import { findNextTile } from "../../../../utility/entityPathing";
-import { HostileEntity } from "../hostileEntity";
+import { Game } from "../../../../../game";
+import { findNextTile } from "../../../../../utility/entityPathing";
+import { HostileEntity } from "../../hostileEntity";
 
 export class Robot extends HostileEntity {
   lastHealth: number = 0;
