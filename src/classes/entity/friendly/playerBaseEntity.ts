@@ -15,6 +15,10 @@ export class PlayerBase extends Entity {
   }
 
   update(dt: number): void {
+    if (this.hurtTime > 0) {
+      this.hurtTime -= dt;
+    }
+
     this.game.globals.entityManager.entities.forEach((entity) => {
       if (entity !== this) {
         if (
@@ -35,6 +39,11 @@ export class PlayerBase extends Entity {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+
+    if (this.hurtTime > 0) {
+      ctx.filter = "invert(100%)";
+    }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(this.targetSprite),
       this.game.globals.renderer.offsetX + this.x + this.renderOffX,
@@ -42,5 +51,7 @@ export class PlayerBase extends Entity {
       64,
       64,
     );
+
+    ctx.restore();
   }
 }

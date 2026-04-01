@@ -13,6 +13,7 @@ export class Entity {
   health: number;
   stunned: boolean;
   stunTime: number;
+  hurtTime: number;
   isAlive: boolean;
 
   constructor(
@@ -35,6 +36,7 @@ export class Entity {
     this.health = health;
     this.stunned = false;
     this.stunTime = 0;
+    this.hurtTime = 0;
     this.isAlive = true;
     game.globals.entityManager.addEntity(this);
   }
@@ -46,12 +48,16 @@ export class Entity {
         this.stunned = false;
       }
     }
+    if (this.hurtTime > 0) {
+      this.hurtTime -= dt;
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {}
 
   takeDamage(attacker: Entity, amount: number): void {
     this.health -= amount;
+    this.hurtTime = 0.1;
     if (this.health <= 0) {
       this.destroy();
     }
