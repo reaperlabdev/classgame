@@ -125,13 +125,7 @@ export class Bomber extends HostileEntity {
       const sprite = this.game.globals.spriteManager.getSprite(
         `bomber${this.animStep}`,
       );
-      ctx.drawImage(
-        sprite,
-        this.game.globals.renderer.offsetX + this.x + 2,
-        this.game.globals.renderer.offsetY + this.y - 6,
-        this.width,
-        this.height,
-      );
+      ctx.drawImage(sprite, this.x + 2, this.y - 6, this.width, this.height);
       ctx.restore();
     }
 

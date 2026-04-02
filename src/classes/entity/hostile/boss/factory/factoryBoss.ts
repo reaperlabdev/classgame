@@ -89,8 +89,8 @@ export class Factory extends BossEntity {
       ctx.filter = `drop-shadow(0 0 5px orange) brightness(${pulse})`;
     }
     ctx.translate(
-      this.game.globals.renderer.offsetX + this.x + this.width / 2,
-      this.game.globals.renderer.offsetY + this.y + this.height / 2,
+      this.x + this.width / 2,
+      this.y + this.height / 2,
     );
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),

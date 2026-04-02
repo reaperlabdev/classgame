@@ -20,6 +20,7 @@ export class TileRock extends Tile {
       this.width,
       this.height,
     );
+
     ctx.drawImage(sprite, this.x, this.y);
   }
 }

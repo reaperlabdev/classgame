@@ -72,8 +72,8 @@ export class Phaser extends BossEntity {
       ctx.globalAlpha = p.alpha * 0.5;
       ctx.filter = "cyan(1) blur(2px)";
       ctx.translate(
-        this.game.globals.renderer.offsetX + p.x + this.width / 2,
-        this.game.globals.renderer.offsetY + p.y + this.height / 2,
+        p.x + this.width / 2,
+        p.y + this.height / 2,
       );
       ctx.drawImage(
         this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),

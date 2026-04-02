@@ -107,9 +107,7 @@ export class TileMapManager {
         if (chance == 1) {
           console.log("tree!");
           new Tree(this.game, tile.x, tile.y);
-        }
-
-        if (Math.floor(Math.random() * 100) == 1) {
+        } else if (Math.floor(Math.random() * 100) == 1) {
           new Rock(this.game, tile.x, tile.y);
         }
       }

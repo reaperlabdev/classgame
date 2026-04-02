@@ -46,8 +46,8 @@ export class PlayerBase extends Entity {
     }
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(this.targetSprite),
-      this.game.globals.renderer.offsetX + this.x + this.renderOffX,
-      this.game.globals.renderer.offsetY + this.y - 48,
+      this.x + this.renderOffX,
+      this.y - 48,
       64,
       64,
     );

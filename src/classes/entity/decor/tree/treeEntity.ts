@@ -14,19 +14,14 @@ export class Tree extends DecorEntity {
   }
 
   update(dt: number) {
-    // rotate back and fourth
     this.angle += dt * 0.04 * this.direction;
-
     if (Math.abs(this.angle) > 0.2) this.direction = -this.direction;
   }
 
   render(ctx: CanvasRenderingContext2D) {
     ctx.save();
 
-    ctx.translate(
-      this.game.globals.renderer.offsetX + this.x,
-      this.game.globals.renderer.offsetY + this.y,
-    );
+    ctx.translate(this.x, this.y);
     if (this.flipped) ctx.scale(-1, 1);
     ctx.rotate(this.angle);
 
