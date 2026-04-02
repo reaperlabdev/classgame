@@ -134,27 +134,26 @@ export const crossfade = async (
   const fromConfig = soundConfigs[fromName];
   const toConfig = soundConfigs[toName];
 
-  await play(toName, toConfig?.loop);
-  const toGain = getOrCreateGain(toName);
-  toGain.gain.setValueAtTime(0, audioContext.currentTime);
-
   if (fromGain && fromConfig) {
-    fromGain.gain.setTargetAtTime(0, audioContext.currentTime, duration / 3);
+    fromGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.1);
   }
-  toGain.gain.setTargetAtTime(
-    toConfig?.volume ?? 1,
-    audioContext.currentTime,
-    duration / 3,
-  );
 
-  setTimeout(() => {
+  setTimeout(async () => {
     stop(fromName);
     if (fromConfig) {
-      const restoredGain = getOrCreateGain(fromName);
-      restoredGain.gain.setValueAtTime(
+      getOrCreateGain(fromName).gain.setValueAtTime(
         fromConfig.volume ?? 1,
         audioContext.currentTime,
       );
     }
-  }, duration * 1000);
+
+    await play(toName, toConfig?.loop);
+    const toGain = getOrCreateGain(toName);
+    toGain.gain.setValueAtTime(0, audioContext.currentTime);
+    toGain.gain.setTargetAtTime(
+      toConfig?.volume ?? 1,
+      audioContext.currentTime,
+      duration / 3,
+    );
+  }, 400); 
 };
