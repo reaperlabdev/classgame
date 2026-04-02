@@ -84,8 +84,10 @@ export class WaveManager {
       this.typeTracker = {};
 
       if (isSpecialWave) {
+        if (!this.wasSpecialWave) {
+          crossfade("bgMusic", "bosstheme", 2);
+        }
         this.wasSpecialWave = true;
-        crossfade("bgMusic", "bosstheme", 2);
         for (let i = 0; i < specialSpawns.length; i++) {
           if (this.currentWave === specialSpawns[i][0]) {
             const entries = specialSpawns[i][1];
