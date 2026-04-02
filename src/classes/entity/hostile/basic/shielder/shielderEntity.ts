@@ -41,7 +41,7 @@ export class Shielder extends HostileEntity {
     while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
     angleDiff = Math.abs(angleDiff);
 
-    if (angleDiff < Math.PI / 2) {
+    if (angleDiff < Math.PI / 2 && this.shielding) {
       this.shieldHurtTime = 0.05;
       this.shieldHP -= amount;
       if (this.shieldHP < 0) {
@@ -111,7 +111,7 @@ export class Shielder extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
-    if (this.hurtTime > 0) {
+    if (this.hurtTime > 0 || this.stunned) {
       ctx.filter = "invert(1)";
     }
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);

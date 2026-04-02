@@ -44,11 +44,10 @@ export class Shifter extends BossEntity {
     ctx.restore();
     ctx.save();
     if (this.camo) ctx.globalAlpha = 0.2;
-    if (this.hurtTime > 0) ctx.filter = "invert(1)";
-    ctx.translate(
-      this.x + this.width / 2,
-      this.y + this.height / 2,
-    );
+    if (this.hurtTime > 0 || this.stunned) {
+      ctx.filter = "invert(1)";
+    }
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
       -this.width / 2.8,

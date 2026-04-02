@@ -82,7 +82,7 @@ export class Speedy extends HostileEntity {
 
     ctx.rotate(Math.atan2(this.moveDirY, this.moveDirX));
 
-    if (this.hurtTime > 0) {
+    if (this.hurtTime > 0 || this.stunned) {
       ctx.filter = "invert(1)";
     }
 

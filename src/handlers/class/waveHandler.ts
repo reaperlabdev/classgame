@@ -28,6 +28,8 @@ export class WaveManager {
   currentWave: number = 1;
   wasSpecialWave: boolean = false;
 
+  playingSpecial: boolean = false;
+
   constructor(game: Game) {
     this.game = game;
 
@@ -47,6 +49,12 @@ export class WaveManager {
     this.pauseTimer = 0;
     this.currentWave = 1;
     this.wasSpecialWave = false;
+
+    if (this.playingSpecial) {
+      crossfade("bosstheme", "bgMusic", 2);
+    }
+
+    this.playingSpecial = false;
 
     for (const key of Object.keys(entityValues)) {
       entityValues[key].cost = entityDefaults[key].cost;
@@ -85,6 +93,7 @@ export class WaveManager {
 
       if (isSpecialWave) {
         if (!this.wasSpecialWave) {
+          this.playingSpecial = true;
           crossfade("bgMusic", "bosstheme", 2);
         }
         this.wasSpecialWave = true;
@@ -105,6 +114,7 @@ export class WaveManager {
       } else {
         if (this.wasSpecialWave) {
           this.wasSpecialWave = false;
+          this.playingSpecial = false;
           crossfade("bosstheme", "bgMusic", 2);
         }
         for (let i = 0; i < waveSpawns.length; i++) {

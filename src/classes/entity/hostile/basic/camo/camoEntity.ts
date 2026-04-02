@@ -73,7 +73,7 @@ export class Camo extends HostileEntity {
     if (!this.isAlive) return;
 
     ctx.save();
-    if (this.hurtTime > 0) {
+    if (this.hurtTime > 0 || this.stunned) {
       ctx.filter = "invert(1)";
     }
     ctx.translate(

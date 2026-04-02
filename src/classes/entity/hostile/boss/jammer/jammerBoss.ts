@@ -89,11 +89,10 @@ export class Jammer extends BossEntity {
     this.renderHealthBar(ctx, "green", "Jammer");
     ctx.restore();
     ctx.save();
-    if (this.hurtTime > 0) ctx.filter = "invert(1)";
-    ctx.translate(
-      this.x + this.width / 2,
-      this.y + this.height / 2,
-    );
+    if (this.hurtTime > 0 || this.stunned) {
+      ctx.filter = "invert(1)";
+    }
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     if (this.attackTimer < 0.5) {
       ctx.translate((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
     }

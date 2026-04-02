@@ -149,11 +149,14 @@ export const crossfade = async (
 
     await play(toName, toConfig?.loop);
     const toGain = getOrCreateGain(toName);
+    const allowed = checkIfAllowedPlayback(toName);
+    const targetVolume = allowed ? (toConfig?.volume ?? 1) : 0;
+
     toGain.gain.setValueAtTime(0, audioContext.currentTime);
     toGain.gain.setTargetAtTime(
-      toConfig?.volume ?? 1,
+      targetVolume,
       audioContext.currentTime,
       duration / 3,
     );
-  }, 400); 
+  }, 400);
 };

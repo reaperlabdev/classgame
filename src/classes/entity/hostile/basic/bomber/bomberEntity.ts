@@ -120,7 +120,9 @@ export class Bomber extends HostileEntity {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.exploded && this.isAlive) {
       ctx.save();
-      if (this.hurtTime > 0) ctx.filter = "brightness(2)";
+      if (this.hurtTime > 0 || this.stunned) {
+        ctx.filter = "invert(1)";
+      }
 
       const sprite = this.game.globals.spriteManager.getSprite(
         `bomber${this.animStep}`,

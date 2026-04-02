@@ -71,10 +71,7 @@ export class Phaser extends BossEntity {
       ctx.save();
       ctx.globalAlpha = p.alpha * 0.5;
       ctx.filter = "cyan(1) blur(2px)";
-      ctx.translate(
-        p.x + this.width / 2,
-        p.y + this.height / 2,
-      );
+      ctx.translate(p.x + this.width / 2, p.y + this.height / 2);
       ctx.drawImage(
         this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
         -this.width / 2.8,
@@ -88,7 +85,7 @@ export class Phaser extends BossEntity {
     this.renderHealthBar(ctx, "yellow", "Phaser");
 
     ctx.save();
-    if (this.hurtTime > 0) {
+    if (this.hurtTime > 0 || this.stunned) {
       ctx.filter = "invert(1)";
     } else if (this.teleportFlash > 0) {
       ctx.filter = `brightness(${1 + this.teleportFlash * 2}) drop-shadow(0 0 10px cyan)`;
