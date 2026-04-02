@@ -122,3 +122,39 @@ export const setVolume = (name: string, vol: number): void => {
   const node = getOrCreateGain(name);
   node.gain.setTargetAtTime(vol, audioContext.currentTime, 0.05);
 };
+
+export const crossfade = async (
+  fromName: string,
+  toName: string,
+  duration: number = 1.5,
+): Promise<void> => {
+  if (audioContext.state === "suspended") await audioContext.resume();
+
+  const fromGain = globalGains[fromName];
+  const fromConfig = soundConfigs[fromName];
+  const toConfig = soundConfigs[toName];
+
+  await play(toName, toConfig?.loop);
+  const toGain = getOrCreateGain(toName);
+  toGain.gain.setValueAtTime(0, audioContext.currentTime);
+
+  if (fromGain && fromConfig) {
+    fromGain.gain.setTargetAtTime(0, audioContext.currentTime, duration / 3);
+  }
+  toGain.gain.setTargetAtTime(
+    toConfig?.volume ?? 1,
+    audioContext.currentTime,
+    duration / 3,
+  );
+
+  setTimeout(() => {
+    stop(fromName);
+    if (fromConfig) {
+      const restoredGain = getOrCreateGain(fromName);
+      restoredGain.gain.setValueAtTime(
+        fromConfig.volume ?? 1,
+        audioContext.currentTime,
+      );
+    }
+  }, duration * 1000);
+};

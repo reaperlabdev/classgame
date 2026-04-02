@@ -9,6 +9,7 @@ import {
   entityValues,
   entityDefaults,
 } from "../../settings/entity/entityValues";
+import { crossfade } from "../../utility/audioUtil";
 
 export class WaveManager {
   game: Game;
@@ -25,6 +26,7 @@ export class WaveManager {
 
   pauseTimer: number = 0;
   currentWave: number = 1;
+  wasSpecialWave: boolean = false;
 
   constructor(game: Game) {
     this.game = game;
@@ -44,6 +46,7 @@ export class WaveManager {
     this.spawned = 0;
     this.pauseTimer = 0;
     this.currentWave = 1;
+    this.wasSpecialWave = false;
 
     for (const key of Object.keys(entityValues)) {
       entityValues[key].cost = entityDefaults[key].cost;
@@ -81,6 +84,8 @@ export class WaveManager {
       this.typeTracker = {};
 
       if (isSpecialWave) {
+        this.wasSpecialWave = true;
+        crossfade("bgMusic", "bosstheme", 2);
         for (let i = 0; i < specialSpawns.length; i++) {
           if (this.currentWave === specialSpawns[i][0]) {
             const entries = specialSpawns[i][1];
@@ -96,6 +101,10 @@ export class WaveManager {
           }
         }
       } else {
+        if (this.wasSpecialWave) {
+          this.wasSpecialWave = false;
+          crossfade("bosstheme", "bgMusic", 2);
+        }
         for (let i = 0; i < waveSpawns.length; i++) {
           if (this.currentWave >= waveSpawns[i][0]) {
             const SpawnClass = waveSpawns[i][1];
@@ -115,7 +124,6 @@ export class WaveManager {
       this.spawnTimer = 0;
       this.waveType = WaveType.SPAWNING;
     }
-
     if (this.waveType === WaveType.SPAWNING) {
       const baseInterval = 0.8;
       const waveFactor = 1 + (this.currentWave - 1) * 0.1;

@@ -18,6 +18,12 @@
       "type": "effect",
       "volume": 1
     },
+    "bosstheme": {
+      "path": "./src/assets/sfx/bosstheme.wav",
+      "loop": true,
+      "type": "music",
+      "volume": 0.1
+    },
     "shooting": {
       "path": "./src/assets/sfx/shooting.wav",
       "loop": false,
