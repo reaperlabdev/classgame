@@ -19,7 +19,7 @@
       "volume": 1
     },
     "bosstheme": {
-      "path": "./src/assets/sfx/bosstheme.wav",
+      "path": "./src/assets/sfx/bosstheme.mp3",
       "loop": true,
       "type": "music",
       "volume": 0.1
