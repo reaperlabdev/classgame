@@ -1,3 +1,5 @@
+import { darken } from "./colorUtil";
+
 export interface BoxStyle {
   borderColor?: string;
   boxColor?: string;
@@ -158,11 +160,13 @@ export function renderDoubleLabeledBoxRow(
   primaryLabels: string[],
   secondaryLabels: string[],
   positions: { x: number; y: number }[],
+  hoverIndex: number,
   boxSize: number,
   border: number,
   style?: BoxStyle,
 ) {
-  primaryLabels.forEach((label, i) =>
+  primaryLabels.forEach((label, i) => {
+    const isHovered = i === hoverIndex;
     renderDoubleLabeledBox(
       ctx,
       positions[i].x,
@@ -171,9 +175,14 @@ export function renderDoubleLabeledBoxRow(
       border,
       label,
       secondaryLabels[i] ?? "",
-      style,
-    ),
-  );
+      {
+        ...style,
+        boxColor: isHovered
+          ? darken(style?.boxColor ?? "#303030", 25)
+          : (style?.boxColor ?? "#303030"),
+      },
+    );
+  });
 }
 
 export function renderStrokedText(

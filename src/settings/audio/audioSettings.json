@@ -29,6 +29,12 @@
       "loop": false,
       "type": "effect",
       "volume": 1
+    },
+    "wavewin": {
+      "path": "./src/assets/sfx/wavewin.wav",
+      "loop": false,
+      "type": "effect",
+      "volume": 1
     }
   }
 }

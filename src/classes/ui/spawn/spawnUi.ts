@@ -116,6 +116,13 @@ export class SpawnUi extends uiClass {
       this.turrets,
       turretSubLabels,
       this.getPositions(),
+      getHoveredIndex(
+        this.mouseX,
+        this.mouseY,
+        this.getPositions(),
+        this.boxSize,
+        this.boxBorder,
+      ),
       this.boxSize,
       this.boxBorder,
     );

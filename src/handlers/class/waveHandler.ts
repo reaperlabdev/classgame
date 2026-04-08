@@ -9,7 +9,7 @@ import {
   entityValues,
   entityDefaults,
 } from "../../settings/entity/entityValues";
-import { crossfade } from "../../utility/audioUtil";
+import { crossfade, play } from "../../utility/audioUtil";
 
 export class WaveManager {
   game: Game;

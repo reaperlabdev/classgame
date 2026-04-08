@@ -16,18 +16,20 @@ export class uiDebug extends uiClass {
   }
 
   render() {
-    if (this.game.globals.fps > this.game.globals.targetFPS / 2) return;
+    if (this.game.globals.fps > this.game.globals.targetFPS / 2 && !this.show)
+      return;
+    if (!this.show) return;
     this.ctx.fillStyle = "white";
-    this.ctx.fillText("FPS: " + this.game.globals.fps, 5, 15);
+    this.ctx.fillText("FPS: " + this.game.globals.fps, 10, 100);
     this.ctx.fillText(
       "Entities: " + this.game.globals.entityManager.getEntityArray().length,
-      5,
-      30,
+      10,
+      120,
     );
     this.ctx.fillText(
       "Tiles: " + this.game.globals.tileMapManager.getTileArray().length,
-      5,
-      45,
+      10,
+      140,
     );
   }
 }
