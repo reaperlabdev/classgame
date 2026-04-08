@@ -45,8 +45,8 @@ export class Devil extends BossEntity {
 
     ctx.drawImage(
       this.game.globals.spriteManager.getSprite(`devil${this.animStep}`),
-      -this.width / 3,
-      -this.height / 2,
+      -this.width,
+      -this.height,
       64,
       64,
     );
