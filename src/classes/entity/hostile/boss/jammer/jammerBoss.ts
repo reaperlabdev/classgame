@@ -21,9 +21,6 @@ export class Jammer extends BossEntity {
   update(dt: number): void {
     if (!this.isAlive) return;
     super.update(dt);
-    if (this.stunned) return;
-
-    this.handleMovement(dt, this.speed);
 
     if (this.hurtTime > 0) this.hurtTime -= dt;
 
@@ -59,6 +56,9 @@ export class Jammer extends BossEntity {
       this.flashAlpha -= dt * 2;
       this.flashRadius += dt * 300;
     }
+
+    if (this.stunned) return;
+    this.handleMovement(dt, this.speed);
   }
 
   render(ctx: CanvasRenderingContext2D): void {

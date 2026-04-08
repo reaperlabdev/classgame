@@ -25,7 +25,6 @@ export class Factory extends BossEntity {
     if (!this.isAlive) return;
 
     super.update(dt);
-    if (this.stunned) return;
 
     if (this.hurtTime > 0) this.hurtTime -= dt;
 
@@ -35,7 +34,7 @@ export class Factory extends BossEntity {
         this.executeBurstSpawn(10);
       }
     } else {
-      this.handleMovement(dt, this.speed);
+      if (!this.stunned) this.handleMovement(dt, this.speed);
 
       this.cooldownTimer += dt;
       if (this.cooldownTimer >= this.COOLDOWN_DURATION) {

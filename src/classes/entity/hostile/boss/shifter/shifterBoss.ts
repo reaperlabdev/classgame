@@ -17,9 +17,7 @@ export class Shifter extends BossEntity {
   update(dt: number): void {
     if (!this.isAlive) return;
     super.update(dt);
-    if (this.stunned) return;
-
-    this.handleMovement(dt, this.speed);
+    if (!this.stunned) this.handleMovement(dt, this.speed);
 
     if (this.hurtTime > 0) this.hurtTime -= dt;
 

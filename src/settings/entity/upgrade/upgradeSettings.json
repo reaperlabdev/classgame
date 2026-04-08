@@ -131,6 +131,6 @@
     "Sniper": { "damage": 40, "range": 200, "attackSpeed": 0.8 },
     "Machine": { "damage": 10, "range": 100, "attackSpeed": 0.15 },
     "Spike": { "damage": 15, "range": 15, "health": 500 },
-    "EMP": { "damage": 10, "range": 75, "attackSpeed": 1.5 }
+    "EMP": { "damage": 10, "range": 75, "attackSpeed": 3 }
   }
 }
