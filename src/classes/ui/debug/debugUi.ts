@@ -16,7 +16,7 @@ export class uiDebug extends uiClass {
   }
 
   render() {
-    if (this.game.globals.fps > this.game.globals.targetFPS) return;
+    if (this.game.globals.fps > this.game.globals.targetFPS / 2) return;
     this.ctx.fillStyle = "white";
     this.ctx.fillText("FPS: " + this.game.globals.fps, 5, 15);
     this.ctx.fillText(

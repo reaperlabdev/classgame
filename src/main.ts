@@ -50,6 +50,11 @@ import bomberImageSrc2 from "./assets/robots/bomber2.png";
 import bomberImageSrc3 from "./assets/robots/bomber3.png";
 import bomberImageSrc4 from "./assets/robots/bomber4.png";
 
+import devilImageSrc1 from "./assets/robots/devil1.png";
+import devilImageSrc2 from "./assets/robots/devil2.png";
+import devilImageSrc3 from "./assets/robots/devil3.png";
+import devilImageSrc4 from "./assets/robots/devil4.png";
+
 import turretImageSrc from "./assets/turrets/turret.png";
 import sniperImageSrc from "./assets/turrets/sniper.png";
 import machineImageSrc from "./assets/turrets/machine.png";
@@ -151,6 +156,23 @@ async function main(): Promise<void> {
   await game.globals.spriteManager.addSprite(
     "bomber4",
     loadImage(bomberImageSrc4),
+  );
+
+  await game.globals.spriteManager.addSprite(
+    "devil1",
+    loadImage(devilImageSrc1),
+  );
+  await game.globals.spriteManager.addSprite(
+    "devil2",
+    loadImage(devilImageSrc2),
+  );
+  await game.globals.spriteManager.addSprite(
+    "devil3",
+    loadImage(devilImageSrc3),
+  );
+  await game.globals.spriteManager.addSprite(
+    "devil4",
+    loadImage(devilImageSrc4),
   );
 
   await game.globals.spriteManager.addSprite(

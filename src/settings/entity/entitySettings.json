@@ -7,7 +7,7 @@
     "EMP": { "baseCost": 250, "inflation": 2, "max": 7500 }
   },
   "stats": {
-    "Turret": { "cost": 25, "damage": 1, "attackSpeed": 0.8, "range": 100 },
+    "Turret": { "cost": 25, "damage": 2, "attackSpeed": 0.8, "range": 100 },
     "Sniper": { "cost": 50, "damage": 5, "attackSpeed": 2, "range": 150 },
     "Machine": { "cost": 75, "damage": 1, "attackSpeed": 0.3, "range": 75 },
     "Spike": {
@@ -17,6 +17,6 @@
       "attackSpeed": 1,
       "range": 15
     },
-    "EMP": { "cost": 250, "damage": 5, "attackSpeed": 2, "range": 50 }
+    "EMP": { "cost": 250, "damage": 5, "attackSpeed": 4, "range": 50 }
   }
 }

@@ -44,11 +44,11 @@ export class Devil extends BossEntity {
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
 
     ctx.drawImage(
-      this.game.globals.spriteManager.getSprite(`robot${this.animStep}`),
-      -this.width / 2.8,
+      this.game.globals.spriteManager.getSprite(`devil${this.animStep}`),
+      -this.width / 3,
       -this.height / 2,
-      24,
-      24,
+      64,
+      64,
     );
     ctx.restore();
   }
